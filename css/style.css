@@ -129,3 +129,9 @@ body {
   background-image: radial-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
+
+/* Header Navigation Menu Text Wrapping Prevention */
+header nav a {
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
