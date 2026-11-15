@@ -781,7 +781,7 @@
 
                         <!-- 이미지 붙여넣기 완료 시 미리보기 -->
                         <div id="mapPreviewContainer" class="hidden relative">
-                            <img id="mapPreviewImg" src="" alt="주변 현황 지도 미리보기" class="max-h-48 mx-auto rounded-lg object-contain border border-dark-border shadow-lg">
+                            <img id="mapPreviewImg" src="" alt="주변 현황 지도 미리보기" class="max-h-72 mx-auto rounded-lg object-contain border border-dark-border shadow-lg">
                             <button type="button" id="removeMapBtn" class="absolute top-2 right-2 bg-black/80 hover:bg-red-700 text-white rounded-full p-1.5 transition-colors shadow" title="이미지 삭제">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
@@ -873,7 +873,7 @@
     <!-- [Modal 5] 전체화면 고화질 이미지 뷰어 (현황배치도 꽉 찬 화면 라이트박스) -->
     <div id="imageLightboxModal" class="modal-overlay modal-hidden fixed inset-0 z-[120] bg-black/95 backdrop-blur-md flex flex-col justify-between p-2 sm:p-4">
         <!-- 뷰어 상단 바 -->
-        <div class="flex items-center justify-between px-3 py-2.5 bg-zinc-900/90 border border-dark-border rounded-xl max-w-7xl mx-auto w-full mb-2">
+        <div class="flex items-center justify-between px-3 py-2.5 bg-zinc-900/90 border border-dark-border rounded-xl max-w-[94vw] mx-auto w-full mb-2">
             <div class="flex items-center gap-2 overflow-hidden">
                 <span class="text-xs bg-gold text-black font-extrabold px-2 py-0.5 rounded shrink-0">현황배치도</span>
                 <h4 id="lightboxTitle" class="text-xs sm:text-sm font-bold text-white truncate">현황배치도 및 주변 위치도</h4>
@@ -891,7 +891,7 @@
 
         <!-- 뷰어 메인 이미지 (화면 꽉 차게 표시) -->
         <div class="flex-1 flex items-center justify-center overflow-auto p-1 cursor-default" onclick="UI.closeModal('imageLightboxModal')">
-            <img id="lightboxImage" src="" alt="현황배치도 전체화면" class="max-w-full max-h-[85vh] object-contain rounded-xl border border-dark-border shadow-2xl transition-all" onclick="event.stopPropagation()">
+            <img id="lightboxImage" src="" alt="현황배치도 전체화면" class="object-contain rounded-2xl border border-gold/40 shadow-2xl transition-all mx-auto bg-black/60" style="width: 92vw; max-width: 1550px; height: auto; max-height: 87vh;" onclick="event.stopPropagation()">
         </div>
 
         <!-- 뷰어 하단 안내 바 -->
