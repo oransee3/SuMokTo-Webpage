@@ -1,0 +1,131 @@
+/* Custom Styles for 도안수목토 재벌 공인중개사사무소 */
+
+:root {
+  --color-gold: #D4AF37;
+  --color-gold-light: #F3E5AB;
+  --color-gold-dark: #AA8C2C;
+  --color-bg-dark: #121212;
+  --color-card-dark: #1A1A1A;
+  --color-border-dark: #2D2D2D;
+}
+
+/* Safe Area Padding for Modern Mobile Devices (iPhone notch & bottom home bar) */
+body {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #121212;
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
+
+/* Gold Gradient Text */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* Gold Button Hover Glow */
+.gold-glow {
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+  transition: all 0.3s ease;
+}
+.gold-glow:hover {
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.45);
+}
+
+/* Subtle Card Glow on Hover */
+.property-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+@media (hover: hover) {
+  .property-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.15);
+  }
+}
+
+/* 16:9 & 9:16 Aspect Ratio Helpers */
+.aspect-16-9 {
+  aspect-ratio: 16 / 9;
+}
+.aspect-9-16 {
+  aspect-ratio: 9 / 16;
+}
+
+/* Mobile 9:16 Fullscreen App Feel */
+@media (max-width: 640px) {
+  /* 모바일 화면에서 하단 바 가림 방지 */
+  body {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+  
+  /* 모바일 뷰에서 카드 여백 최적화 */
+  .property-card {
+    border-radius: 1.25rem;
+  }
+  
+  /* 모바일 폰 9:16 세로 비율에 맞춘 히어로 영역 */
+  .mobile-hero-9-16 {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+/* 모바일 전용 하단 고정 퀵 네비게이션 (Bottom App Bar) */
+.mobile-bottom-bar {
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Modal Animations */
+.modal-overlay {
+  transition: opacity 0.25s ease-out;
+}
+.modal-content {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modal-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.modal-hidden .modal-content {
+  transform: scale(0.95) translateY(10px);
+}
+
+/* Admin Mode Badge Pulse */
+@keyframes pulse-gold {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0);
+  }
+}
+.admin-badge-pulse {
+  animation: pulse-gold 2s infinite;
+}
+
+/* Hero Background Pattern */
+.hero-pattern {
+  background-image: radial-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

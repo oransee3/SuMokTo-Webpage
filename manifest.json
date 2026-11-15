@@ -1,0 +1,55 @@
+{
+  "name": "도안수목토 재벌 공인중개사사무소",
+  "short_name": "재벌부동산",
+  "description": "대전 도안신도시 수목토 아파트 및 프리미엄 상가 전문 부동산 웹서비스",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "categories": ["business", "lifestyle", "finance"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "매물검색",
+      "short_name": "매물검색",
+      "description": "도안수목토 및 상가 매물 실시간 검색",
+      "url": "/#properties",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "추천 매물",
+      "short_name": "추천매물",
+      "description": "재벌부동산 엄선 프리미엄 추천 매물",
+      "url": "/#featured",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "고객 상담 등록",
+      "short_name": "고객등록",
+      "description": "1:1 VIP 매수/매도 상담 신청",
+      "url": "/#consulting",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
