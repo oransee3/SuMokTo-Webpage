@@ -32,6 +32,7 @@ def load_env_file(filepath=None):
 # 환경 변수 로드
 load_env_file()
 
+JSON_PATH = os.path.join(BASE_DIR, "data", "properties.json")
 CSV_PATH = os.path.join(BASE_DIR, "data", "properties.csv")
 if not os.path.exists(CSV_PATH):
     CSV_PATH = os.path.join(BASE_DIR, "properties.csv")
@@ -39,8 +40,18 @@ if not os.path.exists(CSV_PATH):
 # 초기 메모리 매물 저장소 (Vercel Serverless Read-Only 환경 지원)
 PROPERTIES_CACHE = []
 
-def load_properties_from_csv():
+def load_properties():
     global PROPERTIES_CACHE
+    # 1. properties.json 우선 탐색
+    if os.path.exists(JSON_PATH):
+        try:
+            with open(JSON_PATH, mode="r", encoding="utf-8") as f:
+                PROPERTIES_CACHE = json.load(f)
+                return PROPERTIES_CACHE
+        except Exception as e:
+            print("JSON Load Error:", e)
+
+    # 2. properties.csv 대체 탐색
     if os.path.exists(CSV_PATH):
         try:
             with open(CSV_PATH, mode="r", encoding="utf-8-sig") as f:
@@ -52,7 +63,7 @@ def load_properties_from_csv():
     return PROPERTIES_CACHE
 
 # 최초 1회 로드
-load_properties_from_csv()
+load_properties()
 
 @app.route("/")
 def index():
@@ -70,7 +81,50 @@ def get_config():
     """웹 클라이언트 연동용 안전한 공개 설정 (비밀키 제외)"""
     return jsonify({
         "success": True,
-        "kakaoJsKey": os.environ.get("KAKAO_JAVASCRIPT_KEY", "")
+        "kakaoJsKey": os.environ.get("KAKAO_JAVASCRIPT_KEY", ""),
+        "githubRepo": os.environ.get("GITHUB_REPO", "oransee3/SuMokTo-Webpage"),
+        "hasGithubToken": bool(os.environ.get("GITHUB_TOKEN"))
+    })
+
+# 0-1. 매물 데이터 실시간 GitHub 동기화 API (POST /api/properties/sync)
+@app.route("/api/properties/sync", methods=["POST"])
+def sync_properties():
+    global PROPERTIES_CACHE
+    req_data = request.json or {}
+    items = req_data.get("properties") or []
+    if not items:
+        return jsonify({"success": False, "message": "동기화할 매물 데이터가 없습니다."}), 400
+
+    PROPERTIES_CACHE = items
+
+    # 1. data/properties.json 저장
+    try:
+        os.makedirs(os.path.dirname(JSON_PATH), exist_ok=True)
+        with open(JSON_PATH, "w", encoding="utf-8") as f:
+            json.dump(items, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("Save properties.json error:", e)
+
+    # 2. properties.csv 동기화 저장
+    save_cache_to_csv()
+
+    # 3. 로컬 git push 시도 (로컬 서버 환경일 때)
+    git_synced = False
+    try:
+        import subprocess
+        subprocess.run(["git", "add", "data/properties.json", "properties.csv"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "commit", "-m", f"Auto sync properties via admin [{len(items)} items]"], cwd=BASE_DIR, check=False)
+        res = subprocess.run(["git", "push", "origin", "main"], cwd=BASE_DIR, capture_output=True, text=True, check=False)
+        if res.returncode == 0:
+            git_synced = True
+    except Exception as e:
+        print("Local git push error (non-fatal):", e)
+
+    return jsonify({
+        "success": True,
+        "message": "매물 데이터가 성공적으로 저장 및 동기화되었습니다.",
+        "count": len(items),
+        "gitSynced": git_synced
     })
 
 # 1. 매물 목록 조회 API (GET /api/properties)
@@ -80,7 +134,7 @@ def get_properties():
     deal_type = request.args.get("dealType")
     keyword = request.args.get("keyword", "").strip().lower()
 
-    items = PROPERTIES_CACHE if PROPERTIES_CACHE else load_properties_from_csv()
+    items = PROPERTIES_CACHE if PROPERTIES_CACHE else load_properties()
     results = items
 
     if category and category != "ALL":

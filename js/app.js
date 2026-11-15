@@ -390,6 +390,118 @@ const CSVParser = {
 };
 
 // ==========================================
+// 4-1. GitHub 실시간 동기화 관리자 (GitHubSyncManager)
+// ==========================================
+const GitHubSyncManager = {
+  KEY_GITHUB_TOKEN: 'chebol_github_token',
+  REPO: 'oransee3/SuMokTo-Webpage',
+  cachedServerToken: '',
+
+  getToken() {
+    return localStorage.getItem(this.KEY_GITHUB_TOKEN) || this.cachedServerToken || '';
+  },
+
+  setToken(token) {
+    localStorage.setItem(this.KEY_GITHUB_TOKEN, token.trim());
+  },
+
+  async init() {
+    try {
+      const res = await fetch('/api/config');
+      if (res.ok) {
+        const cfg = await res.json();
+        if (cfg && cfg.githubRepo) this.REPO = cfg.githubRepo;
+      }
+    } catch (e) {}
+
+    const tokenInput = document.getElementById('githubTokenInput');
+    if (tokenInput && !tokenInput.value) {
+      tokenInput.value = this.getToken();
+    }
+  },
+
+  async sync(properties) {
+    if (!properties || !Array.isArray(properties)) return false;
+
+    // 1단계: 백엔드 API (/api/properties/sync) 호출 (로컬 개발 환경 및 Vercel)
+    try {
+      const apiRes = await fetch('/api/properties/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ properties })
+      });
+      if (apiRes.ok) {
+        const data = await apiRes.json();
+        if (data.gitSynced) {
+          console.log('GitHub sync via backend git push succeeded');
+          return true;
+        }
+      }
+    } catch (e) {
+      console.log('Backend sync check passed to GitHub API:', e);
+    }
+
+    // 2단계: 클라이언트 직접 GitHub REST API 호출 (Vercel 및 모든 외부 환경)
+    const token = this.getToken();
+    if (!token) {
+      console.warn('GitHub Token not configured. Stored locally.');
+      return false;
+    }
+
+    try {
+      const path = 'data/properties.json';
+      const url = `https://api.github.com/repos/${this.REPO}/contents/${path}`;
+
+      // 1) 기존 파일 SHA 조회
+      let sha = null;
+      const getRes = await fetch(url, {
+        headers: {
+          'Authorization': `token ${token}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        sha = fileData.sha;
+      }
+
+      // 2) UTF-8 Base64 인코딩 (한글 및 특수문자 완벽 처리)
+      const jsonStr = JSON.stringify(properties, null, 2);
+      const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+        return String.fromCharCode('0x' + p1);
+      }));
+
+      // 3) GitHub API Contents PUT 요청으로 커밋 생성
+      const putRes = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({
+          message: `Auto sync properties [${properties.length} items] - ${new Date().toLocaleString('ko-KR')}`,
+          content: encodedContent,
+          sha: sha || undefined
+        })
+      });
+
+      if (putRes.ok) {
+        console.log('Successfully committed to GitHub repository via API');
+        return true;
+      } else {
+        const errData = await putRes.json();
+        console.error('GitHub API error:', errData);
+        return false;
+      }
+    } catch (err) {
+      console.error('GitHub API sync exception:', err);
+      return false;
+    }
+  }
+};
+
+// ==========================================
 // 4. 매물 관리자 (PropertyManager)
 // ==========================================
 const PropertyManager = {
@@ -417,6 +529,32 @@ const PropertyManager = {
     } else {
       this.properties = [...DEFAULT_PROPERTIES];
       this.save();
+    }
+
+    // 외부 접속 시 GitHub/서버 최신 매물 실시간 fetch
+    this.fetchRemoteProperties();
+  },
+
+  async fetchRemoteProperties() {
+    try {
+      let res = await fetch(`data/properties.json?t=${Date.now()}`);
+      if (!res.ok) {
+        res = await fetch(`/api/properties?t=${Date.now()}`);
+      }
+      if (res.ok) {
+        const data = await res.json();
+        const items = Array.isArray(data) ? data : (data.data || []);
+        if (items && items.length > 0) {
+          this.properties = items;
+          this.save();
+          if (typeof UI !== 'undefined' && UI.renderProperties) {
+            UI.renderProperties();
+            UI.renderFeaturedProperties();
+          }
+        }
+      }
+    } catch (e) {
+      console.log('Remote property fetch fallback to local cache:', e);
     }
   },
 
@@ -627,6 +765,7 @@ const UI = {
     AuthManager.init();
     PropertyManager.init();
     CustomerManager.init();
+    GitHubSyncManager.init();
 
     this.bindEvents();
     this.updateAdminUI();
@@ -847,6 +986,16 @@ const UI = {
         const key = document.getElementById('kakaoAppKeyInput').value;
         CustomerManager.setKakaoKey(key);
         this.showToast('카카오 JavaScript 앱 키가 저장되었습니다.');
+      });
+    }
+
+    // 14-1. GitHub 실시간 연동 토큰 저장
+    const saveGithubTokenBtn = document.getElementById('saveGithubTokenBtn');
+    if (saveGithubTokenBtn) {
+      saveGithubTokenBtn.addEventListener('click', () => {
+        const token = document.getElementById('githubTokenInput').value;
+        GitHubSyncManager.setToken(token);
+        this.showToast('GitHub 연동 토큰이 저장되었습니다. 이제 매물 저장 시 실시간 업로드됩니다.');
       });
     }
 
@@ -1143,6 +1292,12 @@ const UI = {
     const kakaoInput = document.getElementById('kakaoAppKeyInput');
     if (kakaoInput) {
       kakaoInput.value = CustomerManager.getKakaoKey();
+    }
+
+    // GitHub 토큰 인풋 불러오기
+    const githubTokenInput = document.getElementById('githubTokenInput');
+    if (githubTokenInput) {
+      githubTokenInput.value = GitHubSyncManager.getToken();
     }
   },
 
@@ -1554,6 +1709,19 @@ const UI = {
     this.closeModal('propertyFormModal');
     this.renderProperties();
     this.renderFeaturedProperties();
+
+    // GitHub 및 Vercel 실시간 동기화
+    this.showToast('🚀 GitHub에 실시간 동기화 및 업로드 진행 중...', 'info');
+    GitHubSyncManager.sync(PropertyManager.getAll()).then(success => {
+      if (success) {
+        this.showToast('✅ GitHub 저장소에 실시간 반영 완료! (Vercel 자동 배포 중)', 'success');
+      } else {
+        const token = GitHubSyncManager.getToken();
+        if (!token) {
+          this.showToast('💡 [관계자 모드] 대시보드에서 GitHub 토큰을 등록하시면 실시간 자동 푸시가 연동됩니다.', 'info');
+        }
+      }
+    });
   },
 
   // 매물 삭제
@@ -1567,6 +1735,9 @@ const UI = {
       this.showToast('매물이 삭제되었습니다.');
       this.renderProperties();
       this.renderFeaturedProperties();
+
+      // GitHub 동기화
+      GitHubSyncManager.sync(PropertyManager.getAll());
     }
   },
 
