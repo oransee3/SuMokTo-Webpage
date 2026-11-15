@@ -1356,6 +1356,13 @@ const UI = {
   // 일반 모드로 전환 (관계자 모드 종료 / 로그아웃)
   switchToNormalMode() {
     AuthManager.logout();
+    const adminBadge = document.getElementById('adminIndicatorBadge');
+    if (adminBadge) {
+      adminBadge.classList.remove('flex', 'md:flex');
+      adminBadge.classList.add('hidden');
+      adminBadge.style.display = 'none';
+      adminBadge.innerHTML = '';
+    }
     this.closeModal('adminDashboardModal');
     this.closeModal('loginModal');
     this.updateAdminUI();
@@ -1390,7 +1397,9 @@ const UI = {
         brandRoleBadge.title = '클릭 시 일반 모드로 전환됩니다';
       }
       if (adminBadge) {
-        adminBadge.classList.remove('hidden');
+        adminBadge.classList.remove('hidden', 'md:hidden');
+        adminBadge.classList.add('flex');
+        adminBadge.style.display = 'inline-flex';
         adminBadge.title = '클릭 시 일반 모드로 전환됩니다';
         adminBadge.innerHTML = `
           <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
@@ -1413,7 +1422,10 @@ const UI = {
         brandRoleBadge.title = '클릭하여 관계자 모드(ID/PW) 열기';
       }
       if (adminBadge) {
+        adminBadge.classList.remove('flex', 'md:flex');
         adminBadge.classList.add('hidden');
+        adminBadge.style.display = 'none';
+        adminBadge.innerHTML = '';
       }
       if (mobileAuthText) {
         mobileAuthText.textContent = '관계자 모드 (관리자 로그인)';
