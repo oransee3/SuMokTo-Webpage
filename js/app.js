@@ -797,17 +797,26 @@ const UI = {
 
   // DOM 이벤트 등록
   bindEvents() {
-    // 1. 상단 좌측 로고 클릭 -> 관계자 모드 모달 (로그인 또는 관리 패널)
+    // 1. 상단 좌측 로고 / 상호 / 관계자 모드 버튼 클릭 -> 관계자 모드 상태면 일반 모드로 전환, 일반 모드면 로그인 모달 열기
     const brandLogoBtn = document.getElementById('brandLogoBtn');
     if (brandLogoBtn) {
       brandLogoBtn.addEventListener('click', () => {
         if (AuthManager.isLoggedIn()) {
-          this.openModal('adminDashboardModal');
-          this.renderAdminAccounts();
-          this.renderAdminLeads();
+          this.switchToNormalMode();
         } else {
           this.openModal('loginModal');
           document.getElementById('loginId').focus();
+        }
+      });
+    }
+
+    // 관리자 활성 인디케이터 배지 ('관계자 모드 (대표 중개사)') 클릭 -> 일반 모드로 전환
+    const adminIndicatorBadge = document.getElementById('adminIndicatorBadge');
+    if (adminIndicatorBadge) {
+      adminIndicatorBadge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (AuthManager.isLoggedIn()) {
+          this.switchToNormalMode();
         }
       });
     }
@@ -832,16 +841,11 @@ const UI = {
       });
     }
 
-    // 3. 로그아웃
+    // 3. 로그아웃 (일반 모드로 전환)
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
-        AuthManager.logout();
-        this.closeModal('adminDashboardModal');
-        this.updateAdminUI();
-        this.renderProperties();
-        this.renderFeaturedProperties();
-        this.showToast('관계자 모드에서 로그아웃되었습니다.');
+        this.switchToNormalMode();
       });
     }
 
@@ -1349,25 +1353,73 @@ const UI = {
     if (container) container.classList.add('hidden');
   },
 
+  // 일반 모드로 전환 (관계자 모드 종료 / 로그아웃)
+  switchToNormalMode() {
+    AuthManager.logout();
+    this.closeModal('adminDashboardModal');
+    this.closeModal('loginModal');
+    this.updateAdminUI();
+    this.renderProperties();
+    this.renderFeaturedProperties();
+    this.showToast('일반 모드로 전환되었습니다.');
+  },
+
+  // 관계자 통합 대시보드 모달 열기
+  openAdminDashboard() {
+    this.openModal('adminDashboardModal');
+    this.renderAdminAccounts();
+    this.renderAdminLeads();
+  },
+
   // 관계자 모드 UI 상태 동기화
   updateAdminUI() {
     const isLoggedIn = AuthManager.isLoggedIn();
     const currentUser = AuthManager.getCurrentUser();
+    const brandLogoBtn = document.getElementById('brandLogoBtn');
+    const brandRoleBadge = document.getElementById('brandRoleBadge');
     const adminBadge = document.getElementById('adminIndicatorBadge');
     const adminControls = document.querySelectorAll('.admin-only');
+    const mobileAuthText = document.getElementById('mobileAuthText');
+    const footerAuthBtn = document.getElementById('footerAuthBtn');
 
     if (isLoggedIn && currentUser) {
+      if (brandLogoBtn) {
+        brandLogoBtn.title = '클릭 시 일반 모드로 전환됩니다';
+      }
+      if (brandRoleBadge) {
+        brandRoleBadge.title = '클릭 시 일반 모드로 전환됩니다';
+      }
       if (adminBadge) {
         adminBadge.classList.remove('hidden');
+        adminBadge.title = '클릭 시 일반 모드로 전환됩니다';
         adminBadge.innerHTML = `
           <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
-          관계자 모드 (${currentUser.name})
+          <span>관계자 모드 (${currentUser.name})</span>
+          <span class="ml-1 text-[10px] text-gray-400 hover:text-white" title="일반 모드로 전환">✕</span>
         `;
+      }
+      if (mobileAuthText) {
+        mobileAuthText.textContent = `일반 모드로 전환 (${currentUser.name})`;
+      }
+      if (footerAuthBtn) {
+        footerAuthBtn.textContent = '일반 모드로 전환 (로그아웃)';
       }
       adminControls.forEach(el => el.classList.remove('hidden'));
     } else {
+      if (brandLogoBtn) {
+        brandLogoBtn.title = '클릭하여 관계자 모드(ID/PW) 열기';
+      }
+      if (brandRoleBadge) {
+        brandRoleBadge.title = '클릭하여 관계자 모드(ID/PW) 열기';
+      }
       if (adminBadge) {
         adminBadge.classList.add('hidden');
+      }
+      if (mobileAuthText) {
+        mobileAuthText.textContent = '관계자 모드 (관리자 로그인)';
+      }
+      if (footerAuthBtn) {
+        footerAuthBtn.textContent = '관계자 관리자 로그인';
       }
       adminControls.forEach(el => el.classList.add('hidden'));
     }
