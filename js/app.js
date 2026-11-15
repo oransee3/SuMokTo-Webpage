@@ -1607,17 +1607,41 @@ const UI = {
               </span>
             </div>
 
-            <div class="flex gap-1.5 flex-wrap">
+            <div class="flex gap-1.5 flex-wrap mb-3">
               ${tagsHTML}
+            </div>
+
+            <!-- 매물 상세 설명 -->
+            ${p.description ? `
+              <div class="bg-zinc-900/90 border border-dark-border rounded-xl p-3 text-xs text-gray-300 leading-relaxed cursor-pointer hover:border-gold/50 transition-colors mb-3" onclick="UI.showPropertyDetail('${p.id}')">
+                <div class="flex items-center gap-1.5 text-gold font-bold text-[11px] mb-1">
+                  <svg class="w-3.5 h-3.5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>매물 상세 설명</span>
+                </div>
+                <p class="whitespace-pre-line line-clamp-2 text-gray-200">
+                  ${p.description}
+                </p>
+              </div>
+            ` : ''}
+
+            <!-- 문의 연락처 -->
+            <div class="pt-2.5 border-t border-dark-border flex items-center justify-between text-xs">
+              <span class="text-gray-400 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                문의 연락처
+              </span>
+              <a href="tel:${p.contact || '042-546-4900'}" class="text-gold font-bold hover:underline tracking-wide flex items-center gap-1" onclick="event.stopPropagation()">
+                <span>${p.contact || '042-546-4900'}</span>
+              </a>
             </div>
           </div>
         </div>
 
         <div class="px-6 pb-6 pt-0">
           <div class="flex gap-2">
-            <button onclick="UI.showPropertyDetail('${p.id}')" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-gray-200 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5">
+            <button onclick="UI.showPropertyDetail('${p.id}')" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-gray-200 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5" title="매물 상세 정보 및 배치도 보기">
               ${p.mapImageUrl ? `<svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>` : ''}
-              ${(p.mapImageUrl || p.title.includes('수목토')) ? '현황배치도' : '상세보기'}
+              ${p.mapImageUrl ? '배치도 / 상세' : '상세보기'}
             </button>
             <button onclick="UI.openInquiryModal('${p.title}')" class="py-2.5 px-4 bg-gold hover:bg-gold-dark text-black text-sm font-bold rounded-lg transition-colors">
               문의하기
