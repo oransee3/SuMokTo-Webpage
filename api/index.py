@@ -120,6 +120,45 @@ def sync_properties():
     except Exception as e:
         print("Local git push error (non-fatal):", e)
 
+    # 4. GitHub REST API 직접 커밋 (Vercel Serverless 배포 환경 및 원격 접속 대응)
+    github_token = os.environ.get("GITHUB_TOKEN") or req_data.get("githubToken")
+    github_repo = os.environ.get("GITHUB_REPO", "oransee3/SuMokTo-Webpage")
+    if github_token and not git_synced:
+        try:
+            import base64
+            import requests
+            headers = {
+                "Authorization": f"token {github_token}",
+                "Accept": "application/vnd.github.v3+json"
+            }
+            api_url = f"https://api.github.com/repos/{github_repo}/contents/data/properties.json"
+
+            # 기존 파일 SHA 조회
+            sha = None
+            r_get = requests.get(api_url, headers=headers, timeout=10)
+            if r_get.status_code == 200:
+                sha = r_get.json().get("sha")
+
+            # UTF-8 Base64 인코딩
+            content_bytes = json.dumps(items, ensure_ascii=False, indent=2).encode("utf-8")
+            b64_content = base64.b64encode(content_bytes).decode("utf-8")
+
+            payload = {
+                "message": f"Auto sync properties via Vercel [{len(items)} items]",
+                "content": b64_content
+            }
+            if sha:
+                payload["sha"] = sha
+
+            r_put = requests.put(api_url, headers=headers, json=payload, timeout=15)
+            if r_put.status_code in (200, 201):
+                git_synced = True
+                print("GitHub REST API sync succeeded from serverless environment")
+            else:
+                print("GitHub REST API error:", r_put.status_code, r_put.text)
+        except Exception as e:
+            print("GitHub REST API exception:", e)
+
     return jsonify({
         "success": True,
         "message": "매물 데이터가 성공적으로 저장 및 동기화되었습니다.",

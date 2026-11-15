@@ -428,7 +428,7 @@ const GitHubSyncManager = {
       const apiRes = await fetch('/api/properties/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ properties })
+        body: JSON.stringify({ properties, githubToken: this.getToken() })
       });
       if (apiRes.ok) {
         const data = await apiRes.json();
@@ -1199,7 +1199,7 @@ const UI = {
   },
 
   // 고화질 이미지 경량 압축 (Vercel 및 브라우저 로컬 저장소 최적화)
-  compressImage(dataUrl, maxWidth = 1200, maxHeight = 900, quality = 0.8) {
+  compressImage(dataUrl, maxWidth = 1000, maxHeight = 800, quality = 0.75) {
     return new Promise((resolve) => {
       if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image')) {
         resolve(dataUrl);
