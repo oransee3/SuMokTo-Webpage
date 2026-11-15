@@ -1,12 +1,11 @@
-// 도안수목토 재벌부동산 PWA Service Worker
-const CACHE_NAME = 'sumokto-chebol-v2';
+// 도안수목토 재벌부동산 PWA Service Worker (v3 - 캐시 갱신 및 최신 데이터 즉시 반영)
+const CACHE_NAME = 'sumokto-chebol-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/css/style.css',
-  '/js/app.js',
+  '/css/style.css?v=20261116_FINAL',
+  '/js/app.js?v=20261116_FINAL',
   '/logo01.png',
-  '/properties.csv',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png'

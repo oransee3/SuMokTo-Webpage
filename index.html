@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>도안수목토 재벌 공인중개사사무소 - 프리미엄 주거 & 상가 전문</title>
     
+    <!-- Cache Control: 브라우저 캐시 방지 및 최신 버전 즉시 반영 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
@@ -55,7 +60,7 @@
     </script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261116_FINAL">
 </head>
 <body class="bg-dark-bg text-white antialiased overflow-x-hidden">
 
@@ -948,14 +953,17 @@
     </div>
 
     <!-- Main Application Script -->
-    <script src="js/app.js?v=20261116_1"></script>
+    <script src="js/app.js?v=20261116_FINAL"></script>
 
     <!-- PWA Service Worker Registration Script -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((reg) => console.log('[PWA] Service Worker registered with scope:', reg.scope))
+                navigator.serviceWorker.register('/sw.js?v=20261116_FINAL')
+                    .then((reg) => {
+                        console.log('[PWA] Service Worker registered with scope:', reg.scope);
+                        reg.update();
+                    })
                     .catch((err) => console.log('[PWA] Service Worker registration failed:', err));
             });
         }

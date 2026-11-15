@@ -519,10 +519,19 @@ const GitHubSyncManager = {
 // ==========================================
 const PropertyManager = {
   KEY_PROPERTIES: 'chebol_properties_data',
+  DATA_VERSION_KEY: 'chebol_properties_version',
+  CURRENT_VERSION: '20261116_v3',
   properties: [],
 
   init() {
+    const version = localStorage.getItem(this.DATA_VERSION_KEY);
     const stored = localStorage.getItem(this.KEY_PROPERTIES);
+
+    if (version !== this.CURRENT_VERSION) {
+      // 캐시 버전이 변경된 경우 최신 데이터 강제 동기화 플래그 처리
+      localStorage.setItem(this.DATA_VERSION_KEY, this.CURRENT_VERSION);
+    }
+
     if (stored) {
       try {
         this.properties = JSON.parse(stored);
@@ -544,7 +553,7 @@ const PropertyManager = {
       this.save();
     }
 
-    // 외부 접속 시 GitHub/서버 최신 매물 실시간 fetch
+    // 외부 접속 시 GitHub/서버 최신 매물 실시간 fetch (캐시 무효화 타임스탬프)
     this.fetchRemoteProperties();
   },
 
@@ -552,15 +561,15 @@ const PropertyManager = {
     try {
       // 1순위: GitHub Raw URL (GitHub 커밋 즉시 0.1초 만에 전 세계 실시간 반영)
       const rawUrl = `https://raw.githubusercontent.com/oransee3/SuMokTo-Webpage/main/data/properties.json?t=${Date.now()}`;
-      let res = await fetch(rawUrl);
+      let res = await fetch(rawUrl, { cache: 'no-store' });
 
       // 2순위: Vercel 정적 파일
       if (!res.ok) {
-        res = await fetch(`data/properties.json?t=${Date.now()}`);
+        res = await fetch(`data/properties.json?t=${Date.now()}`, { cache: 'no-store' });
       }
       // 3순위: 백엔드 API
       if (!res.ok) {
-        res = await fetch(`/api/properties?t=${Date.now()}`);
+        res = await fetch(`/api/properties?t=${Date.now()}`, { cache: 'no-store' });
       }
 
       if (res.ok) {
