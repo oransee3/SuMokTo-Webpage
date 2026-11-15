@@ -112,7 +112,7 @@ def sync_properties():
     git_synced = False
     try:
         import subprocess
-        subprocess.run(["git", "add", "data/properties.json", "properties.csv"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "add", "data/properties.json", "data/properties.csv", "properties.csv"], cwd=BASE_DIR, check=False)
         subprocess.run(["git", "commit", "-m", f"Auto sync properties via admin [{len(items)} items]"], cwd=BASE_DIR, check=False)
         res = subprocess.run(["git", "push", "origin", "main"], cwd=BASE_DIR, capture_output=True, text=True, check=False)
         if res.returncode == 0:

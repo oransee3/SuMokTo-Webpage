@@ -728,13 +728,18 @@
                 </div>
 
                 <!-- 1. 주변 현황 (지도/위치도) 이미지 붙여넣기 (Ctrl+V) 영역 -->
-                <div class="bg-zinc-900/90 border border-gold/40 rounded-2xl p-4">
+                <div id="mapSectionContainer" class="bg-zinc-900/90 border border-gold/40 rounded-2xl p-4 transition-all">
                     <div class="flex justify-between items-center mb-2">
                         <label class="block text-xs font-bold text-gold flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
                             주변 현황 이미지 (지도 / 단지배치도 / 현장 캡처)
                         </label>
-                        <span class="text-[11px] text-gray-400">📋 캡처 후 <strong>Ctrl + V</strong> 붙여넣기</span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="UI.pasteFromClipboard('map')" class="px-2.5 py-1 bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold/40 rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1">
+                                📋 클립보드 붙여넣기
+                            </button>
+                            <span class="text-[11px] text-gray-400 hidden sm:inline">또는 클릭 후 [Ctrl+V]</span>
+                        </div>
                     </div>
 
                     <!-- 클립보드 붙여넣기 & 드래그앤드롭 드롭존 -->
@@ -772,13 +777,18 @@
                 </div>
 
                 <!-- 2. 매물 소개 이미지 (대표 이미지 1~3장 붙여넣기 Ctrl+V) 영역 -->
-                <div class="bg-zinc-900/90 border border-gold/40 rounded-2xl p-4">
+                <div id="gallerySectionContainer" class="bg-zinc-900/90 border border-gold/40 rounded-2xl p-4 transition-all">
                     <div class="flex justify-between items-center mb-1">
                         <label class="block text-xs font-bold text-gold flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             매물 소개 이미지 (대표 이미지 1~3장)
                         </label>
-                        <span id="galleryCountBadge" class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-0.5 rounded-full border border-gold/30">0 / 3장 등록됨</span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="UI.pasteFromClipboard('gallery')" class="px-2.5 py-1 bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold/40 rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1">
+                                📋 사진 붙여넣기
+                            </button>
+                            <span id="galleryCountBadge" class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-0.5 rounded-full border border-gold/30">0 / 3장 등록됨</span>
+                        </div>
                     </div>
 
                     <p class="text-[11px] text-gray-400 mb-3">

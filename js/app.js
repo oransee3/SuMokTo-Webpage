@@ -442,10 +442,19 @@ const GitHubSyncManager = {
     }
 
     // 2단계: 클라이언트 직접 GitHub REST API 호출 (Vercel 및 모든 외부 환경)
-    const token = this.getToken();
+    let token = this.getToken();
     if (!token) {
-      console.warn('GitHub Token not configured. Stored locally.');
-      return false;
+      // 토큰이 없으면 대화형 팝업으로 1회 입력 요청
+      token = window.prompt('🚀 GitHub 저장소에 실시간으로 업로드하려면 GitHub Personal Access Token(PAT)을 입력해 주세요:\n(1회만 입력하시면 브라우저에 안전하게 기억되어 다음부터 완전 자동 처리됩니다)');
+      if (token && token.trim()) {
+        this.setToken(token.trim());
+        token = token.trim();
+        const input = document.getElementById('githubTokenInput');
+        if (input) input.value = token;
+      } else {
+        console.warn('GitHub Token not provided. Stored locally only.');
+        return false;
+      }
     }
 
     try {
@@ -492,6 +501,10 @@ const GitHubSyncManager = {
       } else {
         const errData = await putRes.json();
         console.error('GitHub API error:', errData);
+        if (errData && errData.message && errData.message.includes('Bad credentials')) {
+          localStorage.removeItem(this.KEY_GITHUB_TOKEN);
+          alert('입력된 GitHub 토큰이 유효하지 않습니다. [관계자 모드] 대시보드에서 토큰을 다시 확인해 주세요.');
+        }
         return false;
       }
     } catch (err) {
@@ -537,10 +550,19 @@ const PropertyManager = {
 
   async fetchRemoteProperties() {
     try {
-      let res = await fetch(`data/properties.json?t=${Date.now()}`);
+      // 1순위: GitHub Raw URL (GitHub 커밋 즉시 0.1초 만에 전 세계 실시간 반영)
+      const rawUrl = `https://raw.githubusercontent.com/oransee3/SuMokTo-Webpage/main/data/properties.json?t=${Date.now()}`;
+      let res = await fetch(rawUrl);
+
+      // 2순위: Vercel 정적 파일
+      if (!res.ok) {
+        res = await fetch(`data/properties.json?t=${Date.now()}`);
+      }
+      // 3순위: 백엔드 API
       if (!res.ok) {
         res = await fetch(`/api/properties?t=${Date.now()}`);
       }
+
       if (res.ok) {
         const data = await res.json();
         const items = Array.isArray(data) ? data : (data.data || []);
@@ -1022,6 +1044,53 @@ const UI = {
     });
   },
 
+  // 붙여넣기 활성 타깃 지정 및 시각적 테두리 하이라이트
+  setActivePasteTarget(target) {
+    this.activePasteTarget = target;
+    const mapContainer = document.getElementById('mapSectionContainer');
+    const galleryContainer = document.getElementById('gallerySectionContainer');
+    if (mapContainer && galleryContainer) {
+      if (target === 'map') {
+        mapContainer.classList.add('ring-2', 'ring-gold');
+        galleryContainer.classList.remove('ring-2', 'ring-gold');
+      } else {
+        galleryContainer.classList.add('ring-2', 'ring-gold');
+        mapContainer.classList.remove('ring-2', 'ring-gold');
+      }
+    }
+  },
+
+  // 원클릭 클립보드 이미지 붙여넣기 버튼 핸들러
+  async pasteFromClipboard(target = 'map') {
+    this.setActivePasteTarget(target);
+    try {
+      if (navigator.clipboard && navigator.clipboard.read) {
+        const items = await navigator.clipboard.read();
+        for (const item of items) {
+          const imageType = item.types.find(t => t.startsWith('image/'));
+          if (imageType) {
+            const blob = await item.getType(imageType);
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const dataUrl = event.target.result;
+              if (target === 'map') {
+                this.setMapImage(dataUrl);
+                this.showToast('📋 주변 현황 이미지가 클립보드에서 등록되었습니다!');
+              } else {
+                this.addGalleryImage(dataUrl);
+              }
+            };
+            reader.readAsDataURL(blob);
+            return;
+          }
+        }
+      }
+    } catch (err) {
+      console.log('Clipboard direct read skipped:', err);
+    }
+    this.showToast(`키보드의 [Ctrl + V]를 눌러 캡처한 사진을 붙여넣으세요.`);
+  },
+
   // 이미지 업로드 및 클립보드 붙여넣기(Ctrl+V) 제어
   bindImageUploadEvents() {
     const mapZone = document.getElementById('mapPasteZone');
@@ -1030,20 +1099,17 @@ const UI = {
     const galleryZone = document.getElementById('galleryPasteZone');
     const galleryFileInput = document.getElementById('galleryFileInput');
 
-    // 1) 포커스 타깃 제어 (마지막으로 클릭/포커스한 곳으로 붙여넣기 분기)
+    // 1) 포커스 타깃 제어 (클릭 시 하이라이트 지정, 단 불필요하게 파일창을 강제로 띄우지 않음)
     if (mapZone) {
       mapZone.addEventListener('click', (e) => {
-        this.activePasteTarget = 'map';
-        if (!e.target.closest('#removeMapBtn')) {
-          mapFileInput?.click();
-        }
+        this.setActivePasteTarget('map');
       });
-      mapZone.addEventListener('focus', () => { this.activePasteTarget = 'map'; });
+      mapZone.addEventListener('focus', () => { this.setActivePasteTarget('map'); });
     }
 
     if (galleryZone) {
-      galleryZone.addEventListener('click', () => { this.activePasteTarget = 'gallery'; });
-      galleryZone.addEventListener('focus', () => { this.activePasteTarget = 'gallery'; });
+      galleryZone.addEventListener('click', () => { this.setActivePasteTarget('gallery'); });
+      galleryZone.addEventListener('focus', () => { this.setActivePasteTarget('gallery'); });
     }
 
     // 2) 주변 현황 지도 파일 선택
@@ -1621,7 +1687,7 @@ const UI = {
     this.currentGalleryImages = [];
     this.renderGallerySlots();
     this.removeMapImage();
-    this.activePasteTarget = 'gallery';
+    this.setActivePasteTarget('gallery');
 
     this.openModal('propertyFormModal');
   },
@@ -1667,7 +1733,7 @@ const UI = {
     } else {
       this.removeMapImage();
     }
-    this.activePasteTarget = 'gallery';
+    this.setActivePasteTarget('gallery');
 
     this.openModal('propertyFormModal');
   },
