@@ -629,6 +629,12 @@
                 <p class="text-xs text-gray-400 mb-3 leading-relaxed">
                     매물 저장/수정 시 자동으로 <strong>GitHub 저장소(oransee3/SuMokTo-Webpage)</strong>에 커밋되어 Vercel 사이트에 실시간 배포됩니다. GitHub Personal Access Token (PAT)을 입력해 두시면 즉시 연동됩니다.
                 </p>
+                <div class="flex items-center justify-between mb-2 bg-zinc-950 p-2.5 rounded-lg border border-gray-800">
+                    <span class="text-xs text-gray-400">토큰이 아직 없으신가요?</span>
+                    <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener noreferrer" class="text-xs text-gold hover:text-white underline flex items-center gap-1 font-bold">
+                        <span>🔗</span> GitHub 토큰 발급 화면 열기 (클릭)
+                    </a>
+                </div>
                 <div class="flex gap-2">
                     <input id="githubTokenInput" type="password" placeholder="GitHub Personal Access Token (ghp_...)" 
                            class="flex-1 bg-[#121212] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-gold">
