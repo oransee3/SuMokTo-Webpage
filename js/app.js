@@ -1521,13 +1521,21 @@ const UI = {
     container.innerHTML = list.map(item => this.createPropertyCardHTML(item, isLoggedIn)).join('');
   },
 
+  // 태그 문자열 파싱 헬퍼 (공백, 쉼표, 슬래시, # 등 모든 형식 지원 및 입력 글씨 100% 노출)
+  parseTags(tagsStr) {
+    if (!tagsStr) return [];
+    const normalized = String(tagsStr).replace(/#/g, ' #');
+    const rawTokens = normalized.split(/[,\/\s\n]+/).map(t => t.trim()).filter(t => t.length > 0 && t !== '#');
+    return rawTokens.map(t => t.startsWith('#') ? t : `#${t}`);
+  },
+
   // 매물 카드 컴포넌트 HTML 생성
   createPropertyCardHTML(p, isLoggedIn) {
     const dealBadgeColor = p.dealType === '매매' ? 'bg-gold/90 text-black border-gold' : 
                           p.dealType === '전세' ? 'bg-blue-600/90 text-white border-blue-400' : 
                           'bg-emerald-600/90 text-white border-emerald-400';
 
-    const tagsArray = (p.tags || '').split(/[,\s]+/).filter(t => t.startsWith('#'));
+    const tagsArray = this.parseTags(p.tags);
     const tagsHTML = tagsArray.map(tag => `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-0.5 rounded">${tag}</span>`).join(' ');
 
     const adminButtons = isLoggedIn ? `
@@ -1755,7 +1763,7 @@ const UI = {
         ` : ''}
 
         <div class="flex flex-wrap gap-2 pt-2">
-          ${(p.tags || '').split(/[,\s]+/).filter(t => t.startsWith('#')).map(t => `<span class="bg-gray-800 text-gold text-xs px-3 py-1 rounded-full border border-gold/30">${t}</span>`).join('')}
+          ${this.parseTags(p.tags).map(t => `<span class="bg-gray-800 text-gold text-xs px-3 py-1 rounded-full border border-gold/30">${t}</span>`).join('')}
         </div>
 
         <div class="border-t border-dark-border pt-6 flex flex-col sm:flex-row gap-4">
@@ -1879,7 +1887,7 @@ const UI = {
       priceNumber: Number(document.getElementById('propPriceNumber').value) || 0,
       area: areaVal,
       floor: document.getElementById('propFloor').value.trim(),
-      tags: document.getElementById('propTags').value.trim(),
+      tags: this.parseTags(document.getElementById('propTags').value).join(' '),
       description: document.getElementById('propDescription').value.trim(),
       featured: document.getElementById('propFeatured').checked ? 'Y' : 'N',
       imageUrl: mainImageUrl, // 1~3장의 이미지 중 1번이 대표 이미지
