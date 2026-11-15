@@ -1614,13 +1614,11 @@ const UI = {
             <!-- 매물 상세 설명 -->
             ${p.description ? `
               <div class="bg-zinc-900/90 border border-dark-border rounded-xl p-3 text-xs text-gray-300 leading-relaxed cursor-pointer hover:border-gold/50 transition-colors mb-3" onclick="UI.showPropertyDetail('${p.id}')">
-                <div class="flex items-center gap-1.5 text-gold font-bold text-[11px] mb-1.5">
+                <div class="flex items-center gap-1.5 text-gold font-bold text-[11px] mb-1">
                   <svg class="w-3.5 h-3.5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                   <span>매물 상세 설명</span>
                 </div>
-                <p class="whitespace-pre-line text-gray-200 leading-relaxed break-keep">
-                  ${p.description}
-                </p>
+                <p class="whitespace-pre-line text-gray-200 text-xs leading-normal break-keep">${p.description.trim()}</p>
               </div>
             ` : ''}
 
@@ -1730,9 +1728,7 @@ const UI = {
 
         <div>
           <h4 class="text-lg font-bold text-white mb-2">매물 상세 설명</h4>
-          <p class="text-gray-300 leading-relaxed bg-zinc-900/50 p-4 rounded-xl border border-dark-border whitespace-pre-line">
-            ${p.description || '상세 설명이 등록되어 있지 않습니다.'}
-          </p>
+          <p class="text-gray-300 leading-relaxed bg-zinc-900/50 p-4 rounded-xl border border-dark-border whitespace-pre-line">${(p.description || '상세 설명이 등록되어 있지 않습니다.').trim()}</p>
         </div>
 
         ${p.mapImageUrl ? `
