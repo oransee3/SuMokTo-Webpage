@@ -719,8 +719,16 @@
                         <input id="propPriceNumber" type="number" placeholder="예: 68000" class="w-full bg-[#121212] border border-gray-700 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-gold">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-300 mb-1">면적 <span class="text-gold">*</span></label>
-                        <input id="propArea" type="text" required placeholder="예: 112㎡ (34평형)" class="w-full bg-[#121212] border border-gray-700 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-gold">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-medium text-gray-300">면적 <span class="text-gold">*</span></label>
+                            <span id="propAreaPyungPreview" class="text-[11px] text-gold font-medium hidden">약 0평</span>
+                        </div>
+                        <div class="relative">
+                            <input id="propArea" type="text" required placeholder="숫자만 입력 (예: 84 또는 112)" class="w-full bg-[#121212] border border-gray-700 rounded-xl pl-3 pr-10 py-2.5 text-white text-sm focus:outline-none focus:border-gold">
+                            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gold font-bold text-xs pointer-events-none select-none bg-gold/15 px-1.5 py-0.5 rounded border border-gold/30">
+                                ㎡
+                            </span>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-300 mb-1">층수 정보</label>

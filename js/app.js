@@ -924,6 +924,24 @@ const UI = {
       });
     }
 
+    // 8-1. 면적 입력 시 실시간 평수 자동 계산 미리보기
+    const propAreaInput = document.getElementById('propArea');
+    const pyungPreview = document.getElementById('propAreaPyungPreview');
+    if (propAreaInput && pyungPreview) {
+      propAreaInput.addEventListener('input', () => {
+        const val = propAreaInput.value.trim();
+        const numMatch = val.match(/^(\d+(?:\.\d+)?)/);
+        if (numMatch) {
+          const m2 = parseFloat(numMatch[1]);
+          const pyung = (m2 * 0.3025).toFixed(1);
+          pyungPreview.textContent = `약 ${pyung}평`;
+          pyungPreview.classList.remove('hidden');
+        } else {
+          pyungPreview.classList.add('hidden');
+        }
+      });
+    }
+
     // 9. CSV 다운로드 버튼 (매물 관리)
     const exportCsvBtn = document.getElementById('exportCsvBtn');
     if (exportCsvBtn) {
@@ -1688,6 +1706,7 @@ const UI = {
     this.renderGallerySlots();
     this.removeMapImage();
     this.setActivePasteTarget('gallery');
+    document.getElementById('propAreaPyungPreview')?.classList.add('hidden');
 
     this.openModal('propertyFormModal');
   },
@@ -1711,6 +1730,7 @@ const UI = {
     document.getElementById('propPrice').value = p.price;
     document.getElementById('propPriceNumber').value = p.priceNumber || '';
     document.getElementById('propArea').value = p.area;
+    document.getElementById('propAreaPyungPreview')?.classList.add('hidden');
     document.getElementById('propFloor').value = p.floor;
     document.getElementById('propTags').value = p.tags;
     document.getElementById('propDescription').value = p.description;
@@ -1745,6 +1765,26 @@ const UI = {
     const defaultImg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
     const mainImageUrl = gallery[0] || defaultImg;
 
+    // 면적 단위(㎡) 스마트 자동 보정
+    let areaVal = document.getElementById('propArea').value.trim();
+    if (areaVal) {
+      if (!areaVal.includes('㎡')) {
+        const matchNum = areaVal.match(/^(\d+(?:\.\d+)?)(.*)$/);
+        if (matchNum) {
+          const num = parseFloat(matchNum[1]);
+          const rest = matchNum[2].trim();
+          const pyung = (num * 0.3025).toFixed(0);
+          if (rest) {
+            areaVal = `${num}㎡ ${rest}`;
+          } else {
+            areaVal = `${num}㎡ (${pyung}평형)`;
+          }
+        } else {
+          areaVal = `${areaVal}㎡`;
+        }
+      }
+    }
+
     const propertyData = {
       type: document.getElementById('propType').value,
       subType: document.getElementById('propSubType').value,
@@ -1753,7 +1793,7 @@ const UI = {
       location: document.getElementById('propLocation').value.trim(),
       price: document.getElementById('propPrice').value.trim(),
       priceNumber: Number(document.getElementById('propPriceNumber').value) || 0,
-      area: document.getElementById('propArea').value.trim(),
+      area: areaVal,
       floor: document.getElementById('propFloor').value.trim(),
       tags: document.getElementById('propTags').value.trim(),
       description: document.getElementById('propDescription').value.trim(),
