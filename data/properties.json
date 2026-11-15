@@ -5,6 +5,48 @@
     "dealType": "매매",
     "title": "수목토아파트 102동 602호",
     "location": "대전광역시 서구 도안동",
+    "price": "4억7000만",
+    "priceNumber": 0,
+    "area": "112㎡ (34평)",
+    "floor": "6층 / 15층",
+    "tags": "",
+    "description": "",
+    "featured": "Y",
+    "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+    ],
+    "contact": "042-546-4900",
+    "mapImageUrl": "",
+    "id": "PROP-709136"
+  },
+  {
+    "type": "주거",
+    "subType": "아파트",
+    "dealType": "매매",
+    "title": "수목토아파트 102동 602호",
+    "location": "대전광역시 서구 도안동",
+    "price": "4억7000만",
+    "priceNumber": 47000,
+    "area": "112㎡ (34평형)",
+    "floor": "6층 / 15층",
+    "tags": "#동남",
+    "description": "",
+    "featured": "Y",
+    "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+    ],
+    "contact": "042-546-4900",
+    "mapImageUrl": "",
+    "id": "PROP-643376"
+  },
+  {
+    "type": "주거",
+    "subType": "아파트",
+    "dealType": "매매",
+    "title": "수목토아파트 102동 602호",
+    "location": "대전광역시 서구 도안동",
     "price": "4억 7000만",
     "priceNumber": 47000,
     "area": "112(34평형)",
