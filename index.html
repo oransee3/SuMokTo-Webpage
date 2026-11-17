@@ -101,7 +101,7 @@
                     <a href="#home" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">홈</a>
                     <a href="#featured" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">추천 매물</a>
                     <a href="#properties" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">매물검색</a>
-                    <a href="#complex" onclick="UI.openComplexGuide(); return false;" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">단지안내</a>
+                    <a href="#complex" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">단지안내</a>
                     <a href="#consulting" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">고객 등록</a>
                 </nav>
 
@@ -140,7 +140,7 @@
             <a href="#home" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">홈</a>
             <a href="#featured" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">추천 매물</a>
             <a href="#properties" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">매물검색</a>
-            <a href="#complex" onclick="UI.openComplexGuide(); document.getElementById('mobileMenu').classList.add('hidden'); return false;" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">단지안내</a>
+            <a href="#complex" onclick="document.getElementById('mobileMenu').classList.add('hidden');" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">단지안내</a>
             <a href="#consulting" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">고객 등록</a>
             <button onclick="document.getElementById('brandLogoBtn').click(); document.getElementById('mobileMenu').classList.add('hidden');" class="w-full text-left text-gold font-bold pt-3 pb-1 text-sm border-t border-gray-800 flex items-center gap-2">
                 <span>⚙</span> <span id="mobileAuthText">관계자 모드 (관리자 로그인)</span>
@@ -327,6 +327,44 @@
     </section>
 
     <!-- ========================================== -->
+    <!-- 4. 단지안내 (Complex Guide & 단지배치도)  -->
+    <!-- ========================================== -->
+    <section id="complex" class="py-24 bg-dark-bg border-t border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 섹션 헤더 -->
+            <div class="text-center mb-10">
+                <span class="text-xs font-bold text-gold tracking-widest uppercase mb-2 block">COMPLEX GUIDE</span>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+                    도안수목토 아파트 <span class="text-gradient-gold">단지안내</span>
+                </h3>
+                <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">
+                    남향 위주의 쾌적한 동간 배치와 풍부한 녹지 조경, <br class="hidden sm:inline">
+                    지하주차장 직통 연결 및 입주민 중심의 고품격 힐링 단지입니다.
+                </p>
+            </div>
+
+            <!-- 단지배치도 이미지 컨테이너 -->
+            <div class="max-w-5xl mx-auto bg-dark-card border border-dark-border rounded-3xl p-4 sm:p-8 shadow-2xl">
+                <div class="relative w-full flex items-center justify-center bg-black/60 rounded-2xl p-2 sm:p-4 border border-gray-800/80 overflow-hidden cursor-pointer group" onclick="window.open('images/site_plan.png', '_blank')" title="클릭하여 전체 창으로 크게보기">
+                    <img src="images/단지배치도.png" 
+                         onerror="this.onerror=null; this.src='images/site_plan.png';" 
+                         alt="도안 수목토 아파트 단지배치도" 
+                         class="max-w-full h-auto max-h-[700px] object-contain rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-[1.01]" />
+                </div>
+
+                <!-- '+ 크게보기' 버튼 (하늘채 루시에르 스타일: 클릭 시 새 탭/전체 창으로 원본 이미지 표시) -->
+                <div class="mt-8 text-center">
+                    <a href="images/site_plan.png" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white hover:bg-gray-100 text-gray-900 font-bold text-base rounded border border-gray-300 shadow transition duration-200"
+                       title="새 창에서 원본 고해상도로 크게보기">
+                        <span>+ 크게보기</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
     <!-- 5. 고객 등록 (1:1 VIP 상담 및 매물 의뢰)  -->
     <!-- ========================================== -->
     <section id="consulting" class="py-24 relative bg-zinc-950 border-t border-dark-border">
@@ -450,7 +488,7 @@
                         <li><a href="#home" class="hover:text-gold transition-colors">홈 화면</a></li>
                         <li><a href="#featured" class="hover:text-gold transition-colors">추천 매물</a></li>
                         <li><a href="#properties" class="hover:text-gold transition-colors">매물검색 (주거/상가)</a></li>
-                        <li><a href="#complex" onclick="UI.openComplexGuide(); return false;" class="hover:text-gold transition-colors">단지안내 (단지배치도)</a></li>
+                        <li><a href="#complex" class="hover:text-gold transition-colors">단지안내 (단지배치도)</a></li>
                         <li><a href="#consulting" class="hover:text-gold transition-colors">1:1 고객 상담 등록</a></li>
                     </ul>
                 </div>
