@@ -220,20 +220,11 @@
     <!-- ========================================== -->
     <div id="fullSizeComplexModal" class="fixed inset-0 z-[100] hidden bg-black flex flex-col items-center justify-center p-0 m-0 transition-all duration-300 select-none">
         
-        <!-- 모달 상단 미니멀 플로팅 컨트롤 바 (이미지를 가리지 않는 상단 오버레이) -->
-        <div class="absolute top-3 left-3 right-3 sm:top-5 sm:left-6 sm:right-6 flex justify-between items-center z-30 pointer-events-none">
-            <div class="pointer-events-auto flex items-center gap-2 bg-black/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-gray-800 shadow-2xl">
+        <!-- 모달 상단 미니멀 플로팅 배지 ('X 닫기' 버튼 삭제, 바깥 클릭 시 닫기 지원) -->
+        <div class="absolute top-3 left-3 sm:top-5 sm:left-6 z-30 pointer-events-none">
+            <div class="flex items-center gap-2 bg-black/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-gray-800 shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
                 <span class="text-xs sm:text-sm font-bold text-white">단지배치도 (창 크기 100% 꽉 채움)</span>
-            </div>
-            
-            <!-- 우측 상단: 'X 닫기' 버튼만 단독 배치 -->
-            <div class="pointer-events-auto">
-                <button type="button" onclick="closeFullscreenModal()" 
-                        class="text-white hover:text-white bg-black/80 hover:bg-red-600/90 backdrop-blur-md px-4 py-2 rounded-full border border-gray-700 hover:border-red-500 shadow-2xl transition-all flex items-center gap-1.5 cursor-pointer" title="닫기 (ESC)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    <span class="text-xs sm:text-sm font-bold">닫기</span>
-                </button>
             </div>
         </div>
 
