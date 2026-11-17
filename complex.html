@@ -241,33 +241,24 @@
                 <span class="text-xs sm:text-sm font-bold text-white">단지배치도 (창 크기 100% 꽉 채움)</span>
             </div>
             
-            <div class="pointer-events-auto flex items-center gap-2 bg-black/80 backdrop-blur-md p-1.5 rounded-2xl border border-gray-800 shadow-2xl">
-                <!-- 가득 채우기 토글 버튼 -->
-                <button type="button" onclick="toggleImageSize()" id="zoomToggleBtn" 
-                        class="text-xs sm:text-sm text-gold hover:text-black hover:bg-gold px-3.5 py-1.5 rounded-xl border border-gold/40 transition-all font-bold flex items-center gap-1.5" title="화면 가로/세로 꽉 채우기 전환">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
-                    <span id="zoomToggleText">화면 꽉 채우기</span>
-                </button>
-                <a href="images/site_plan.png" target="_blank" rel="noopener noreferrer" 
-                   class="text-xs sm:text-sm text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-xl border border-gray-700 transition-colors flex items-center gap-1" title="새 탭에서 원본 이미지 파일 열기">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    <span class="hidden sm:inline">새 창에서 보기</span>
-                </a>
+            <!-- 우측 상단: 'X 닫기' 버튼만 단독 배치 -->
+            <div class="pointer-events-auto">
                 <button type="button" onclick="closeFullscreenModal()" 
-                        class="text-gray-200 hover:text-white bg-gray-800 hover:bg-red-600 px-3 py-1.5 rounded-xl border border-gray-700 transition-colors flex items-center gap-1" title="닫기 (ESC)">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    <span class="text-xs font-bold hidden sm:inline">닫기</span>
+                        class="text-white hover:text-white bg-black/80 hover:bg-red-600/90 backdrop-blur-md px-4 py-2 rounded-full border border-gray-700 hover:border-red-500 shadow-2xl transition-all flex items-center gap-1.5 cursor-pointer" title="닫기 (ESC)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <span class="text-xs sm:text-sm font-bold">닫기</span>
                 </button>
             </div>
         </div>
 
-        <!-- 모달 이미지 뷰어 영역 (여백 0px, 창의 높이와 너비를 100% 꽉 채워 최대 크기로 표시) -->
-        <div id="modalViewerContainer" class="w-screen h-screen flex items-center justify-center overflow-auto p-0 m-0 bg-black cursor-zoom-in" onclick="toggleImageSize()" title="클릭하여 화면 꽉 채우기 / 맞춤 전환">
+        <!-- 모달 이미지 뷰어 영역 (여백 0px, 창의 높이를 100% 꽉 채워 최대 크기로 표시) -->
+        <div id="modalViewerContainer" class="w-screen h-screen flex items-center justify-center overflow-hidden p-0 m-0 bg-black cursor-pointer" onclick="closeFullscreenModal()" title="바깥 클릭 시 닫기">
             <img id="fullscreenImg" 
                  src="images/단지배치도.png" 
                  onerror="this.onerror=null; this.src='images/site_plan.png';" 
                  alt="도안 수목토 아파트 단지배치도 전체화면" 
-                 class="w-auto h-screen max-h-screen object-contain select-none drop-shadow-2xl transition-all duration-300" />
+                 class="w-auto h-screen max-h-screen object-contain select-none drop-shadow-2xl cursor-default" 
+                 onclick="event.stopPropagation();" />
         </div>
     </div>
 
@@ -326,8 +317,6 @@
 
     <!-- 풀스크린 모달 제어 스크립트 -->
     <script>
-        let isFillWidth = false;
-
         function openFullscreenModal() {
             const modal = document.getElementById('fullSizeComplexModal');
             if (modal) {
@@ -341,42 +330,6 @@
             if (modal) {
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
-                // 닫을 때 기본 크기(창 높이 맞춤)로 리셋
-                resetImageSize();
-            }
-        }
-
-        function toggleImageSize() {
-            const img = document.getElementById('fullscreenImg');
-            const container = document.getElementById('modalViewerContainer');
-            const btnText = document.getElementById('zoomToggleText');
-            if (!img || !container) return;
-
-            isFillWidth = !isFillWidth;
-            if (isFillWidth) {
-                // 화면 전체 너비와 높이를 100% 꽉 채우는 가득 채움 모드 (스크롤/탐색 가능)
-                img.className = "w-full min-w-[1250px] max-w-none h-auto object-cover select-none drop-shadow-2xl transition-all duration-300";
-                container.className = "w-screen h-screen flex items-start justify-center overflow-auto p-4 pt-20 m-0 bg-black cursor-zoom-out";
-                if (btnText) btnText.textContent = "창 크기 맞춤";
-            } else {
-                // 창 전체 높이에 100% 딱 맞추는 풀스크린 모드
-                resetImageSize();
-            }
-        }
-
-        function resetImageSize() {
-            isFillWidth = false;
-            const img = document.getElementById('fullscreenImg');
-            const container = document.getElementById('modalViewerContainer');
-            const btnText = document.getElementById('zoomToggleText');
-            if (img) {
-                img.className = "w-auto h-screen max-h-screen object-contain select-none drop-shadow-2xl transition-all duration-300";
-            }
-            if (container) {
-                container.className = "w-screen h-screen flex items-center justify-center overflow-hidden p-0 m-0 bg-black cursor-zoom-in";
-            }
-            if (btnText) {
-                btnText.textContent = "화면 꽉 채우기";
             }
         }
 
