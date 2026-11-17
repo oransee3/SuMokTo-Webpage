@@ -80,9 +80,9 @@ body {
     border-radius: 1.25rem;
   }
   
-  /* 모바일 폰 9:16 세로 비율에 맞춘 히어로 영역 */
+  /* 모바일 폰 9:16 세로 비율에 맞춘 히어로 영역 (화면 전체 채움) */
   .mobile-hero-9-16 {
-    min-height: calc(100vh - 80px);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
