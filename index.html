@@ -96,11 +96,12 @@
                     </div>
                 </div>
 
-                <!-- 상단 우측: '홈', '추천 매물', '매물검색', '고객 등록' -->
+                <!-- 상단 우측: '홈', '추천 매물', '매물검색', '단지안내', '고객 등록' -->
                 <nav class="hidden md:flex items-center space-x-4 lg:space-x-7 shrink-0">
                     <a href="#home" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">홈</a>
                     <a href="#featured" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">추천 매물</a>
                     <a href="#properties" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">매물검색</a>
+                    <a href="#complex" onclick="if(!document.getElementById('complex')){UI.openLightbox('images/단지투시도_2K.jpg', '도안 수목토 아파트 단지안내 (2K 단지투시도)'); return false;}" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">단지안내</a>
                     <a href="#consulting" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">고객 등록</a>
                     
                     <div class="flex items-center gap-2 shrink-0">
@@ -138,6 +139,7 @@
             <a href="#home" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">홈</a>
             <a href="#featured" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">추천 매물</a>
             <a href="#properties" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">매물검색</a>
+            <a href="#complex" onclick="if(!document.getElementById('complex')){UI.openLightbox('images/단지투시도_2K.jpg', '도안 수목토 아파트 단지안내 (2K 단지투시도)'); document.getElementById('mobileMenu').classList.add('hidden'); return false;}" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">단지안내</a>
             <a href="#consulting" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">고객 등록</a>
             <button onclick="document.getElementById('brandLogoBtn').click(); document.getElementById('mobileMenu').classList.add('hidden');" class="w-full text-left text-gold font-bold pt-3 pb-1 text-sm border-t border-gray-800 flex items-center gap-2">
                 <span>⚙</span> <span id="mobileAuthText">관계자 모드 (관리자 로그인)</span>
@@ -447,6 +449,7 @@
                         <li><a href="#home" class="hover:text-gold transition-colors">홈 화면</a></li>
                         <li><a href="#featured" class="hover:text-gold transition-colors">추천 매물</a></li>
                         <li><a href="#properties" class="hover:text-gold transition-colors">매물검색 (주거/상가)</a></li>
+                        <li><a href="#complex" onclick="if(!document.getElementById('complex')){UI.openLightbox('images/단지투시도_2K.jpg', '도안 수목토 아파트 단지안내 (2K 단지투시도)'); return false;}" class="hover:text-gold transition-colors">단지안내 (2K 투시도)</a></li>
                         <li><a href="#consulting" class="hover:text-gold transition-colors">1:1 고객 상담 등록</a></li>
                     </ul>
                 </div>
