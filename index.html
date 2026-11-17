@@ -160,14 +160,23 @@
     <!-- 2. Hero Section (홈: 9:16 모바일 & 16:9 반응형 지원, 화면 전체 높이로 3행 노출 방지) -->
     <!-- ========================================== -->
     <section id="home" class="relative pt-24 pb-28 lg:pt-48 lg:pb-52 overflow-hidden min-h-screen mobile-hero-9-16 flex items-center">
-        <!-- 단지 투시도 배경 이미지 & 프리미엄 다크 오버레이 -->
+        <!-- 메인 배경 이미지 교차 슬라이더 (단지조감도_2K <-> view_2k 20초 간격 페이드인/아웃) & 프리미엄 다크 오버레이 -->
         <div class="absolute inset-0 z-0 overflow-hidden">
-            <!-- 2K 도안 수목토 아파트 단지 투시도 메인 배경 -->
-            <img src="images/단지투시도_2K.jpg" 
-                 onerror="this.onerror=null; this.src='images/view_2k.jpg';"
-                 alt="도안 수목토 아파트 단지 투시도 전경" 
+            <!-- 1번 배경: 단지조감도_2K (초기 노출) -->
+            <img id="heroBgImage1" 
+                 src="images/단지조감도_2K.jpg" 
+                 alt="도안 수목토 아파트 단지 조감도 전경" 
                  fetchpriority="high"
-                 class="absolute inset-0 w-full h-full object-cover object-center scale-100 transition-transform duration-700" />
+                 class="absolute inset-0 w-full h-full object-cover object-center"
+                 style="opacity: 1; transition: opacity 2s ease-in-out;" />
+
+            <!-- 2번 배경: view_2k (20초 후 페이드인) -->
+            <img id="heroBgImage2" 
+                 src="images/view_2k.jpg" 
+                 onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';"
+                 alt="도안 수목토 아파트 단지 투시도 전경" 
+                 class="absolute inset-0 w-full h-full object-cover object-center"
+                 style="opacity: 0; transition: opacity 2s ease-in-out;" />
 
             <!-- 좌측 텍스트 가독성 확보 및 단지 투시도 조망을 위한 다크 그라데이션 오버레이 -->
             <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/75 sm:via-black/60 to-black/20 pointer-events-none"></div>
@@ -175,6 +184,30 @@
             <!-- 상/하단 자연스러운 섹션 연결용 비네팅 그라데이션 -->
             <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-dark-bg pointer-events-none"></div>
         </div>
+
+        <!-- 배경 이미지 20초 주기 자동 교차 페이드인/아웃 스크립트 -->
+        <script>
+            (function initHeroBackgroundSlider() {
+                let isImage1Visible = true;
+                const intervalTime = 20000; // 20초 주기 (자연스러운 2초 트랜지션)
+                
+                setInterval(() => {
+                    const img1 = document.getElementById('heroBgImage1');
+                    const img2 = document.getElementById('heroBgImage2');
+                    if (!img1 || !img2) return;
+                    
+                    if (isImage1Visible) {
+                        img1.style.opacity = '0';
+                        img2.style.opacity = '1';
+                        isImage1Visible = false;
+                    } else {
+                        img1.style.opacity = '1';
+                        img2.style.opacity = '0';
+                        isImage1Visible = true;
+                    }
+                }, intervalTime);
+            })();
+        </script>
 
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div class="max-w-3xl">
