@@ -170,23 +170,13 @@
             <!-- 단지배치도 카드 컨테이너 -->
             <div class="bg-dark-card border border-dark-border rounded-3xl p-4 sm:p-10 shadow-2xl">
                 
-                <!-- 단지배치도 이미지 영역 (클릭 시 창 전체 크기 풀스크린 모달 열림) -->
-                <div class="relative w-full flex items-center justify-center bg-black/70 rounded-2xl p-2 sm:p-6 border border-gray-800 overflow-hidden cursor-pointer group" 
-                     onclick="openFullscreenModal()" 
-                     title="클릭 시 창의 전체 크기에 맞게 크게보기">
+                <!-- 단지배치도 이미지 영역 (버튼 클릭 시에만 크게보기 이벤트 발생) -->
+                <div class="relative w-full flex items-center justify-center bg-black/70 rounded-2xl p-2 sm:p-6 border border-gray-800 overflow-hidden">
                     <img id="mainComplexImg" 
                          src="images/단지배치도.png" 
                          onerror="this.onerror=null; this.src='images/site_plan.png';" 
                          alt="도안 수목토 아파트 단지배치도" 
-                         class="max-w-full h-auto max-h-[750px] object-contain rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.01]" />
-                    
-                    <!-- 호버 시 안내 툴팁 -->
-                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                        <span class="bg-black/80 text-gold border border-gold/50 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-lg backdrop-blur-sm flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
-                            클릭하여 창 전체 크기로 크게보기
-                        </span>
-                    </div>
+                         class="max-w-full h-auto max-h-[750px] object-contain rounded-xl shadow-2xl" />
                 </div>
 
                 <!-- '+ 크게보기' 버튼 (하늘채 루시에르 스타일 정중앙 단독 배치) -->
