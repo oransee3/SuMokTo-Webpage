@@ -2085,12 +2085,38 @@ const UI = {
     if (!imageUrl) return;
     const img = document.getElementById('lightboxImage');
     const titleEl = document.getElementById('lightboxTitle');
+    const badgeEl = document.querySelector('#imageLightboxModal .bg-gold');
     const newWinBtn = document.getElementById('lightboxNewWindowBtn');
 
+    if (badgeEl) badgeEl.textContent = '현황배치도';
     if (img) img.src = imageUrl;
     if (titleEl) {
       titleEl.textContent = title ? `${title} - 현황배치도 및 주변 위치도` : '현황배치도 및 주변 위치도';
     }
+    if (newWinBtn) {
+      newWinBtn.onclick = () => UI.openInNewWindow(imageUrl, title);
+    }
+
+    UI.openModal('imageLightboxModal');
+  },
+
+  // 단지안내 단지배치도 라이트박스 열기
+  openComplexGuide() {
+    const imageUrl = 'images/단지배치도.png';
+    const fallbackUrl = 'images/site_plan.png';
+    const title = '도안 수목토 아파트 단지배치도';
+
+    const img = document.getElementById('lightboxImage');
+    const titleEl = document.getElementById('lightboxTitle');
+    const badgeEl = document.querySelector('#imageLightboxModal .bg-gold');
+    const newWinBtn = document.getElementById('lightboxNewWindowBtn');
+
+    if (img) {
+      img.onerror = () => { img.src = fallbackUrl; };
+      img.src = imageUrl;
+    }
+    if (badgeEl) badgeEl.textContent = '단지안내';
+    if (titleEl) titleEl.textContent = title;
     if (newWinBtn) {
       newWinBtn.onclick = () => UI.openInNewWindow(imageUrl, title);
     }
