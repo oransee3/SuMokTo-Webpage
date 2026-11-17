@@ -222,43 +222,43 @@
     </main>
 
     <!-- ========================================== -->
-    <!-- 4. 풀스크린 크게보기 모달 (창의 전체 크기에 맞게) -->
+    <!-- 4. 풀스크린 크게보기 모달 (창의 전체 크기에 100% 맞춤) -->
     <!-- ========================================== -->
-    <div id="fullSizeComplexModal" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-2 sm:p-4 transition-all duration-300">
+    <div id="fullSizeComplexModal" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-0 transition-all duration-300">
         
-        <!-- 모달 상단 헤더 바 -->
-        <div class="w-full flex justify-between items-center px-4 py-3 bg-zinc-950/90 border border-gray-800 rounded-2xl z-10 shadow-xl">
+        <!-- 모달 상단 플로팅 헤더 바 -->
+        <div class="absolute top-3 left-3 right-3 sm:top-5 sm:left-6 sm:right-6 flex justify-between items-center px-4 py-2.5 bg-black/80 border border-gray-800 rounded-2xl z-20 shadow-2xl backdrop-blur-md">
             <div class="flex items-center gap-3">
                 <span class="text-xs font-bold text-black bg-gold px-2.5 py-1 rounded">단지배치도</span>
-                <span class="text-sm sm:text-base font-bold text-white">도안수목토 아파트 단지배치도 (창 크기 전체화면)</span>
+                <span class="text-xs sm:text-base font-bold text-white">도안수목토 아파트 단지배치도 (창 전체화면)</span>
             </div>
             <div class="flex items-center gap-2">
                 <a href="images/site_plan.png" target="_blank" rel="noopener noreferrer" 
-                   class="text-xs sm:text-sm text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 px-3.5 py-2 rounded-xl border border-gray-700 transition-colors flex items-center gap-1.5" title="새 탭에서 원본 이미지 열기">
+                   class="text-xs sm:text-sm text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-xl border border-gray-700 transition-colors flex items-center gap-1.5" title="새 탭에서 원본 이미지 열기">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     <span class="hidden sm:inline">새 창에서 보기</span>
                 </a>
                 <button type="button" onclick="closeFullscreenModal()" 
-                        class="text-gray-300 hover:text-white bg-gray-800 hover:bg-red-600 px-3 py-2 rounded-xl border border-gray-700 transition-colors flex items-center gap-1" title="닫기 (ESC)">
+                        class="text-gray-200 hover:text-white bg-gray-800 hover:bg-red-600 px-3 py-1.5 rounded-xl border border-gray-700 transition-colors flex items-center gap-1" title="닫기 (ESC)">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                     <span class="text-xs font-bold hidden sm:inline">닫기</span>
                 </button>
             </div>
         </div>
 
-        <!-- 모달 이미지 뷰어 영역 (창의 전체 가로/세로 크기에 100% 최적화) -->
-        <div class="w-full h-full flex-1 flex items-center justify-center overflow-auto p-2 sm:p-4" onclick="closeFullscreenModal()">
+        <!-- 모달 이미지 뷰어 영역 (창의 전체 가로/세로 크기에 100% 꽉 차게 최적화) -->
+        <div class="w-screen h-screen flex items-center justify-center overflow-auto p-2 sm:p-4 pt-16 sm:pt-20 cursor-zoom-out" onclick="closeFullscreenModal()">
             <img id="fullscreenImg" 
                  src="images/단지배치도.png" 
                  onerror="this.onerror=null; this.src='images/site_plan.png';" 
                  alt="도안 수목토 아파트 단지배치도 전체화면" 
-                 class="w-full h-full max-w-[98vw] max-h-[86vh] object-contain select-none drop-shadow-2xl cursor-default" 
+                 class="w-auto h-auto max-w-[99vw] max-h-[92vh] object-contain select-none drop-shadow-2xl cursor-default transition-transform duration-200" 
                  onclick="event.stopPropagation();" />
         </div>
 
-        <!-- 모달 하단 바 -->
-        <div class="w-full text-center py-2 text-xs text-gray-400 bg-zinc-950/80 border border-gray-800 rounded-2xl">
-            ※ 창의 전체 크기에 맞춰 단지배치도를 크게 표시하고 있습니다. (닫기: ESC 키 또는 닫기 버튼 클릭)
+        <!-- 모달 하단 플로팅 바 -->
+        <div class="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 text-xs text-gray-400 bg-black/80 border border-gray-800 rounded-full shadow-lg backdrop-blur-md pointer-events-none">
+            ※ 창의 전체 크기에 맞춰 단지배치도를 크게 표시 중입니다. (닫기: ESC 키 또는 바깥 클릭)
         </div>
     </div>
 

@@ -327,57 +327,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 4. 단지안내 (Complex Guide & 단지배치도)  -->
-    <!-- ========================================== -->
-    <section id="complex" class="py-24 bg-dark-bg border-t border-dark-border">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- 섹션 헤더 -->
-            <div class="text-center mb-10">
-                <span class="text-xs font-bold text-gold tracking-widest uppercase mb-2 block">COMPLEX GUIDE</span>
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">
-                    도안수목토 아파트 <span class="text-gradient-gold">단지안내</span>
-                </h3>
-                <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">
-                    남향 위주의 쾌적한 동간 배치와 풍부한 녹지 조경, <br class="hidden sm:inline">
-                    지하주차장 직통 연결 및 입주민 중심의 고품격 힐링 단지입니다.
-                </p>
-            </div>
-
-            <!-- 단지배치도 이미지 컨테이너 -->
-            <div class="max-w-5xl mx-auto bg-dark-card border border-dark-border rounded-3xl p-4 sm:p-8 shadow-2xl">
-                <div class="relative w-full flex items-center justify-center bg-black/60 rounded-2xl p-2 sm:p-4 border border-gray-800/80 overflow-hidden cursor-pointer group" onclick="openFullscreenModal()" title="클릭 시 창의 전체 크기에 맞게 크게보기">
-                    <img src="images/단지배치도.png" 
-                         onerror="this.onerror=null; this.src='images/site_plan.png';" 
-                         alt="도안 수목토 아파트 단지배치도" 
-                         class="max-w-full h-auto max-h-[700px] object-contain rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-[1.01]" />
-                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                        <span class="bg-black/80 text-gold border border-gold/50 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-lg backdrop-blur-sm flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
-                            클릭하여 창 전체 크기로 크게보기
-                        </span>
-                    </div>
-                </div>
-
-                <!-- '+ 크게보기' 버튼 & 서브페이지 바로가기 -->
-                <div class="mt-8 text-center flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button type="button" 
-                            onclick="openFullscreenModal()" 
-                            class="inline-flex items-center justify-center gap-2 px-10 py-3.5 bg-white hover:bg-gray-100 text-gray-900 font-bold text-base rounded border border-gray-300 shadow-xl hover:shadow-2xl transition-all duration-200 cursor-pointer" 
-                            title="창의 전체 크기에 맞게 단지배치도 크게보기">
-                        <span>+ 크게보기</span>
-                    </button>
-                    <a href="complex.html" 
-                       class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gray-900 hover:bg-gray-800 text-gold hover:text-white font-bold text-sm rounded border border-gray-700 hover:border-gold transition-all duration-200" 
-                       title="단지안내 전용 서브 페이지로 이동">
-                        <span>단지안내 서브페이지 바로가기 →</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- 5. 고객 등록 (1:1 VIP 상담 및 매물 의뢰)  -->
+    <!-- 4. 고객 등록 (1:1 VIP 상담 및 매물 의뢰)  -->
     <!-- ========================================== -->
     <section id="consulting" class="py-24 relative bg-zinc-950 border-t border-dark-border">
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20 hero-pattern"></div>
@@ -957,46 +907,6 @@
     </nav>
 
     <!-- ========================================== -->
-    <!-- 풀스크린 단지배치도 크게보기 모달 (창 전체 크기에 맞춤) -->
-    <!-- ========================================== -->
-    <div id="fullSizeComplexModal" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-2 sm:p-4 transition-all duration-300">
-        <!-- 모달 상단 헤더 바 -->
-        <div class="w-full flex justify-between items-center px-4 py-3 bg-zinc-950/90 border border-gray-800 rounded-2xl z-10 shadow-xl">
-            <div class="flex items-center gap-3">
-                <span class="text-xs font-bold text-black bg-gold px-2.5 py-1 rounded">단지배치도</span>
-                <span class="text-sm sm:text-base font-bold text-white">도안수목토 아파트 단지배치도 (창 크기 전체화면)</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="images/site_plan.png" target="_blank" rel="noopener noreferrer" 
-                   class="text-xs sm:text-sm text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 px-3.5 py-2 rounded-xl border border-gray-700 transition-colors flex items-center gap-1.5" title="새 탭에서 원본 이미지 열기">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    <span class="hidden sm:inline">새 창에서 보기</span>
-                </a>
-                <button type="button" onclick="closeFullscreenModal()" 
-                        class="text-gray-300 hover:text-white bg-gray-800 hover:bg-red-600 px-3 py-2 rounded-xl border border-gray-700 transition-colors flex items-center gap-1" title="닫기 (ESC)">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    <span class="text-xs font-bold hidden sm:inline">닫기</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- 모달 이미지 뷰어 영역 (창의 전체 가로/세로 크기에 100% 최적화) -->
-        <div class="w-full h-full flex-1 flex items-center justify-center overflow-auto p-2 sm:p-4" onclick="closeFullscreenModal()">
-            <img id="fullscreenImg" 
-                 src="images/단지배치도.png" 
-                 onerror="this.onerror=null; this.src='images/site_plan.png';" 
-                 alt="도안 수목토 아파트 단지배치도 전체화면" 
-                 class="w-full h-full max-w-[98vw] max-h-[86vh] object-contain select-none drop-shadow-2xl cursor-default" 
-                 onclick="event.stopPropagation();" />
-        </div>
-
-        <!-- 모달 하단 바 -->
-        <div class="w-full text-center py-2 text-xs text-gray-400 bg-zinc-950/80 border border-gray-800 rounded-2xl">
-            ※ 창의 전체 크기에 맞춰 단지배치도를 크게 표시하고 있습니다. (닫기: ESC 키 또는 닫기 버튼 클릭)
-        </div>
-    </div>
-
-    <!-- ========================================== -->
     <!-- 9. PWA App Install Banner (앱 설치 유도)     -->
     <!-- ========================================== -->
     <div id="pwaInstallBanner" class="hidden fixed bottom-20 sm:bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 bg-zinc-900 border border-gold/60 p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-3 backdrop-blur-md">
@@ -1056,29 +966,6 @@
 
         document.getElementById('pwaCloseBtn')?.addEventListener('click', () => {
             document.getElementById('pwaInstallBanner')?.classList.add('hidden');
-        });
-
-        // 단지배치도 풀스크린 모달 제어 함수
-        function openFullscreenModal() {
-            const modal = document.getElementById('fullSizeComplexModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeFullscreenModal() {
-            const modal = document.getElementById('fullSizeComplexModal');
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
-            }
-        }
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeFullscreenModal();
-            }
         });
     </script>
 </body>
