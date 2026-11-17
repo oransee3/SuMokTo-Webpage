@@ -9,6 +9,14 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+
+    <!-- 브라우저 오픈 시 최상단 노출 보장 -->
+    <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+    </script>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">

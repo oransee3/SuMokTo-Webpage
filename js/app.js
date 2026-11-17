@@ -793,6 +793,14 @@ const UI = {
   activePasteTarget: 'gallery', // 'gallery' 또는 'map'
 
   init() {
+    // 브라우저 접속 시 무조건 1열(헤더), 2열(메인 이미지) 최상단 노출 보장
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    if (!window.location.hash || window.location.hash === '#home') {
+      window.scrollTo(0, 0);
+    }
+
     AuthManager.init();
     PropertyManager.init();
     CustomerManager.init();
@@ -2313,4 +2321,11 @@ const UI = {
 // 애플리케이션 시작
 document.addEventListener('DOMContentLoaded', () => {
   UI.init();
+});
+
+// 모든 리소스(이미지/폰트 등) 로드 완료 후에도 1열, 2열 최상단 표시 보장
+window.addEventListener('load', () => {
+  if (!window.location.hash || window.location.hash === '#home') {
+    window.scrollTo(0, 0);
+  }
 });
