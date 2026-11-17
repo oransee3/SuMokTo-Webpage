@@ -162,14 +162,14 @@
     <section id="home" class="relative pt-24 pb-28 lg:pt-48 lg:pb-52 overflow-hidden min-h-screen mobile-hero-9-16 flex items-center">
         <!-- 메인 배경 이미지 교차 슬라이더 (단지조감도_2K <-> view_2k 20초 간격 페이드인/아웃) & 프리미엄 다크 오버레이 -->
         <div class="absolute inset-0 z-0 overflow-hidden">
-            <!-- 1번 배경: 단지조감도_2K (초기 노출) -->
+            <!-- 1번 배경: 단지조감도_2K (초기 노출, 우측 이동 배치) -->
             <img id="heroBgImage1" 
                  src="images/bird_view_2k.jpg" 
                  onerror="this.onerror=null; this.src='images/단지조감도_2K.jpg';"
                  alt="도안 수목토 아파트 단지 조감도 전경" 
                  fetchpriority="high"
                  class="absolute inset-0 w-full h-full object-cover object-center"
-                 style="opacity: 1; transition: opacity 2s ease-in-out;" />
+                 style="opacity: 1; transform: scale(1.1) translateX(5%); transform-origin: center center; transition: opacity 2s ease-in-out;" />
 
             <!-- 2번 배경: view_2k (20초 후 페이드인) -->
             <img id="heroBgImage2" 
