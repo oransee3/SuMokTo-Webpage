@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>단지안내 (단지배치도) - 도안수목토 재벌 공인중개사사무소</title>
+    
+    <!-- Cache Control: 브라우저 캐시 방지 및 최신 버전 즉시 반영 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121212">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="재벌부동산">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo01.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: {
+                            DEFAULT: '#D4AF37', // Premium Luxury Gold
+                            light: '#F3E5AB',
+                            dark: '#AA8C2C',
+                        },
+                        dark: {
+                            bg: '#121212',
+                            card: '#1A1A1A',
+                            border: '#2A2A2A',
+                            hover: '#242424'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css?v=20261116_FINAL">
+</head>
+<body class="bg-dark-bg text-white antialiased overflow-x-hidden">
+
+    <!-- ========================================== -->
+    <!-- 1. Header / Navigation                     -->
+    <!-- ========================================== -->
+    <header class="fixed w-full top-0 z-50 bg-black/85 backdrop-blur-md border-b border-dark-border transition-all duration-300">
+        <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- 상단 좌측: 브랜드 로고 (홈으로 이동) -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <a href="index.html" class="flex-shrink-0 flex items-center cursor-pointer group" title="홈으로 이동">
+                        <img src="logo01.png" alt="재벌부동산 로고" class="w-10 h-10 object-contain mr-3 filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-300">
+                        <div class="flex flex-col">
+                            <div class="flex items-center tracking-tight font-bold text-lg sm:text-xl">
+                                <span class="text-gradient-gold">도안수목토</span>
+                                <span class="text-white font-black text-xl sm:text-2xl mx-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">재벌</span>
+                                <span class="text-gradient-gold">공인중개사사무소</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] text-white tracking-wider">Chebol Land Agent</span>
+                                <span class="text-[9px] bg-gold/15 text-gold border border-gold/40 px-1.5 py-0.2 rounded">
+                                    단지안내 🏢
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 상단 중앙 네비게이션: '홈', '추천 매물', '매물검색', '단지안내', '고객 등록' -->
+                <nav class="hidden md:flex items-center space-x-4 lg:space-x-7 shrink-0">
+                    <a href="index.html#home" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">홈</a>
+                    <a href="index.html#featured" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">추천 매물</a>
+                    <a href="index.html#properties" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">매물검색</a>
+                    <a href="complex.html" class="whitespace-nowrap text-gold font-bold transition-colors duration-200 text-sm shrink-0 border-b-2 border-gold pb-0.5">단지안내</a>
+                    <a href="index.html#consulting" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">고객 등록</a>
+                </nav>
+
+                <!-- 상단 우측: 전화, 네이버 블로그, 유튜브 채널 버튼 -->
+                <div class="hidden md:flex items-center gap-2 shrink-0">
+                    <a href="tel:042-546-4900" class="whitespace-nowrap bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        042-546-4900
+                    </a>
+                    <a href="https://blog.naver.com/danakim076/224065578833" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#03C75A] hover:bg-[#02b350] text-white border border-[#03C75A] px-3 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-sm hover:brightness-105" title="네이버 블로그 바로가기">
+                        <img src="naver_blog_inverted.png?v=2" alt="네이버 블로그" class="h-[18px] w-auto object-contain" />
+                        <span>네이버 블로그</span>
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=%EB%8F%84%EC%95%88%EC%88%98%EB%AA%A9%ED%86%A0%EC%9E%AC%EB%B2%8C%EB%B6%80%EB%8F%99%EC%82%B0tv" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#FF0000] hover:bg-[#E60000] text-white border border-[#FF0000] px-3 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-sm hover:brightness-105" title="도안수목토재벌부동산tv 유튜브 채널 바로가기">
+                        <svg class="h-[18px] w-auto aspect-[24/17]" viewBox="0 0 24 17" fill="none">
+                            <rect width="24" height="17" rx="4.5" fill="white"/>
+                            <polygon points="9.5,4.5 16.5,8.5 9.5,12.5" fill="#FF0000"/>
+                        </svg>
+                        <span>유튜브 채널</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Hamburger Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" onclick="document.getElementById('mobileMenu').classList.toggle('hidden');" class="text-gray-300 hover:text-gold focus:outline-none p-2">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden bg-zinc-950/95 border-b border-dark-border px-4 pt-2 pb-6 space-y-3">
+            <a href="index.html#home" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">홈</a>
+            <a href="index.html#featured" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">추천 매물</a>
+            <a href="index.html#properties" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">매물검색</a>
+            <a href="complex.html" class="block text-gold font-bold py-2 text-base">단지안내</a>
+            <a href="index.html#consulting" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">고객 등록</a>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- 2. Sub Page Header / Banner                -->
+    <!-- ========================================== -->
+    <section class="relative pt-32 pb-16 bg-gradient-to-b from-black via-zinc-900 to-dark-bg border-b border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="text-xs font-bold text-gold tracking-widest uppercase mb-2 block">COMPLEX GUIDE & SITE PLAN</span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white mb-4">
+                도안수목토 아파트 <span class="text-gradient-gold">단지안내</span>
+            </h1>
+            <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">
+                쾌적한 동간 배치와 풍부한 조경, 남향 위주 프리미엄 힐링 대단지 <br class="hidden sm:inline">
+                도안수목토 아파트의 상세 단지배치도를 확인하실 수 있습니다.
+            </p>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. Complex Map Section (단지배치도)       -->
+    <!-- ========================================== -->
+    <main class="py-16 sm:py-20 bg-dark-bg">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- 단지배치도 카드 컨테이너 -->
+            <div class="bg-dark-card border border-dark-border rounded-3xl p-4 sm:p-10 shadow-2xl">
+                
+                <!-- 단지배치도 이미지 영역 (클릭 시 창 전체 크기 풀스크린 모달 열림) -->
+                <div class="relative w-full flex items-center justify-center bg-black/70 rounded-2xl p-2 sm:p-6 border border-gray-800 overflow-hidden cursor-pointer group" 
+                     onclick="openFullscreenModal()" 
+                     title="클릭 시 창의 전체 크기에 맞게 크게보기">
+                    <img id="mainComplexImg" 
+                         src="images/단지배치도.png" 
+                         onerror="this.onerror=null; this.src='images/site_plan.png';" 
+                         alt="도안 수목토 아파트 단지배치도" 
+                         class="max-w-full h-auto max-h-[750px] object-contain rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.01]" />
+                    
+                    <!-- 호버 시 안내 툴팁 -->
+                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                        <span class="bg-black/80 text-gold border border-gold/50 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-lg backdrop-blur-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+                            클릭하여 창 전체 크기로 크게보기
+                        </span>
+                    </div>
+                </div>
+
+                <!-- '+ 크게보기' 버튼 (하늘채 루시에르 스타일: 창의 전체 크기에 맞게 단지배치도를 크게 표시) -->
+                <div class="mt-8 sm:mt-10 text-center flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button type="button" 
+                            onclick="openFullscreenModal()" 
+                            class="inline-flex items-center justify-center gap-2 px-10 py-3.5 bg-white hover:bg-gray-100 text-gray-900 font-bold text-base rounded border border-gray-300 shadow-xl hover:shadow-2xl transition-all duration-200 cursor-pointer" 
+                            title="창의 전체 크기에 맞게 단지배치도 크게보기">
+                        <span>+ 크게보기</span>
+                    </button>
+                    <a href="images/site_plan.png" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gray-900 hover:bg-gray-800 text-gold hover:text-white font-bold text-sm rounded border border-gray-700 hover:border-gold transition-all duration-200" 
+                       title="새 창(새 탭)에서 원본 이미지 파일 열기">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        <span>새 창에서 원본 보기</span>
+                    </a>
+                </div>
+
+                <!-- 단지 기본 정보 안내 요약 -->
+                <div class="mt-12 pt-8 border-t border-gray-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div class="bg-black/50 p-4 rounded-xl border border-gray-800/80">
+                        <span class="text-xs text-gray-400 block mb-1">단지 규모</span>
+                        <strong class="text-white text-base sm:text-lg">총 1,253세대</strong>
+                    </div>
+                    <div class="bg-black/50 p-4 rounded-xl border border-gray-800/80">
+                        <span class="text-xs text-gray-400 block mb-1">동수 / 층수</span>
+                        <strong class="text-white text-base sm:text-lg">총 18개동 (최고 25층)</strong>
+                    </div>
+                    <div class="bg-black/50 p-4 rounded-xl border border-gray-800/80">
+                        <span class="text-xs text-gray-400 block mb-1">주요 평형</span>
+                        <strong class="text-white text-base sm:text-lg">112㎡ (34평형 단일)</strong>
+                    </div>
+                    <div class="bg-black/50 p-4 rounded-xl border border-gray-800/80">
+                        <span class="text-xs text-gray-400 block mb-1">중개 문의</span>
+                        <strong class="text-gold text-base sm:text-lg">042-546-4900</strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 4. 풀스크린 크게보기 모달 (창의 전체 크기에 맞게) -->
+    <!-- ========================================== -->
+    <div id="fullSizeComplexModal" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-2 sm:p-4 transition-all duration-300">
+        
+        <!-- 모달 상단 헤더 바 -->
+        <div class="w-full flex justify-between items-center px-4 py-3 bg-zinc-950/90 border border-gray-800 rounded-2xl z-10 shadow-xl">
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-black bg-gold px-2.5 py-1 rounded">단지배치도</span>
+                <span class="text-sm sm:text-base font-bold text-white">도안수목토 아파트 단지배치도 (창 크기 전체화면)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="images/site_plan.png" target="_blank" rel="noopener noreferrer" 
+                   class="text-xs sm:text-sm text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 px-3.5 py-2 rounded-xl border border-gray-700 transition-colors flex items-center gap-1.5" title="새 탭에서 원본 이미지 열기">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    <span class="hidden sm:inline">새 창에서 보기</span>
+                </a>
+                <button type="button" onclick="closeFullscreenModal()" 
+                        class="text-gray-300 hover:text-white bg-gray-800 hover:bg-red-600 px-3 py-2 rounded-xl border border-gray-700 transition-colors flex items-center gap-1" title="닫기 (ESC)">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <span class="text-xs font-bold hidden sm:inline">닫기</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 모달 이미지 뷰어 영역 (창의 전체 가로/세로 크기에 100% 최적화) -->
+        <div class="w-full h-full flex-1 flex items-center justify-center overflow-auto p-2 sm:p-4" onclick="closeFullscreenModal()">
+            <img id="fullscreenImg" 
+                 src="images/단지배치도.png" 
+                 onerror="this.onerror=null; this.src='images/site_plan.png';" 
+                 alt="도안 수목토 아파트 단지배치도 전체화면" 
+                 class="w-full h-full max-w-[98vw] max-h-[86vh] object-contain select-none drop-shadow-2xl cursor-default" 
+                 onclick="event.stopPropagation();" />
+        </div>
+
+        <!-- 모달 하단 바 -->
+        <div class="w-full text-center py-2 text-xs text-gray-400 bg-zinc-950/80 border border-gray-800 rounded-2xl">
+            ※ 창의 전체 크기에 맞춰 단지배치도를 크게 표시하고 있습니다. (닫기: ESC 키 또는 닫기 버튼 클릭)
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5. Footer                                  -->
+    <!-- ========================================== -->
+    <footer class="relative bg-black py-16 border-t border-dark-border overflow-hidden">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-5">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="logo01.png" alt="로고" class="w-9 h-9 object-contain">
+                        <div class="text-2xl font-bold tracking-tight">
+                            <span class="text-gradient-gold">도안수목토</span>
+                            <span class="text-white font-black text-2xl mx-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">재벌</span>
+                            <span class="text-gradient-gold">공인중개사사무소</span>
+                        </div>
+                    </div>
+                    <p class="text-white text-sm leading-relaxed mb-4 max-w-lg">
+                        도안수목토 아파트 전문 및 대전 도안신도시, 서구권 하이엔드 주거공간 및 고수익 상가 중개 전문 부동산입니다.
+                        철저한 시세 검증과 권리 분석으로 고객님의 소중한 자산을 안전하게 책임지겠습니다.
+                    </p>
+                </div>
+                
+                <div>
+                    <h5 class="text-white font-bold text-sm mb-4 border-l-2 border-gold pl-2">빠른 바로가기</h5>
+                    <ul class="space-y-2 text-sm text-white">
+                        <li><a href="index.html#home" class="hover:text-gold transition-colors">홈 화면</a></li>
+                        <li><a href="index.html#featured" class="hover:text-gold transition-colors">추천 매물</a></li>
+                        <li><a href="index.html#properties" class="hover:text-gold transition-colors">매물검색 (주거/상가)</a></li>
+                        <li><a href="complex.html" class="text-gold font-bold">단지안내 (단지배치도)</a></li>
+                        <li><a href="index.html#consulting" class="hover:text-gold transition-colors">1:1 고객 상담 등록</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="text-white font-bold text-sm mb-4 border-l-2 border-gold pl-2">사무소 안내 & 고객센터</h5>
+                    <div class="text-gradient-gold font-extrabold text-2xl mb-2">042-546-4900</div>
+                    <p class="text-xs text-white leading-relaxed mb-3">
+                        대전광역시 유성구 / 서구 도안동 일원<br>
+                        운영시간: 평일 09:30 ~ 19:00<br>
+                        주말 및 공휴일: 사전 예약제 VIP 상담 진행
+                    </p>
+                </div>
+            </div>
+            
+            <div class="pt-4 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white">
+                <div>
+                    <p>상호: 도안수목토 재벌 공인중개사사무소 | 공인중개사 대표: 김소형 | 등록번호: 제30200-2024-00088호</p>
+                    <p class="mt-1">소재지: 대전광역시 서구 도안동 수목토아파트 단지상가 110호 | TEL: 042-546-4900</p>
+                    <p class="mt-1">&copy; 2024 도안수목토 재벌 공인중개사사무소. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 풀스크린 모달 제어 스크립트 -->
+    <script>
+        function openFullscreenModal() {
+            const modal = document.getElementById('fullSizeComplexModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeFullscreenModal() {
+            const modal = document.getElementById('fullSizeComplexModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFullscreenModal();
+            }
+        });
+    </script>
+</body>
+</html>
