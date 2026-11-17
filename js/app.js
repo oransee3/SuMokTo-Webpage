@@ -804,6 +804,33 @@ const UI = {
     this.renderFeaturedProperties();
   },
 
+  // 상단 메뉴 및 바로가기 클릭 시 부드럽고 정확한 섹션 스크롤 이동
+  scrollToSection(sectionId, event) {
+    if (event) {
+      event.preventDefault();
+    }
+    if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      try { history.pushState(null, '', '#home'); } catch(e) {}
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        const headerOffset = 80;
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        try { history.pushState(null, '', `#${sectionId}`); } catch(e) {}
+      }
+    }
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+      mobileMenu.classList.add('hidden');
+    }
+  },
+
   // DOM 이벤트 등록
   bindEvents() {
     // 1. 상단 좌측 로고 / 상호 / 관계자 모드 버튼 클릭 -> 관계자 모드 상태면 일반 모드로 전환, 일반 모드면 로그인 모달 열기
