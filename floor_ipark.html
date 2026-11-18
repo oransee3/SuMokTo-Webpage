@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>아이파크 평면안내 - 도안수목토 재벌 공인중개사사무소</title>
+    
+    <!-- SEO 및 메타 태그 -->
+    <meta name="description" content="도안 아이파크 아파트 평면안내 및 세대별 평면도, 구조 정보. 도안수목토 재벌 공인중개사사무소에서 정확하고 안전한 부동산 중개를 약속드립니다.">
+    <meta name="keywords" content="도안아이파크, 평면안내, 평면도, 아이파크아파트, 재벌부동산, 도안신도시 아파트">
+    <meta property="og:title" content="아이파크 평면안내 - 도안수목토 재벌부동산">
+    <meta property="og:description" content="도안신도시 아이파크 아파트 평면도 및 상세 구조 안내.">
+    <meta property="og:image" content="images/단지조감도_2K.jpg">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo01.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: {
+                            light: '#F3E5AB',
+                            DEFAULT: '#D4AF37',
+                            dark: '#AA820A',
+                        },
+                        dark: {
+                            bg: '#121212',
+                            card: '#1E1E1E',
+                            border: '#2E2E2E'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css?v=20261116_FINAL">
+    <style>
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #FFF6D6 0%, #D4AF37 50%, #AA820A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-white antialiased overflow-x-hidden selection:bg-gold selection:text-black">
+
+    <!-- ========================================== -->
+    <!-- 1. Header / Navigation                     -->
+    <!-- ========================================== -->
+    <header class="fixed w-full top-0 z-50 bg-black/85 backdrop-blur-md border-b border-dark-border transition-all duration-300">
+        <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- 상단 좌측: 브랜드 로고 (홈으로 이동 링크) -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <a href="index.html" class="flex-shrink-0 flex items-center cursor-pointer group" title="홈으로 이동">
+                        <img src="logo01.png" alt="재벌부동산 로고" class="w-10 h-10 object-contain mr-3 filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-300">
+                        <div class="flex flex-col">
+                            <div class="flex items-center tracking-tight font-bold text-lg sm:text-xl">
+                                <span class="text-gradient-gold">도안수목토</span>
+                                <span class="text-white font-black text-xl sm:text-2xl mx-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">재벌</span>
+                                <span class="text-gradient-gold">공인중개사사무소</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] text-white tracking-wider">Chebol Land Agent</span>
+                                <span class="text-[9px] bg-gold/15 text-gold border border-gold/40 px-1.5 py-0.2 rounded">
+                                    아이파크 평면안내 📐
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 상단 중앙 네비게이션: '홈', '추천 매물', '매물검색', '단지안내', '평면안내', '고객 등록' -->
+                <nav class="hidden md:flex items-center space-x-4 lg:space-x-7 shrink-0">
+                    <a href="index.html" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">홈</a>
+                    <a href="index.html#featured" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">추천 매물</a>
+                    <a href="index.html#properties" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">매물검색</a>
+                    
+                    <!-- 단지안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출) -->
+                    <div class="relative group shrink-0">
+                        <a href="complex.html" class="whitespace-nowrap text-gray-300 group-hover:text-gold transition-colors duration-200 text-sm font-medium flex items-center gap-1 py-2">
+                            <span>단지안내</span>
+                            <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-1 hidden group-hover:block transition-all duration-200 z-50">
+                            <div class="bg-zinc-900/95 backdrop-blur-md border border-dark-border rounded-xl py-2 px-1 shadow-2xl min-w-[130px] text-center">
+                                <a href="complex.html" class="block px-3.5 py-1.5 text-xs sm:text-sm text-gray-200 hover:text-gold hover:bg-gold/10 rounded-lg transition-colors whitespace-nowrap font-medium">
+                                    수목토아파트
+                                </a>
+                                <a href="complex_ipark.html" class="block px-3.5 py-1.5 text-xs sm:text-sm text-gray-200 hover:text-gold hover:bg-gold/10 rounded-lg transition-colors whitespace-nowrap font-medium">
+                                    아이파크아파트
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 평면안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출) -->
+                    <div class="relative group shrink-0">
+                        <a href="floor.html" class="whitespace-nowrap text-gold font-bold transition-colors duration-200 text-sm shrink-0 border-b-2 border-gold pb-0.5 flex items-center gap-1">
+                            <span>평면안내</span>
+                            <svg class="w-3.5 h-3.5 text-gold group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-1 hidden group-hover:block transition-all duration-200 z-50">
+                            <div class="bg-zinc-900/95 backdrop-blur-md border border-dark-border rounded-xl py-2 px-1 shadow-2xl min-w-[130px] text-center">
+                                <a href="floor.html" class="block px-3.5 py-1.5 text-xs sm:text-sm text-gray-200 hover:text-gold hover:bg-gold/10 rounded-lg transition-colors whitespace-nowrap font-medium">
+                                    수목토아파트
+                                </a>
+                                <a href="floor_ipark.html" class="block px-3.5 py-1.5 text-xs sm:text-sm text-gold font-bold hover:bg-gold/10 rounded-lg transition-colors whitespace-nowrap">
+                                    아이파크아파트
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="index.html#consulting" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">고객 등록</a>
+                </nav>
+
+                <!-- 상단 우측: 전화, 네이버 블로그, 유튜브 채널 버튼 -->
+                <div class="hidden md:flex items-center gap-2 shrink-0">
+                    <a href="tel:042-546-4900" class="whitespace-nowrap bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        042-546-4900
+                    </a>
+                    <a href="https://blog.naver.com/danakim076/224065578833" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#03C75A] hover:bg-[#02b350] text-white border border-[#03C75A] px-3 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-sm hover:brightness-105" title="네이버 블로그 바로가기">
+                        <img src="naver_blog_inverted.png?v=2" alt="네이버 블로그" class="h-[18px] w-auto object-contain" />
+                        <span>네이버 블로그</span>
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=%EB%8F%84%EC%95%88%EC%88%98%EB%AA%A9%ED%86%A0%EC%9E%AC%EB%B2%8C%EB%B6%80%EB%8F%99%EC%82%B0tv" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#FF0000] hover:bg-[#E60000] text-white border border-[#FF0000] px-3 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-sm hover:brightness-105" title="도안수목토재벌부동산tv 유튜브 채널 바로가기">
+                        <svg class="h-[18px] w-auto aspect-[24/17]" viewBox="0 0 24 17" fill="none">
+                            <rect width="24" height="17" rx="4.5" fill="white"/>
+                            <polygon points="9.5,4.5 16.5,8.5 9.5,12.5" fill="#FF0000"/>
+                        </svg>
+                        <span>유튜브 채널</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Hamburger Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" onclick="document.getElementById('mobileMenu').classList.toggle('hidden');" class="text-gray-300 hover:text-gold focus:outline-none p-2">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden bg-zinc-950/95 border-b border-dark-border px-4 pt-2 pb-6 space-y-3">
+            <a href="index.html" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">홈</a>
+            <a href="index.html#featured" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">추천 매물</a>
+            <a href="index.html#properties" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">매물검색</a>
+            
+            <!-- 모바일: 단지안내 (하위 메뉴: 수목토아파트, 아이파크아파트) -->
+            <div class="py-1">
+                <a href="complex.html" class="block text-gray-300 hover:text-gold py-1 text-base font-medium">단지안내</a>
+                <div class="pl-4 mt-1 space-y-1.5 border-l-2 border-gold/40 ml-1">
+                    <a href="complex.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 수목토아파트</a>
+                    <a href="complex_ipark.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 아이파크아파트</a>
+                </div>
+            </div>
+
+            <!-- 모바일: 평면안내 (하위 메뉴: 수목토아파트, 아이파크아파트) -->
+            <div class="py-1">
+                <a href="floor.html" class="block text-gold font-bold py-1 text-base">평면안내</a>
+                <div class="pl-4 mt-1 space-y-1.5 border-l-2 border-gold/40 ml-1">
+                    <a href="floor.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 수목토아파트</a>
+                    <a href="floor_ipark.html" class="block text-gold font-bold py-0.5 text-sm">· 아이파크아파트</a>
+                </div>
+            </div>
+
+            <a href="index.html#consulting" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">고객 등록</a>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- 2. Sub Page Header / Banner                -->
+    <!-- ========================================== -->
+    <section class="relative pt-28 pb-10 bg-gradient-to-b from-black via-zinc-950 to-dark-bg border-b border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/15 border border-gold/40 text-gold text-xs font-bold mb-4">
+                <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+                도안신도시 프리미엄 주거공간
+            </div>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-3">
+                도안 아이파크 아파트 <span class="text-gradient-gold">평면안내</span>
+            </h1>
+            <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">
+                도안 아이파크 아파트의 타입별 세대 평면도 및 구조 정보를 안내해 드립니다.
+            </p>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. 평면안내 메인 섹션                      -->
+    <!-- ========================================== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        
+        <!-- 평면도 안내 박스 -->
+        <div class="bg-zinc-950/90 border border-dark-border rounded-2xl p-6 sm:p-10 shadow-2xl text-center">
+            <div class="max-w-3xl mx-auto">
+                <div class="w-16 h-16 mx-auto rounded-full bg-gold/15 text-gold flex items-center justify-center mb-6 border border-gold/30">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                </div>
+                <h3 class="text-2xl font-black text-white mb-3">아이파크아파트 평면도 등록 준비 중</h3>
+                <p class="text-gray-300 text-sm leading-relaxed mb-8">
+                    도안 아이파크 아파트 타입별 상세 평면도가 등록 준비 중입니다. <br>
+                    아이파크 세대 구조 및 매매/전세 매물에 대한 상세 문의는 대표번호로 연락주시면 친절히 안내해 드립니다.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+                    <a href="floor.html" class="w-full sm:w-auto px-6 py-3 rounded-full bg-gold hover:bg-gold-dark text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                        수목토 34평형 평면도 보기
+                    </a>
+                    <a href="complex_ipark.html" class="w-full sm:w-auto px-6 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-sm border border-gray-700 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        아이파크 단지안내 보기
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 4. Footer                                  -->
+    <!-- ========================================== -->
+    <footer class="relative bg-black py-16 border-t border-dark-border overflow-hidden">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-5">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="logo01.png" alt="로고" class="w-9 h-9 object-contain">
+                        <div class="text-2xl font-bold tracking-tight">
+                            <span class="text-gradient-gold">도안수목토</span>
+                            <span class="text-white font-black text-2xl mx-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">재벌</span>
+                            <span class="text-gradient-gold">공인중개사사무소</span>
+                        </div>
+                    </div>
+                    <p class="text-white text-sm leading-relaxed mb-4 max-w-lg">
+                        도안수목토 아파트 전문 및 대전 도안신도시, 서구권 하이엔드 주거공간 및 고수익 상가 중개 전문 부동산입니다.
+                        철저한 시세 검증과 권리 분석으로 고객님의 소중한 자산을 안전하게 책임지겠습니다.
+                    </p>
+                </div>
+                
+                <div>
+                    <h5 class="text-white font-bold text-sm mb-4 border-l-2 border-gold pl-2">빠른 바로가기</h5>
+                    <ul class="space-y-2 text-sm text-white">
+                        <li><a href="index.html" class="hover:text-gold transition-colors">홈 화면</a></li>
+                        <li><a href="index.html#featured" class="hover:text-gold transition-colors">추천 매물</a></li>
+                        <li><a href="index.html#properties" class="hover:text-gold transition-colors">매물검색 (주거/상가)</a></li>
+                        <li><a href="complex.html" class="hover:text-gold transition-colors">단지안내 (수목토아파트)</a></li>
+                        <li><a href="complex_ipark.html" class="hover:text-gold transition-colors">단지안내 (아이파크아파트)</a></li>
+                        <li><a href="floor.html" class="hover:text-gold transition-colors">평면안내 (수목토아파트)</a></li>
+                        <li><a href="floor_ipark.html" class="text-gold font-bold">평면안내 (아이파크아파트)</a></li>
+                        <li><a href="index.html#consulting" class="hover:text-gold transition-colors">1:1 고객 상담 등록</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="text-white font-bold text-sm mb-4 border-l-2 border-gold pl-2">사무소 안내 & 고객센터</h5>
+                    <div class="text-gradient-gold font-extrabold text-2xl mb-2">042-546-4900</div>
+                    <p class="text-xs text-white leading-relaxed mb-3">
+                        대전광역시 유성구 / 서구 도안동 일원<br>
+                        운영시간: 평일 09:30 ~ 19:00<br>
+                        주말 및 공휴일: 사전 예약제 VIP 상담 진행
+                    </p>
+                </div>
+            </div>
+            
+            <div class="pt-4 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white">
+                <div>
+                    <p>상호: 도안수목토 재벌 공인중개사사무소 | 공인중개사 대표: 김소형 | 등록번호: 제30200-2024-00088호</p>
+                    <p class="mt-1">소재지: 대전광역시 서구 도안동 수목토아파트 단지상가 110호 | TEL: 042-546-4900</p>
+                    <p class="mt-1">&copy; 2024 도안수목토 재벌 공인중개사사무소. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

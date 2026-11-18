@@ -120,7 +120,25 @@
                             </div>
                         </div>
                     </div>
-                    <a href="floor.html" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">평면안내</a>
+                    <!-- 평면안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출) -->
+                    <div class="relative group shrink-0">
+                        <a href="floor.html" class="whitespace-nowrap text-gray-300 group-hover:text-gold transition-colors duration-200 text-sm font-medium flex items-center gap-1 py-2">
+                            <span>평면안내</span>
+                            <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-1 hidden group-hover:block transition-all duration-200 z-50">
+                            <div class="bg-zinc-900/95 backdrop-blur-md border border-dark-border rounded-xl py-2 px-1 shadow-2xl min-w-[130px] text-center">
+                                <a href="floor.html" class="block px-3.5 py-1.5 text-xs sm:text-sm text-gray-200 hover:text-gold hover:bg-gold/10 rounded-lg transition-colors whitespace-nowrap font-medium">
+                                    수목토아파트
+                                </a>
+                                <a href="floor_ipark.html" class="block px-3.5 py-1.5 text-xs sm:text-sm text-gray-200 hover:text-gold hover:bg-gold/10 rounded-lg transition-colors whitespace-nowrap font-medium">
+                                    아이파크아파트
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <a href="index.html#consulting" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">고객 등록</a>
                 </nav>
 
@@ -167,7 +185,14 @@
                     <a href="complex_ipark.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 아이파크아파트</a>
                 </div>
             </div>
-            <a href="floor.html" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">평면안내</a>
+            <!-- 모바일: 평면안내 (하위 메뉴: 수목토아파트, 아이파크아파트) -->
+            <div class="py-1">
+                <a href="floor.html" class="block text-gray-300 hover:text-gold py-1 text-base font-medium">평면안내</a>
+                <div class="pl-4 mt-1 space-y-1.5 border-l-2 border-gold/40 ml-1">
+                    <a href="floor.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 수목토아파트</a>
+                    <a href="floor_ipark.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 아이파크아파트</a>
+                </div>
+            </div>
             <a href="index.html#consulting" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">고객 등록</a>
         </div>
     </header>
