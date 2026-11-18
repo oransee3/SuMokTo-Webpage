@@ -63,26 +63,5 @@
     ],
     "contact": "042-546-4900",
     "mapImageUrl": ""
-  },
-  {
-    "id": "PROP-1004",
-    "type": "주거",
-    "subType": "아파트",
-    "dealType": "월세",
-    "title": "도안 아이파크 프리미엄",
-    "location": "대전광역시 서구 도안동",
-    "price": "보증금 5,000만 / 월 180만",
-    "priceNumber": 5000,
-    "area": "115㎡ (35평형)",
-    "floor": "10층 / 20층",
-    "tags": "#남서향 #단지내상가편리 #확장형",
-    "description": "동간 거리 넓고 쾌적한 조경, 채광 우수하며 깨끗하게 관리된 세대입니다.",
-    "featured": "N",
-    "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
-    ],
-    "contact": "042-546-4900",
-    "mapImageUrl": ""
   }
 ]
