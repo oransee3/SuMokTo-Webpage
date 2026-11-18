@@ -84,47 +84,5 @@
     ],
     "contact": "042-546-4900",
     "mapImageUrl": ""
-  },
-  {
-    "id": "PROP-2003",
-    "type": "상가",
-    "subType": "사무실",
-    "dealType": "임대",
-    "title": "도안 테크노밸리 스마트 오피스",
-    "location": "대전광역시 유성구 용산동",
-    "price": "보증금 3,000만 / 월 180만",
-    "priceNumber": 3000,
-    "area": "132㎡ (40평)",
-    "floor": "6층 / 10층",
-    "tags": "#인테리어완비 #주차편리 #즉시입주",
-    "description": "회의실, 탕비실, 대표실 룸 인테리어 완비, 시스템 냉난방기 설치되어 집기만 가지고 입주 가능.",
-    "featured": "N",
-    "imageUrl": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"
-    ],
-    "contact": "042-546-4900",
-    "mapImageUrl": ""
-  },
-  {
-    "id": "PROP-2004",
-    "type": "상가",
-    "subType": "근린상가",
-    "dealType": "매매",
-    "title": "도안 2단계 신상권 2층 병원자리",
-    "location": "대전광역시 유성구 복용동",
-    "price": "7억 8,000만",
-    "priceNumber": 78000,
-    "area": "148㎡ (45평)",
-    "floor": "2층 / 7층",
-    "tags": "#신축상가 #소아과치과추천 #엘리베이터앞",
-    "description": "배후 1만 세대 항아리 상권 초입 코너 자리, 병의원 및 대형 학원 개원에 최적화.",
-    "featured": "N",
-    "imageUrl": "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80"
-    ],
-    "contact": "042-546-4900",
-    "mapImageUrl": ""
   }
 ]
