@@ -106,15 +106,21 @@
 
                 <!-- 상단 중앙 네비게이션: '홈', '추천 매물', '매물검색', '단지안내'(호버 서브메뉴), '평면안내', '고객 등록' -->
                 <nav class="hidden md:flex items-center space-x-4 lg:space-x-7 shrink-0">
-                    <a href="#home" onclick="UI.scrollToSection('home', event)" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">홈</a>
-                    <a href="#featured" onclick="UI.scrollToSection('featured', event)" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">추천 매물</a>
-                    <a href="#properties" onclick="UI.scrollToSection('properties', event)" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">매물검색</a>
+                    <a href="#home" onclick="UI.scrollToSection('home', event)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2">
+                        <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">홈</span>
+                    </a>
+                    <a href="#featured" onclick="UI.scrollToSection('featured', event)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2">
+                        <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">추천 매물</span>
+                    </a>
+                    <a href="#properties" onclick="UI.scrollToSection('properties', event)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2">
+                        <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">매물검색</span>
+                    </a>
                     
                     <!-- 단지안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출) -->
                     <div class="relative group shrink-0">
-                        <a href="complex.html" class="whitespace-nowrap text-gray-300 group-hover:text-gold transition-colors duration-200 text-sm font-medium flex items-center gap-1 py-2">
-                            <span>단지안내</span>
-                            <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="complex.html" class="whitespace-nowrap text-gray-300 group-hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium flex items-center gap-1 py-2">
+                            <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">단지안내</span>
+                            <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-yellow-400 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </a>
@@ -132,9 +138,9 @@
 
                     <!-- 평면안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출) -->
                     <div class="relative group shrink-0">
-                        <a href="floor.html" class="whitespace-nowrap text-gray-300 group-hover:text-gold transition-colors duration-200 text-sm font-medium flex items-center gap-1 py-2">
-                            <span>평면안내</span>
-                            <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="floor.html" class="whitespace-nowrap text-gray-300 group-hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium flex items-center gap-1 py-2">
+                            <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">평면안내</span>
+                            <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-yellow-400 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </a>
@@ -149,7 +155,9 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#consulting" onclick="UI.scrollToSection('consulting', event)" class="whitespace-nowrap text-gray-300 hover:text-gold transition-colors duration-200 text-sm font-medium shrink-0">고객 등록</a>
+                    <a href="#consulting" onclick="UI.scrollToSection('consulting', event)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2">
+                        <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">고객 등록</span>
+                    </a>
                 </nav>
 
                 <!-- 상단 우측: 전화, 네이버 블로그, 유튜브 채널 버튼 -->
