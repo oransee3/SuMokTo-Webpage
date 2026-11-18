@@ -190,71 +190,258 @@
     </header>
 
     <!-- ========================================== -->
-    <!-- 2. Sub Page Header / Banner                -->
+    <!-- 2. Sub Top Visual Banner (UNIT PLAN)       -->
+    <!-- http://hanulche-lucier.com/unit.html 스타일   -->
     <!-- ========================================== -->
-    <section class="relative pt-28 pb-10 bg-gradient-to-b from-black via-zinc-950 to-dark-bg border-b border-dark-border">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/15 border border-gold/40 text-gold text-xs font-bold mb-4">
-                <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
-                도안신도시 프리미엄 주거공간
+    <section class="relative pt-20 w-full overflow-hidden bg-[#2d3d47]">
+        <div class="relative w-full max-w-[1725px] mx-auto h-52 sm:h-64 flex items-center justify-center overflow-hidden">
+            <!-- 루시에르 특유의 기하학적 샴페인 라인 그래픽 (sub_top_img) -->
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40"></div>
+                <!-- 샴페인 골드 라인 아트 (#ada693) -->
+                <div class="absolute left-1/4 top-0 w-[1px] h-full bg-[#ada693]/40"></div>
+                <div class="absolute right-1/4 top-0 w-[1px] h-full bg-[#ada693]/40"></div>
+                <div class="absolute left-10 top-1/2 w-80 h-[1px] bg-[#ada693]/60 -rotate-12 origin-left"></div>
+                <div class="absolute right-10 top-1/3 w-80 h-[1px] bg-[#ada693]/60 rotate-12 origin-right"></div>
+                <div class="absolute left-1/3 bottom-10 w-96 h-[1px] bg-[#ada693]/50"></div>
             </div>
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-3">
-                도안수목토 아파트 <span class="text-gradient-gold">평면안내</span>
-            </h1>
-            <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">
-                총 1,253세대 단일 112㎡ (34평형)의 특화된 4베이 혁신 평면 구조를 한눈에 확인하세요.
-            </p>
+
+            <!-- 영문 대문자 타이틀: U N I T   P L A N -->
+            <div class="relative z-10 text-center px-4">
+                <h2 class="text-2xl sm:text-4xl lg:text-5xl font-light text-[#ada693] tracking-[0.45em] sm:tracking-[0.65em] uppercase font-sans drop-shadow-md">
+                    U N I T &nbsp; P L A N
+                </h2>
+            </div>
         </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- 3. 평면안내 메인 섹션                      -->
+    <!-- 3. Breadcrumb Path Bar (snb_wrap)          -->
     <!-- ========================================== -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-        
-        <!-- 평면 스펙 요약 바 -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 text-center">
-            <div class="bg-black/50 p-4 rounded-xl border border-gray-800/80">
-                <span class="text-xs text-gray-400 block mb-1">공급 면적</span>
-                <strong class="text-white text-base sm:text-lg">112.98㎡ (34.17평)</strong>
-            </div>
-            <div class="bg-black/50 p-4 rounded-xl border border-gray-800/80">
-                <span class="text-xs text-gray-400 block mb-1">전용 면적</span>
-                <strong class="text-white text-base sm:text-lg">84.97㎡ (25.70평)</strong>
-            </div>
-            <div class="bg-black/50 p-4 rounded-xl border border-gray-800/80">
-                <span class="text-xs text-gray-400 block mb-1">방 / 욕실수</span>
-                <strong class="text-white text-base sm:text-lg">방 3개 / 욕실 2개</strong>
-            </div>
-            <div class="bg-black/50 p-4 rounded-xl border border-gold/40 flex flex-col justify-center items-center shadow-lg hover:border-gold transition-colors">
-                <span class="text-[11px] text-gold font-bold block">평면 & 매물 문의</span>
-                <a href="tel:042-546-4900" class="text-gold font-black text-lg hover:underline">042-546-4900</a>
-            </div>
+    <div class="w-full bg-white border-b border-gray-200 py-3 text-xs sm:text-sm text-gray-500 shadow-sm">
+        <div class="max-w-[1100px] mx-auto px-4 sm:px-6 flex items-center justify-end gap-2.5">
+            <a href="index.html" class="hover:text-black flex items-center gap-1 transition-colors" title="홈으로 이동">
+                <svg class="w-4 h-4 text-gray-700 hover:text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                <span class="sr-only">HOME</span>
+            </a>
+            <span class="text-gray-400">&gt;</span>
+            <span class="text-gray-700 font-medium">세대안내</span>
+            <span class="text-gray-400">&gt;</span>
+            <span class="text-gray-900 font-bold">평면안내</span>
+            <span class="text-gray-400">&gt;</span>
         </div>
+    </div>
 
-        <!-- 평면도 안내 박스 -->
-        <div class="bg-zinc-950/90 border border-dark-border rounded-2xl p-6 sm:p-10 shadow-2xl text-center">
-            <div class="max-w-3xl mx-auto">
-                <div class="w-16 h-16 mx-auto rounded-full bg-gold/15 text-gold flex items-center justify-center mb-6 border border-gold/30">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+    <!-- ========================================== -->
+    <!-- 4. Main Sub Content (sub_container)        -->
+    <!-- ========================================== -->
+    <main class="w-full py-12 sm:py-16 bg-white text-gray-900">
+        <div class="max-w-[1100px] mx-auto px-4 sm:px-6">
+            
+            <!-- Section Heading (sub_tit) & 세로 구분선 (sub_line) -->
+            <div class="text-center mb-10">
+                <h1 class="text-3xl sm:text-4xl font-normal text-black tracking-tight uppercase">평면안내</h1>
+                <!-- 루시에르 특유의 중앙 세로 막대기선 -->
+                <div class="w-[1px] h-9 bg-gray-400 mx-auto my-6"></div>
+            </div>
+
+            <!-- Type Tabs Bar (tabs2 unit) -->
+            <div class="mb-8">
+                <ul class="flex flex-wrap sm:flex-nowrap justify-between gap-1.5 sm:gap-2">
+                    <li class="flex-1 min-w-[140px] text-center">
+                        <button type="button" class="w-full h-11 leading-[44px] text-sm font-bold bg-[#2d3d47] text-white border border-[#2d3d47] shadow cursor-default transition-all">
+                            112㎡ (34평형)
+                        </button>
+                    </li>
+                    <li class="flex-1 min-w-[140px] text-center">
+                        <a href="complex.html" class="block w-full h-11 leading-[44px] text-sm font-medium bg-[#e9eaec] hover:bg-gray-300 text-gray-800 border border-[#e9eaec] transition-colors">
+                            단지배치도 보기
+                        </a>
+                    </li>
+                    <li class="flex-1 min-w-[140px] text-center">
+                        <a href="index.html#properties" class="block w-full h-11 leading-[44px] text-sm font-medium bg-[#e9eaec] hover:bg-gray-300 text-gray-800 border border-[#e9eaec] transition-colors">
+                            34평형 매물보기
+                        </a>
+                    </li>
+                    <li class="flex-1 min-w-[140px] text-center">
+                        <a href="floor_ipark.html" class="block w-full h-11 leading-[44px] text-sm font-medium bg-[#e9eaec] hover:bg-gray-300 text-gray-800 border border-[#e9eaec] transition-colors">
+                            아이파크 평면안내
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Unit Plan Container (sub_img_wrap) -->
+            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mb-10">
+                <!-- Unit Header (루시에르 unit01.jpg 상단 레이아웃 스타일) -->
+                <div class="p-6 sm:p-8 border-b border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-gray-50/50">
+                    <div class="flex items-baseline gap-4">
+                        <div class="text-5xl sm:text-6xl font-black text-gray-900 tracking-tighter">
+                            112<span class="text-3xl sm:text-4xl font-normal text-[#2d3d47] ml-1">㎡</span>
+                        </div>
+                        <div>
+                            <div class="text-lg sm:text-xl font-bold text-gray-800">34평형 단일 타입 (총 1,253세대)</div>
+                            <div class="text-xs sm:text-sm text-gray-500 mt-0.5">전용 84.97㎡ / 공급 112.98㎡ · 판상형 4-Bay 맞통풍 혁신 구조</div>
+                        </div>
+                    </div>
+
+                    <!-- 우측 미니 동배치 안내 박스 (루시에르 우측 상단 미니맵 스타일) -->
+                    <div class="bg-white border border-gray-300 rounded-lg p-3 text-center shrink-0 shadow-xs">
+                        <div class="text-[11px] font-bold text-gray-600 mb-1 border-b pb-1">도안수목토 단지배치도</div>
+                        <div class="flex items-center gap-1.5 text-xs">
+                            <span class="px-2 py-0.5 bg-[#2d3d47] text-white rounded font-bold">전 세대 남향 위주</span>
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded font-semibold">101동 ~ 112동</span>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-2xl font-black text-white mb-3">112㎡ (34평형) 평면도 등록 준비 중</h3>
-                <p class="text-gray-300 text-sm leading-relaxed mb-8">
-                    도안수목토 아파트 112㎡는 채광과 통풍이 우수한 판상형 남향 위주 설계로, <br class="hidden sm:inline">
-                    탁 트인 거실과 넓은 주방 동선, 풍부한 수납공간을 자랑합니다. <br>
-                    정확한 평면도 및 확장형 구조 안내는 대표번호로 문의주시면 친절히 안내해 드립니다.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
-                    <a href="complex.html" class="w-full sm:w-auto px-6 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-sm border border-gray-700 transition-all flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-                        단지배치도 보러가기
-                    </a>
-                    <a href="index.html#properties" class="w-full sm:w-auto px-6 py-3 rounded-full bg-gold hover:bg-gold-dark text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        34평형 매물 보러가기
-                    </a>
+
+                <!-- 면적 제원표 (Area Spec Table - 루시에르 표 스타일) -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 border-b border-gray-200 text-center text-xs sm:text-sm bg-white divide-x divide-gray-200">
+                    <div class="p-3.5">
+                        <span class="text-gray-500 block text-[11px] mb-0.5">전용면적</span>
+                        <strong class="text-gray-900 font-bold text-sm sm:text-base">84.97㎡</strong>
+                    </div>
+                    <div class="p-3.5">
+                        <span class="text-gray-500 block text-[11px] mb-0.5">주거공용</span>
+                        <strong class="text-gray-900 font-bold text-sm sm:text-base">28.01㎡</strong>
+                    </div>
+                    <div class="p-3.5 bg-amber-50/60">
+                        <span class="text-amber-800 block text-[11px] font-bold mb-0.5">공급면적</span>
+                        <strong class="text-amber-900 font-bold text-sm sm:text-base">112.98㎡ (34.17평)</strong>
+                    </div>
+                    <div class="p-3.5">
+                        <span class="text-gray-500 block text-[11px] mb-0.5">기타공용</span>
+                        <strong class="text-gray-900 font-bold text-sm sm:text-base">41.52㎡</strong>
+                    </div>
+                    <div class="p-3.5 col-span-2 sm:col-span-1 bg-gray-50">
+                        <span class="text-gray-500 block text-[11px] mb-0.5">계약면적</span>
+                        <strong class="text-gray-900 font-bold text-sm sm:text-base">154.50㎡</strong>
+                    </div>
+                </div>
+
+                <!-- 메인 도면 영역: 4-Bay 판상형 구조 그래픽 다이어그램 -->
+                <div class="p-6 sm:p-10 bg-[#f9fafb]">
+                    <div class="max-w-[920px] mx-auto bg-white border border-gray-200 rounded-xl p-6 sm:p-8 shadow-sm">
+                        <!-- 도면 상단 라벨 -->
+                        <div class="flex justify-between items-center border-b pb-3 mb-6">
+                            <div>
+                                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">DOAN SUMOKTO 112㎡ UNIT PLAN</span>
+                                <h3 class="text-xl sm:text-2xl font-black text-gray-900">4-Bay 판상형 평면도 (발코니 확장형)</h3>
+                            </div>
+                            <span class="text-xs bg-[#2d3d47] text-white px-3 py-1.5 rounded font-bold">방 3개 / 욕실 2개</span>
+                        </div>
+
+                        <!-- 4베이 판상형 구획 다이어그램 시각화 (도안수목토 정밀 구조) -->
+                        <div class="border-2 border-gray-300 rounded-lg p-4 bg-gray-50/50 mb-6">
+                            <!-- 북측 구획 (상단): 침실3 / 주방&식당 / 다용도실 / 안방 드레스룸&부부욕실 -->
+                            <div class="grid grid-cols-4 gap-2 mb-2 text-center text-xs font-bold">
+                                <div class="bg-slate-200/90 border border-slate-300 py-6 rounded flex flex-col justify-center items-center">
+                                    <span>침실 3</span>
+                                    <span class="text-[10px] text-gray-500 font-normal">Bedroom 3</span>
+                                </div>
+                                <div class="bg-amber-100/90 border border-amber-300 py-6 rounded col-span-2 flex flex-col justify-center items-center">
+                                    <span class="text-amber-900 font-black">주방 & 식당</span>
+                                    <span class="text-[10px] text-amber-700 font-normal">Kitchen & Dining / ㄷ자형 대형 동선</span>
+                                </div>
+                                <div class="bg-slate-200/90 border border-slate-300 py-6 rounded flex flex-col justify-center items-center">
+                                    <span>드레스룸 & 부부욕실</span>
+                                    <span class="text-[10px] text-gray-500 font-normal">Dressroom & Bath</span>
+                                </div>
+                            </div>
+
+                            <!-- 복도 / 현관 / 공용욕실 / 팬트리 -->
+                            <div class="grid grid-cols-4 gap-2 mb-2 text-center text-xs">
+                                <div class="bg-blue-50 border border-blue-200 py-3 rounded flex items-center justify-center font-bold text-blue-900">
+                                    현관 / 신발장
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 py-3 rounded flex items-center justify-center font-bold text-blue-900">
+                                    공용욕실 (욕조)
+                                </div>
+                                <div class="bg-gray-100 border border-gray-200 py-3 rounded col-span-2 flex items-center justify-center text-gray-600 font-medium">
+                                    대형 팬트리 수납장 & 와이드 복도
+                                </div>
+                            </div>
+
+                            <!-- 남측 4-Bay 구획 (하단: 침실1 / 침실2 / 거실 / 안방 침실) -->
+                            <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold">
+                                <div class="bg-slate-100 border border-slate-300 py-10 rounded flex flex-col justify-center items-center">
+                                    <span class="text-sm">침실 1</span>
+                                    <span class="text-[10px] text-gray-500 font-normal">Bedroom 1 (남향)</span>
+                                </div>
+                                <div class="bg-slate-100 border border-slate-300 py-10 rounded flex flex-col justify-center items-center">
+                                    <span class="text-sm">침실 2</span>
+                                    <span class="text-[10px] text-gray-500 font-normal">Bedroom 2 (남향)</span>
+                                </div>
+                                <div class="bg-amber-50 border-2 border-amber-400 py-10 rounded flex flex-col justify-center items-center">
+                                    <span class="text-base text-amber-950 font-black">거 실</span>
+                                    <span class="text-[10px] text-amber-800 font-normal">Living Room / 광폭 거실 (남향)</span>
+                                </div>
+                                <div class="bg-slate-100 border border-slate-300 py-10 rounded flex flex-col justify-center items-center">
+                                    <span class="text-sm">침실 1 (안방)</span>
+                                    <span class="text-[10px] text-gray-500 font-normal">Master Bedroom (남향)</span>
+                                </div>
+                            </div>
+
+                            <!-- 남향 발코니 라인 -->
+                            <div class="mt-2 py-2 bg-emerald-50 border border-emerald-300 rounded text-center text-[11px] text-emerald-800 font-bold">
+                                ▼ 남향 햇살 가득 4-Bay 전면 일조권 확보 라인 (발코니 확장 시공)
+                            </div>
+                        </div>
+
+                        <!-- 3대 특장점 카드 -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div>
+                                <strong class="text-gray-900 block mb-0.5">✓ 4베이 판상형 맞통풍</strong>
+                                거실과 주방 창문이 마주보는 맞통풍 구조로 환기 및 일조 극대화
+                            </div>
+                            <div>
+                                <strong class="text-gray-900 block mb-0.5">✓ 대형 드레스룸 & 수납</strong>
+                                안방 대형 드레스룸 및 현관 대형 수납장 등 풍부한 공간 활용
+                            </div>
+                            <div>
+                                <strong class="text-gray-900 block mb-0.5">✓ 전 세대 남향 위주 배치</strong>
+                                사계절 따뜻한 채광과 탁 트인 조망권을 자랑하는 프리미엄 설계
+                            </div>
+                        </div>
+
+                        <!-- 바로가기 링크 버튼들 -->
+                        <div class="mt-8 flex flex-wrap justify-center gap-3">
+                            <a href="complex.html" class="px-6 py-2.5 rounded bg-[#2d3d47] hover:bg-[#3d515e] text-white text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 shadow">
+                                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                                단지배치도에서 동호수 위치 확인하기
+                            </a>
+                            <a href="index.html#properties" class="px-6 py-2.5 rounded bg-gold hover:bg-gold-dark text-black text-xs sm:text-sm font-extrabold transition-all shadow flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                현재 접수된 34평형 매물 보러가기
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- 하단 유의사항 박스 (루시에르 사이트 .sub_ori 와 100% 동일한 구성) -->
+            <div class="w-full bg-[#f3f3f3] border border-gray-300 rounded p-5 sm:p-6 flex items-start sm:items-center gap-4 text-left">
+                <!-- 원형 안내 인포 아이콘 -->
+                <div class="w-12 h-12 min-w-[48px] rounded-full bg-[#05364b] flex items-center justify-center text-white shrink-0 font-bold text-base shadow">
+                    i
+                </div>
+                <!-- 3대 유의사항 리스트 -->
+                <ul class="space-y-1 text-xs text-[#383838] leading-relaxed">
+                    <li class="flex items-start gap-1.5">
+                        <span class="text-gray-500 font-bold">·</span>
+                        <span>상기 평면도 및 아이소메트릭은 소비자의 이해를 돕기 위해 제작된 것으로 인·허가 과정이나 실제 시공시 상이할 수 있습니다.</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                        <span class="text-gray-500 font-bold">·</span>
+                        <span>상기 전체 및 부분 아이소메트릭은 발코니 확장형으로 유상 및 무상 선택옵션 등이 포함된 기준입니다.</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                        <span class="text-gray-500 font-bold">·</span>
+                        <span>상기 아이소메트릭에 표시된 일부 품목, 제품관련 이미지 사진 등은 소비자의 이해를 돕기 위한 것으로 실제 적용시 변경될 수 있으며, 분양가 제외 품목일 수 있으니 계약시 포함여부를 반드시 확인하시기 바랍니다.</span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </main>
 
