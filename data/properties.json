@@ -44,28 +44,6 @@
     "id": "PROP-206048"
   },
   {
-    "id": "PROP-1002",
-    "type": "주거",
-    "subType": "아파트",
-    "dealType": "전세",
-    "title": "도안 힐스테이트 고층 로얄뷰",
-    "location": "대전광역시 서구 도안동",
-    "price": "4억 5,000만",
-    "priceNumber": 45000,
-    "area": "84㎡ (25평형)",
-    "floor": "22층 / 30층",
-    "tags": "#신축급 #역세권 #시스템에어컨 #융자없음",
-    "description": "도안 핵심 생활권, 학군 및 상권 인접, 융자 없는 안심 전세 매물입니다.",
-    "featured": "Y",
-    "imageUrl": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80"
-    ],
-    "contact": "042-546-4900",
-    "mapImageUrl": "data/map_sample.jpg"
-  },
-  {
     "id": "PROP-1003",
     "type": "주거",
     "subType": "주상복합",
