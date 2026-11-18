@@ -100,9 +100,9 @@
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">매물검색</span>
                     </a>
                     
-                    <!-- 단지안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출) -->
+                    <!-- 단지안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출, 상위 클릭 시 이벤트 없음) -->
                     <div class="relative group shrink-0">
-                        <a href="complex.html" class="whitespace-nowrap text-gold font-bold transition-colors duration-200 text-[15px] shrink-0 flex items-center gap-1 py-2">
+                        <a href="javascript:void(0)" onclick="event.preventDefault()" class="cursor-default whitespace-nowrap text-gold font-bold transition-colors duration-200 text-[15px] shrink-0 flex items-center gap-1 py-2">
                             <span class="border-b-2 border-yellow-400 pb-0.5">단지안내</span>
                             <svg class="w-3.5 h-3.5 text-gold group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -120,9 +120,9 @@
                         </div>
                     </div>
 
-                    <!-- 평면안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출) -->
+                    <!-- 평면안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출, 상위 클릭 시 이벤트 없음) -->
                     <div class="relative group shrink-0">
-                        <a href="floor.html" class="whitespace-nowrap text-gray-300 group-hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium flex items-center gap-1 py-2">
+                        <a href="javascript:void(0)" onclick="event.preventDefault()" class="cursor-default whitespace-nowrap text-gray-300 group-hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium flex items-center gap-1 py-2">
                             <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">평면안내</span>
                             <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-yellow-400 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -182,7 +182,7 @@
             
             <!-- 모바일: 단지안내 (하위 메뉴: 수목토아파트, 아이파크아파트) -->
             <div class="py-1">
-                <a href="complex.html" class="block text-gold font-bold py-1 text-base">단지안내</a>
+                <a href="javascript:void(0)" onclick="event.preventDefault()" class="block text-gold font-bold py-1 text-base cursor-default">단지안내</a>
                 <div class="pl-4 mt-1 space-y-1.5 border-l-2 border-gold/40 ml-1">
                     <a href="complex.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 수목토아파트</a>
                     <a href="complex_ipark.html" class="block text-gold font-bold py-0.5 text-sm">· 아이파크아파트</a>
@@ -191,7 +191,7 @@
 
             <!-- 모바일: 평면안내 (하위 메뉴: 수목토아파트, 아이파크아파트) -->
             <div class="py-1">
-                <a href="floor.html" class="block text-gray-300 hover:text-gold py-1 text-base font-medium">평면안내</a>
+                <a href="javascript:void(0)" onclick="event.preventDefault()" class="block text-gray-300 py-1 text-base font-medium cursor-default">평면안내</a>
                 <div class="pl-4 mt-1 space-y-1.5 border-l-2 border-gold/40 ml-1">
                     <a href="floor.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 수목토아파트</a>
                     <a href="floor_ipark.html" class="block text-gray-300 hover:text-gold py-0.5 text-sm font-medium">· 아이파크아파트</a>
