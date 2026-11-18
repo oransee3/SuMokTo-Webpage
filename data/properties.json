@@ -44,29 +44,6 @@
     "id": "PROP-206048"
   },
   {
-    "id": "PROP-1001",
-    "type": "주거",
-    "subType": "아파트",
-    "dealType": "매매",
-    "title": "도안 수목토 아파트 로얄동",
-    "location": "대전광역시 서구 도안동",
-    "price": "6억 8,000만",
-    "priceNumber": 68000,
-    "area": "112㎡ (34평형)",
-    "floor": "18층 / 25층",
-    "tags": "#남향 #초품아 #탁트인조망 #올수리",
-    "description": "일조권 및 조망이 매우 우수하며 내부 인테리어 올수리되어 즉시 입주 가능합니다.",
-    "featured": "Y",
-    "imageUrl": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
-    ],
-    "contact": "042-546-4900",
-    "mapImageUrl": "data/map_sample.jpg"
-  },
-  {
     "id": "PROP-1002",
     "type": "주거",
     "subType": "아파트",
