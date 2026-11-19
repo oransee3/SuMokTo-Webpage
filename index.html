@@ -104,8 +104,8 @@
                     </div>
                 </div>
 
-                <!-- 상단 중앙 네비게이션: '홈', '추천 매물', '매물검색', '단지안내'(호버 서브메뉴), '평면안내', '고객 등록' -->
-                <nav class="hidden md:flex items-center space-x-4 lg:space-x-7 shrink-0">
+                <!-- 상단 중앙 네비게이션: '홈', '추천 매물', '매물검색', '단지안내'(호버 서브메뉴), '평면안내', '고객 등록', '외부 전달' -->
+                <nav class="hidden md:flex items-center space-x-3 lg:space-x-6 xl:space-x-7 shrink-0">
                     <a href="#home" onclick="UI.scrollToSection('home', event)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">홈</span>
                     </a>
@@ -157,6 +157,9 @@
                     </div>
                     <a href="#consulting" onclick="UI.scrollToSection('consulting', event)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">고객 등록</span>
+                    </a>
+                    <a href="javascript:void(0)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
+                        <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">외부 전달</span>
                     </a>
                 </nav>
 
@@ -212,6 +215,7 @@
                 </div>
             </div>
             <a href="#consulting" onclick="UI.scrollToSection('consulting', event)" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">고객 등록</a>
+            <a href="javascript:void(0)" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">외부 전달</a>
             <button onclick="document.getElementById('brandLogoBtn').click(); document.getElementById('mobileMenu').classList.add('hidden');" class="w-full text-left text-gold font-bold pt-3 pb-1 text-sm border-t border-gray-800 flex items-center gap-2">
                 <span>⚙</span> <span id="mobileAuthText">관계자 모드 (관리자 로그인)</span>
             </button>
