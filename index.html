@@ -158,7 +158,7 @@
                     <a href="#consulting" onclick="UI.scrollToSection('consulting', event)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">고객 등록</span>
                     </a>
-                    <a href="javascript:void(0)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
+                    <a href="javascript:void(0)" onclick="openQrModal()" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center cursor-pointer">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">외부 전달</span>
                     </a>
                 </nav>
@@ -215,7 +215,7 @@
                 </div>
             </div>
             <a href="#consulting" onclick="UI.scrollToSection('consulting', event)" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">고객 등록</a>
-            <a href="javascript:void(0)" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">외부 전달</a>
+            <a href="javascript:void(0)" onclick="openQrModal(); const m=document.getElementById('mobileMenu'); if(m) m.classList.add('hidden');" class="block text-gray-300 hover:text-gold py-2 text-base font-medium cursor-pointer">외부 전달</a>
             <button onclick="document.getElementById('brandLogoBtn').click(); document.getElementById('mobileMenu').classList.add('hidden');" class="w-full text-left text-gold font-bold pt-3 pb-1 text-sm border-t border-gray-800 flex items-center gap-2">
                 <span>⚙</span> <span id="mobileAuthText">관계자 모드 (관리자 로그인)</span>
             </button>
@@ -1075,6 +1075,78 @@
 
         document.getElementById('pwaCloseBtn')?.addEventListener('click', () => {
             document.getElementById('pwaInstallBanner')?.classList.add('hidden');
+        });
+    </script>
+
+    <!-- ========================================== -->
+    <!-- [Modal] 외부 전달 QR 코드 모달                -->
+    <!-- ========================================== -->
+    <div id="qrModal" class="hidden fixed inset-0 z-[200] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeQrModal()">
+        <div class="bg-zinc-900 border border-gold/60 p-6 sm:p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl relative" onclick="event.stopPropagation()">
+            <!-- 닫기 버튼 -->
+            <button type="button" onclick="closeQrModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors" aria-label="닫기">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <!-- 상단 타이틀 -->
+            <div class="mb-4">
+                <span class="inline-block px-3 py-1 rounded-full bg-gold/15 border border-gold/40 text-gold text-xs font-bold mb-2">외부 전달 · 모바일 연동</span>
+                <h3 class="text-xl font-bold text-white">모바일 웹 바로가기</h3>
+                <p class="text-xs text-gray-400 mt-1">스마트폰 카메라로 QR 코드를 스캔하세요</p>
+            </div>
+
+            <!-- 중앙 QR 이미지 -->
+            <div class="bg-white p-4 rounded-2xl inline-block mx-auto shadow-inner border border-gray-200 mb-4">
+                <img src="images/Sumokto_qr_300x300.png" alt="도안 수목토 공인중개사사무소 QR코드" class="w-56 h-56 sm:w-60 sm:h-60 object-contain mx-auto block" />
+            </div>
+
+            <!-- 하단 정보 및 복사 버튼 -->
+            <div class="space-y-2">
+                <p class="text-xs text-gold/90 font-medium">도안 수목토 재벌 공인중개사사무소</p>
+                <button type="button" onclick="copyWebUrl()" class="w-full py-2.5 px-4 bg-gold hover:bg-gold-dark text-black font-bold text-xs rounded-xl transition-all duration-200 shadow-lg flex items-center justify-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    <span id="copyBtnText">웹사이트 링크 복사</span>
+                </button>
+                <button type="button" onclick="closeQrModal()" class="w-full py-2 px-4 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-medium rounded-xl transition-colors cursor-pointer">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Modal Control Script -->
+    <script>
+        function openQrModal() {
+            const m = document.getElementById('qrModal');
+            if (m) {
+                m.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeQrModal() {
+            const m = document.getElementById('qrModal');
+            if (m) {
+                m.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+        function copyWebUrl() {
+            const url = window.location.href.split('#')[0];
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(function() {
+                    const btn = document.getElementById('copyBtnText');
+                    if (btn) {
+                        const orig = btn.innerText;
+                        btn.innerText = '링크가 복사되었습니다!';
+                        setTimeout(function() { btn.innerText = orig; }, 2000);
+                    }
+                }).catch(function() {
+                    prompt('웹사이트 주소를 복사하세요:', url);
+                });
+            } else {
+                prompt('웹사이트 주소를 복사하세요:', url);
+            }
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeQrModal();
         });
     </script>
 </body>
