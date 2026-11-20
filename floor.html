@@ -237,7 +237,13 @@
         </div>
 
         <!-- 평면도 하단 박스 (흰색) -->
-        <div id="floor-display-box" class="w-full bg-white rounded-2xl min-h-[500px] sm:min-h-[600px] border border-gray-200 shadow-xl overflow-hidden flex items-center justify-center p-6">
+        <div id="floor-display-box" class="w-full bg-white rounded-2xl min-h-[500px] sm:min-h-[650px] border border-gray-200 shadow-xl overflow-hidden flex items-center justify-center p-4 sm:p-8">
+            <div id="plan-view-A" class="floor-plan-view w-full flex items-center justify-center">
+                <img src="images/A-Type-Plan03.png" alt="도안수목토 아파트 A-Type 평면도 (84.99㎡)" class="max-w-full max-h-[80vh] w-auto h-auto object-contain mx-auto block drop-shadow-sm transition-transform duration-300">
+            </div>
+            <div id="plan-view-B" class="floor-plan-view hidden w-full"></div>
+            <div id="plan-view-C" class="floor-plan-view hidden w-full"></div>
+            <div id="plan-view-D" class="floor-plan-view hidden w-full"></div>
         </div>
     </main>
 
@@ -313,6 +319,15 @@
                     btn.className = 'type-tab-btn bg-black/50 py-2.5 px-3 rounded-lg sm:rounded-xl border-2 border-gray-800/80 hover:border-gray-600 flex flex-col justify-center items-center transition-colors duration-150 cursor-pointer text-center w-full h-16 sm:h-[72px] box-border focus:outline-none';
                     if (title) title.className = 'text-sm sm:text-base font-bold text-white block mb-0.5';
                     if (count) count.className = 'text-[11px] sm:text-xs font-normal text-gray-400 block';
+                }
+
+                const view = document.getElementById('plan-view-' + t);
+                if (view) {
+                    if (t === typeKey) {
+                        view.classList.remove('hidden');
+                    } else {
+                        view.classList.add('hidden');
+                    }
                 }
             });
         }
