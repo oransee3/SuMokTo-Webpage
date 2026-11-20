@@ -1,0 +1,12 @@
+# Robots.txt for https://sumokto-webpage.vercel.app/
+User-agent: *
+Allow: /
+
+# Googlebot specific
+User-agent: Googlebot
+Allow: /
+User-agent: Googlebot-Image
+Allow: /images/
+
+# Sitemaps
+Sitemap: https://sumokto-webpage.vercel.app/sitemap.xml
