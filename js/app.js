@@ -1562,7 +1562,104 @@ const UI = {
       return;
     }
 
-    container.innerHTML = list.map(item => this.createPropertyCardHTML(item, isLoggedIn)).join('');
+    container.innerHTML = list.map(item => this.createFeaturedCardHTML(item, isLoggedIn)).join('');
+  },
+
+  // '추천 매물' 전용 깔끔한 콤팩트 카드 HTML 생성 ('매물 상세 설명', '문의 연락처/번호', '배치도/상세', '문의하기' 제외)
+  createFeaturedCardHTML(p, isLoggedIn) {
+    const dealBadgeColor = p.dealType === '매매' ? 'bg-gold/90 text-black border-gold' : 
+                          p.dealType === '전세' ? 'bg-blue-600/90 text-white border-blue-400' : 
+                          'bg-emerald-600/90 text-white border-emerald-400';
+
+    const tagsArray = this.parseTags(p.tags);
+    const tagsHTML = tagsArray.map(tag => `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-0.5 rounded">${tag}</span>`).join(' ');
+
+    const adminButtons = isLoggedIn ? `
+      <div class="border-t border-dark-border pt-3 mt-3 flex justify-end gap-2" onclick="event.stopPropagation()">
+        <button onclick="UI.openEditPropertyModal('${p.id}')" class="px-3 py-1 bg-gray-800 hover:bg-gold hover:text-black text-gray-200 text-xs rounded transition-colors duration-200 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          수정
+        </button>
+        <button onclick="UI.deleteProperty('${p.id}')" class="px-3 py-1 bg-red-950 hover:bg-red-700 text-red-300 hover:text-white text-xs rounded transition-colors duration-200 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          삭제
+        </button>
+      </div>
+    ` : '';
+
+    const mainThumb = (p.images && p.images.length > 0) ? p.images[0] : (p.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80');
+    const imageCount = (p.images && p.images.length > 0) ? p.images.length : (p.imageUrl ? 1 : 0);
+
+    return `
+      <div class="property-card bg-dark-card rounded-2xl overflow-hidden border border-dark-border hover:border-gold/60 transition-all duration-300 group flex flex-col justify-between cursor-pointer shadow-lg hover:shadow-2xl" onclick="UI.showPropertyDetail('${p.id}')">
+        <div>
+          <div class="relative aspect-16-9 w-full overflow-hidden">
+            <img src="${mainThumb}" 
+                 onerror="this.src='https://placehold.co/800x600/222222/D4AF37?text=Real+Estate'"
+                 alt="${p.title}" 
+                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute top-4 left-4 flex gap-2">
+              <span class="${dealBadgeColor} text-xs font-bold px-3 py-1 rounded-full border shadow-md">
+                ${p.dealType}
+              </span>
+              <span class="bg-black/75 text-gray-200 text-xs px-2.5 py-1 rounded-full border border-gray-700">
+                ${p.type} · ${p.subType}
+              </span>
+            </div>
+            <div class="absolute top-4 right-4 flex gap-1.5 items-center">
+              ${p.mapImageUrl ? `
+                <div class="bg-black/85 text-emerald-400 border border-emerald-500/50 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow backdrop-blur-sm" title="주변 현황 지도 첨부됨">
+                  📍 지도
+                </div>
+              ` : ''}
+              <div class="bg-gold/90 text-black text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
+                ★ 추천
+              </div>
+            </div>
+            ${imageCount > 1 ? `
+              <div class="absolute bottom-3 right-3 bg-black/85 text-gray-200 text-[10px] font-bold px-2 py-0.5 rounded-md border border-gray-700 flex items-center gap-1 backdrop-blur-sm">
+                <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                ${imageCount}장
+              </div>
+            ` : ''}
+          </div>
+          
+          <div class="p-5 sm:p-6">
+            <div class="flex justify-between items-start mb-1.5">
+              <h4 class="text-xl font-bold text-white group-hover:text-gold transition-colors">
+                ${p.title}
+              </h4>
+            </div>
+            <p class="text-gray-400 text-sm mb-3 flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              ${p.location}
+            </p>
+            <div class="mb-3.5">
+              <span class="text-2xl font-bold text-gradient-gold">${p.price}</span>
+            </div>
+            
+            <div class="flex items-center gap-4 text-sm text-gray-300 py-2.5 border-y border-dark-border mb-3">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                ${p.area}
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                ${p.floor}
+              </span>
+            </div>
+
+            ${tagsArray.length > 0 ? `
+              <div class="flex gap-1.5 flex-wrap">
+                ${tagsHTML}
+              </div>
+            ` : ''}
+
+            ${adminButtons}
+          </div>
+        </div>
+      </div>
+    `;
   },
 
   // 태그 문자열 파싱 헬퍼 (공백, 쉼표, 슬래시, # 등 모든 형식 지원 및 입력 글씨 100% 노출)
