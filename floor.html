@@ -281,14 +281,23 @@
                 </div>
                 <!-- B-Type 사진 갤러리 (16:9 메인 큰 사진 + 하단 미리보기 썸네일 11개 1행 나열) -->
                 <div id="photo-view-B" class="floor-photo-view hidden w-full h-full flex flex-col justify-center gap-2.5 sm:gap-3">
-                    <!-- 상단: 16:9 비율의 메인 큰 사진 -->
-                    <div class="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-black/5 shadow-md border border-gray-200 flex items-center justify-center">
+                    <!-- 상단: 16:9 비율의 메인 큰 사진 (모바일 손으로 좌/우 밀어서 보기 지원) -->
+                    <div id="bTypeMainPhotoBox" class="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-black/5 shadow-md border border-gray-200 flex items-center justify-center select-none touch-pan-y cursor-grab active:cursor-grabbing">
                         <img id="bTypeMainPhoto" 
                              src="images/b_type/1_2K.jpg" 
                              alt="도안수목토 아파트 B-Type 세대 사진" 
-                             class="w-full h-full object-cover transition-opacity duration-200">
+                             class="w-full h-full object-cover transition-opacity duration-200 pointer-events-none">
+                        
+                        <!-- 좌우 넘김 보조 버튼 (터치 및 클릭) -->
+                        <button type="button" onclick="swipeBTypePhoto(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all backdrop-blur-xs opacity-70 hover:opacity-100 z-10 focus:outline-none" aria-label="이전 사진">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                        </button>
+                        <button type="button" onclick="swipeBTypePhoto(1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all backdrop-blur-xs opacity-70 hover:opacity-100 z-10 focus:outline-none" aria-label="다음 사진">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+
                         <div id="bTypePhotoBadge" 
-                             class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-md font-medium border border-white/20 shadow">
+                             class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-md font-medium border border-white/20 shadow pointer-events-none">
                             B-Type 세대 사진 (1/11)
                         </div>
                     </div>
@@ -440,8 +449,13 @@
             });
         }
 
+        // B-Type 현재 사진 인덱스 및 전체 수 관리
+        let currentBTypeIdx = 1;
+        const totalBTypePhotos = 11;
+
         // B-Type 사진 갤러리 전환 함수
         function changeBTypePhoto(idx) {
+            currentBTypeIdx = idx;
             const mainImg = document.getElementById('bTypeMainPhoto');
             const badge = document.getElementById('bTypePhotoBadge');
             if (mainImg) {
@@ -459,6 +473,59 @@
                     btn.className = 'b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-red-400 hover:border-red-600 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer opacity-70 hover:opacity-100 hover:scale-[1.02]';
                 }
             });
+        }
+
+        // 이전/다음 사진 넘김 함수
+        function swipeBTypePhoto(dir) {
+            let target = currentBTypeIdx + dir;
+            if (target > totalBTypePhotos) target = 1;
+            if (target < 1) target = totalBTypePhotos;
+            changeBTypePhoto(target);
+        }
+
+        // 모바일 손으로 사진 좌/우 밀어서 보기 (터치 스와이프 제스처 이벤트 리스너)
+        function initBTypePhotoSwipe() {
+            const container = document.getElementById('bTypeMainPhotoBox');
+            if (!container) return;
+
+            let startX = 0;
+            let startY = 0;
+            let isSwiping = false;
+
+            container.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 1) {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isSwiping = true;
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchend', function(e) {
+                if (!isSwiping || e.changedTouches.length === 0) return;
+                isSwiping = false;
+
+                const endX = e.changedTouches[0].clientX;
+                const endY = e.changedTouches[0].clientY;
+                const diffX = endX - startX;
+                const diffY = endY - startY;
+
+                // 좌우 수평 스와이프 판단 (최소 30px 이동 및 수평 이동폭이 수직 이동폭보다 클 때)
+                if (Math.abs(diffX) > 30 && Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX < 0) {
+                        // 손으로 왼쪽으로 밂 -> 다음 사진으로 전환
+                        swipeBTypePhoto(1);
+                    } else {
+                        // 손으로 오른쪽으로 밂 -> 이전 사진으로 전환
+                        swipeBTypePhoto(-1);
+                    }
+                }
+            }, { passive: true });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initBTypePhotoSwipe);
+        } else {
+            initBTypePhotoSwipe();
         }
 
         function openQrModal() {
