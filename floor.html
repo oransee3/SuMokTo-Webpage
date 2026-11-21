@@ -272,11 +272,11 @@
                 <div id="plan-view-D" class="floor-plan-view hidden w-full"></div>
             </div>
 
-            <!-- [오른쪽 흰색 영역]: 세대 및 단지 사진 배치 영역 (가로 대폭 확대 및 16:9 메인 사진 극대화) -->
-            <div id="floor-photo-box" class="w-full bg-white rounded-2xl h-[460px] sm:h-[550px] border border-gray-200 shadow-xl overflow-hidden flex items-center justify-center p-3 sm:p-5 relative">
+            <!-- [오른쪽 흰색 영역]: 세대 및 단지 사진 배치 영역 (모바일 상하 여백 최적화 h-auto, 데스크톱 sm:h-[550px]) -->
+            <div id="floor-photo-box" class="w-full bg-white rounded-2xl h-auto sm:h-[550px] border border-gray-200 shadow-xl overflow-hidden flex items-center justify-center p-2.5 sm:p-5 relative">
                 <!-- A-Type 사진 (필요에 따라 src 속성에 세대 실내 사진 등을 교체하여 배치하실 수 있습니다) -->
                 <div id="photo-view-A" class="floor-photo-view w-full h-full flex items-center justify-center relative">
-                    <img src="images/view_2k.jpg" onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';" alt="도안수목토 아파트 A-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
+                    <img src="images/view_2k.jpg" onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';" alt="도안수목토 아파트 A-Type 전경 사진" class="w-full h-full aspect-[16/9] sm:aspect-auto object-cover rounded-xl shadow-sm">
                     <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">A-Type 단지 전경</div>
                 </div>
                 <!-- B-Type 사진 갤러리 (16:9 메인 큰 사진 + 하단 미리보기 썸네일 11개 1행 나열) -->
@@ -334,12 +334,12 @@
                 </div>
                 <!-- C-Type 사진 -->
                 <div id="photo-view-C" class="floor-photo-view hidden w-full h-full flex items-center justify-center relative">
-                    <img src="images/view_2k.jpg" onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';" alt="도안수목토 아파트 C-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
+                    <img src="images/view_2k.jpg" onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';" alt="도안수목토 아파트 C-Type 전경 사진" class="w-full h-full aspect-[16/9] sm:aspect-auto object-cover rounded-xl shadow-sm">
                     <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">C-Type 단지 전경</div>
                 </div>
                 <!-- D-Type 사진 -->
                 <div id="photo-view-D" class="floor-photo-view hidden w-full h-full flex items-center justify-center relative">
-                    <img src="images/preview_complex.jpg" onerror="this.onerror=null; this.src='images/view_2k.jpg';" alt="도안수목토 아파트 D-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
+                    <img src="images/preview_complex.jpg" onerror="this.onerror=null; this.src='images/view_2k.jpg';" alt="도안수목토 아파트 D-Type 전경 사진" class="w-full h-full aspect-[16/9] sm:aspect-auto object-cover rounded-xl shadow-sm">
                     <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">D-Type 단지 전경</div>
                 </div>
             </div>
