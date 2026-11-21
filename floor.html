@@ -246,18 +246,45 @@
             </button>
         </div>
 
-        <!-- 평면도 하단 박스 (흰색) - 모든 Type에서 일관된 고정 크기 유지 -->
-        <div id="floor-display-box" class="w-full bg-white rounded-2xl h-[460px] sm:h-[540px] border border-gray-200 shadow-xl overflow-hidden flex items-center justify-center p-3 sm:p-5">
-            <div id="plan-view-A" class="floor-plan-view w-full max-w-2xl mx-auto flex items-center justify-center py-1 relative -top-[4px]">
-                <img src="images/A-Type-Plan03.png?v=20261122_0455" alt="도안수목토 아파트 A-Type 평면도 (84.99㎡)" class="w-full sm:w-auto max-w-[340px] sm:max-w-[610px] max-h-[380px] sm:max-h-[480px] h-auto object-contain mx-auto block drop-shadow-sm scale-[1.235] sm:scale-100 origin-center">
+        <!-- 평면도 및 사진 디스플레이 영역 (PC/데스크톱: 2개 분할 배치, 모바일: 단일/스택 배치) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
+            <!-- [왼쪽 흰색 영역]: 평면도 이미지 -->
+            <div id="floor-display-box" class="w-full bg-white rounded-2xl h-[460px] sm:h-[540px] border border-gray-200 shadow-xl overflow-hidden flex items-center justify-center p-3 sm:p-5 relative">
+                <div id="plan-view-A" class="floor-plan-view w-full max-w-2xl mx-auto flex items-center justify-center py-1 relative -top-[4px]">
+                    <img src="images/A-Type-Plan03.png?v=20261122_0455" alt="도안수목토 아파트 A-Type 평면도 (84.99㎡)" class="w-full sm:w-auto max-w-[340px] sm:max-w-[610px] max-h-[380px] sm:max-h-[480px] h-auto object-contain mx-auto block drop-shadow-sm scale-[1.235] sm:scale-100 origin-center">
+                </div>
+                <div id="plan-view-B" class="floor-plan-view hidden w-full max-w-2xl mx-auto flex items-center justify-center h-full">
+                    <img src="images/B-Type-Plan03.png" alt="도안수목토 아파트 B-Type 평면도 (84.98㎡)" class="max-w-[520px] sm:max-w-[620px] max-h-[420px] sm:max-h-[490px] w-auto h-full object-contain mx-auto block drop-shadow-sm">
+                </div>
+                <div id="plan-view-C" class="floor-plan-view hidden w-full max-w-2xl mx-auto flex items-center justify-center h-full">
+                    <img src="images/C-Type-Plan03.png?v=20261122_0500" alt="도안수목토 아파트 C-Type 평면도 (84.93㎡)" class="max-w-full sm:max-w-[560px] max-h-[350px] sm:max-h-[440px] w-auto h-auto object-contain mx-auto block drop-shadow-sm scale-[1.23] sm:scale-100 -translate-x-[9px] sm:translate-x-0 origin-center">
+                </div>
+                <div id="plan-view-D" class="floor-plan-view hidden w-full"></div>
             </div>
-            <div id="plan-view-B" class="floor-plan-view hidden w-full max-w-2xl mx-auto flex items-center justify-center h-full">
-                <img src="images/B-Type-Plan03.png" alt="도안수목토 아파트 B-Type 평면도 (84.98㎡)" class="max-w-[520px] sm:max-w-[620px] max-h-[420px] sm:max-h-[490px] w-auto h-full object-contain mx-auto block drop-shadow-sm">
+
+            <!-- [오른쪽 흰색 영역]: 세대 및 단지 사진 배치 영역 -->
+            <div id="floor-photo-box" class="w-full bg-white rounded-2xl h-[460px] sm:h-[540px] border border-gray-200 shadow-xl overflow-hidden flex items-center justify-center p-3 sm:p-5 relative">
+                <!-- A-Type 사진 (필요에 따라 src 속성에 세대 실내 사진 등을 교체하여 배치하실 수 있습니다) -->
+                <div id="photo-view-A" class="floor-photo-view w-full h-full flex items-center justify-center relative">
+                    <img src="images/view_2k.jpg" onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';" alt="도안수목토 아파트 A-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
+                    <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">A-Type 단지 전경</div>
+                </div>
+                <!-- B-Type 사진 -->
+                <div id="photo-view-B" class="floor-photo-view hidden w-full h-full flex items-center justify-center relative">
+                    <img src="images/bird_view_2k.jpg" onerror="this.onerror=null; this.src='images/단지조감도_2K.jpg';" alt="도안수목토 아파트 B-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
+                    <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">B-Type 단지 전경</div>
+                </div>
+                <!-- C-Type 사진 -->
+                <div id="photo-view-C" class="floor-photo-view hidden w-full h-full flex items-center justify-center relative">
+                    <img src="images/view_2k.jpg" onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';" alt="도안수목토 아파트 C-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
+                    <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">C-Type 단지 전경</div>
+                </div>
+                <!-- D-Type 사진 -->
+                <div id="photo-view-D" class="floor-photo-view hidden w-full h-full flex items-center justify-center relative">
+                    <img src="images/preview_complex.jpg" onerror="this.onerror=null; this.src='images/view_2k.jpg';" alt="도안수목토 아파트 D-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
+                    <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">D-Type 단지 전경</div>
+                </div>
             </div>
-            <div id="plan-view-C" class="floor-plan-view hidden w-full max-w-2xl mx-auto flex items-center justify-center h-full">
-                <img src="images/C-Type-Plan03.png?v=20261122_0500" alt="도안수목토 아파트 C-Type 평면도 (84.93㎡)" class="max-w-full sm:max-w-[560px] max-h-[350px] sm:max-h-[440px] w-auto h-auto object-contain mx-auto block drop-shadow-sm scale-[1.23] sm:scale-100 -translate-x-[9px] sm:translate-x-0 origin-center">
-            </div>
-            <div id="plan-view-D" class="floor-plan-view hidden w-full"></div>
         </div>
     </main>
 
@@ -341,6 +368,15 @@
                         view.classList.remove('hidden');
                     } else {
                         view.classList.add('hidden');
+                    }
+                }
+
+                const photoView = document.getElementById('photo-view-' + t);
+                if (photoView) {
+                    if (t === typeKey) {
+                        photoView.classList.remove('hidden');
+                    } else {
+                        photoView.classList.add('hidden');
                     }
                 }
             });
