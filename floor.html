@@ -269,10 +269,58 @@
                     <img src="images/view_2k.jpg" onerror="this.onerror=null; this.src='images/단지투시도_2K.jpg';" alt="도안수목토 아파트 A-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
                     <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">A-Type 단지 전경</div>
                 </div>
-                <!-- B-Type 사진 -->
-                <div id="photo-view-B" class="floor-photo-view hidden w-full h-full flex items-center justify-center relative">
-                    <img src="images/bird_view_2k.jpg" onerror="this.onerror=null; this.src='images/단지조감도_2K.jpg';" alt="도안수목토 아파트 B-Type 전경 사진" class="w-full h-full object-cover rounded-xl shadow-sm">
-                    <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/20">B-Type 단지 전경</div>
+                <!-- B-Type 사진 갤러리 (16:9 메인 큰 사진 + 하단 미리보기 썸네일 11개) -->
+                <div id="photo-view-B" class="floor-photo-view hidden w-full h-full flex flex-col justify-center gap-2.5 sm:gap-3">
+                    <!-- 상단: 16:9 비율의 메인 큰 사진 -->
+                    <div class="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-black/5 shadow-md border border-gray-200 flex items-center justify-center">
+                        <img id="bTypeMainPhoto" 
+                             src="images/b_type/1_2K.jpg" 
+                             alt="도안수목토 아파트 B-Type 세대 사진" 
+                             class="w-full h-full object-cover transition-opacity duration-200">
+                        <div id="bTypePhotoBadge" 
+                             class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-md font-medium border border-white/20 shadow">
+                            B-Type 세대 사진 (1/11)
+                        </div>
+                    </div>
+
+                    <!-- 하단: 미리보기 작은 썸네일 이미지 목록 (11개) -->
+                    <div class="w-full">
+                        <div class="grid grid-cols-6 gap-1.5 sm:gap-2">
+                            <button type="button" onclick="changeBTypePhoto(1)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-gold ring-2 ring-gold shadow-md focus:outline-none transition-all duration-150 cursor-pointer opacity-100 scale-[1.03]" data-idx="1" title="B-Type 사진 1">
+                                <img src="images/b_type/1_2K.jpg" alt="B-Type 썸네일 1" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(2)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="2" title="B-Type 사진 2">
+                                <img src="images/b_type/2_2K.jpg" alt="B-Type 썸네일 2" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(3)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="3" title="B-Type 사진 3">
+                                <img src="images/b_type/3_2K.jpg" alt="B-Type 썸네일 3" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(4)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="4" title="B-Type 사진 4">
+                                <img src="images/b_type/4_2K.jpg" alt="B-Type 썸네일 4" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(5)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="5" title="B-Type 사진 5">
+                                <img src="images/b_type/5_2K.jpg" alt="B-Type 썸네일 5" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(6)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="6" title="B-Type 사진 6">
+                                <img src="images/b_type/6_2K.jpg" alt="B-Type 썸네일 6" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(7)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="7" title="B-Type 사진 7">
+                                <img src="images/b_type/7_2K.jpg" alt="B-Type 썸네일 7" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(8)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="8" title="B-Type 사진 8">
+                                <img src="images/b_type/8_2K.jpg" alt="B-Type 썸네일 8" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(9)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="9" title="B-Type 사진 9">
+                                <img src="images/b_type/9_2K.jpg" alt="B-Type 썸네일 9" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(10)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="10" title="B-Type 사진 10">
+                                <img src="images/b_type/10_2K.jpg" alt="B-Type 썸네일 10" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="changeBTypePhoto(11)" class="b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer group opacity-60 hover:opacity-100 hover:scale-[1.02]" data-idx="11" title="B-Type 사진 11">
+                                <img src="images/b_type/11_2K.jpg" alt="B-Type 썸네일 11" class="w-full h-full object-cover">
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <!-- C-Type 사진 -->
                 <div id="photo-view-C" class="floor-photo-view hidden w-full h-full flex items-center justify-center relative">
@@ -378,6 +426,27 @@
                     } else {
                         photoView.classList.add('hidden');
                     }
+                }
+            });
+        }
+
+        // B-Type 사진 갤러리 전환 함수
+        function changeBTypePhoto(idx) {
+            const mainImg = document.getElementById('bTypeMainPhoto');
+            const badge = document.getElementById('bTypePhotoBadge');
+            if (mainImg) {
+                mainImg.src = 'images/b_type/' + idx + '_2K.jpg';
+            }
+            if (badge) {
+                badge.textContent = 'B-Type 세대 사진 (' + idx + '/11)';
+            }
+            const thumbs = document.querySelectorAll('.b-type-thumb');
+            thumbs.forEach(function(btn) {
+                const btnIdx = parseInt(btn.getAttribute('data-idx'));
+                if (btnIdx === idx) {
+                    btn.className = 'b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-gold ring-2 ring-gold shadow-md focus:outline-none transition-all duration-150 cursor-pointer opacity-100 scale-[1.03]';
+                } else {
+                    btn.className = 'b-type-thumb relative aspect-[16/9] rounded-md sm:rounded-lg overflow-hidden border-2 border-transparent hover:border-gold/60 shadow-sm focus:outline-none transition-all duration-150 cursor-pointer opacity-60 hover:opacity-100 hover:scale-[1.02]';
                 }
             });
         }
