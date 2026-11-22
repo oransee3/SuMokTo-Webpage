@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v3 - 캐시 갱신 및 최신 데이터 즉시 반영)
-const CACHE_NAME = 'sumokto-chebol-v3';
+// 도안수목토 재벌부동산 PWA Service Worker (v4 - 캐시 갱신 및 최신 데이터 즉시 반영)
+const CACHE_NAME = 'sumokto-chebol-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

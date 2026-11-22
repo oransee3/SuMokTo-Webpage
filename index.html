@@ -1284,13 +1284,13 @@
     </div>
 
     <!-- Main Application Script -->
-    <script src="js/app.js?v=20261120_FEATURED_CLEAN"></script>
+    <script src="js/app.js?v=20261123_FLOORTYPE_FINAL"></script>
 
     <!-- PWA Service Worker Registration Script -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js?v=20261116_FINAL')
+                navigator.serviceWorker.register('/sw.js?v=20261123_FINAL')
                     .then((reg) => {
                         console.log('[PWA] Service Worker registered with scope:', reg.scope);
                         reg.update();
