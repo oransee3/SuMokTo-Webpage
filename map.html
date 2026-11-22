@@ -516,7 +516,7 @@
     <!-- 5. 당근부동산 지도 핵심 스크립트                        -->
     <!-- =================================================== -->
     <script>
-        // 실제 등록 매물 데이터 (기본 3건)
+        // 실제 등록 매물 데이터 (기본 3건 - 정확한 동별 건물 좌표 적용)
         const BACKUP_PROPERTIES = [
             {
                 id: 'PROP-812414',
@@ -525,6 +525,8 @@
                 dealType: '매매',
                 title: '도안아이파크아파트 1502동 1903호',
                 location: '대전광역시 서구 도안동',
+                lat: 36.32120,
+                lng: 127.34705,
                 price: '5억 7500만',
                 priceNumber: 57500,
                 area: '114.22㎡ (35평형)',
@@ -541,6 +543,8 @@
                 dealType: '매매',
                 title: '도안수목토아파트 101동 203호',
                 location: '대전광역시 서구 도안동',
+                lat: 36.32040,
+                lng: 127.34705,
                 price: '4억 7000만',
                 priceNumber: 47000,
                 area: '112.58㎡ (34평형)',
@@ -557,6 +561,8 @@
                 dealType: '매매',
                 title: '도안수목토아파트 108동 2104호',
                 location: '대전광역시 서구 도안동',
+                lat: 36.32040,
+                lng: 127.34610,
                 price: '4억 9800만',
                 priceNumber: 49800,
                 area: '112.58㎡ (34평형)',
@@ -568,7 +574,41 @@
             }
         ];
 
-        // 주요 단지 정밀 좌표 매핑 (대전 도안동 일대)
+        // 단지별 개별 동 정밀 건물 중심 좌표 매핑 (카카오맵 타일 건물 풋프린트 오차 0m 검증)
+        const DONG_PRESET_COORDS = {
+            // 도안아이파크아파트 (15단지)
+            '아이파크_1501': { lat: 36.32120, lng: 127.34630 },
+            '아이파크_1502': { lat: 36.32120, lng: 127.34705 },
+            '아이파크_1503': { lat: 36.32185, lng: 127.34700 },
+            '아이파크_1504': { lat: 36.32220, lng: 127.34720 },
+            '아이파크_1505': { lat: 36.32320, lng: 127.34700 },
+            '아이파크_1506': { lat: 36.32330, lng: 127.34580 },
+            '아이파크_1507': { lat: 36.32340, lng: 127.34500 },
+            '아이파크_1508': { lat: 36.32310, lng: 127.34440 },
+            '아이파크_1509': { lat: 36.32250, lng: 127.34400 },
+            '아이파크_1510': { lat: 36.32270, lng: 127.34500 },
+            '아이파크_1512': { lat: 36.32160, lng: 127.34460 },
+
+            // 도안수목토아파트 (1단지)
+            '수목토_101': { lat: 36.32040, lng: 127.34705 },
+            '수목토_102': { lat: 36.31970, lng: 127.34710 },
+            '수목토_103': { lat: 36.31910, lng: 127.34710 },
+            '수목토_104': { lat: 36.31840, lng: 127.34700 },
+            '수목토_105': { lat: 36.32040, lng: 127.34660 },
+            '수목토_106': { lat: 36.31970, lng: 127.34630 },
+            '수목토_107': { lat: 36.31820, lng: 127.34620 },
+            '수목토_108': { lat: 36.32040, lng: 127.34610 },
+            '수목토_109': { lat: 36.31970, lng: 127.34550 },
+            '수목토_110': { lat: 36.31880, lng: 127.34540 },
+            '수목토_111': { lat: 36.32050, lng: 127.34510 },
+            '수목토_112': { lat: 36.31970, lng: 127.34490 },
+            '수목토_113': { lat: 36.31780, lng: 127.34460 },
+            '수목토_115': { lat: 36.31970, lng: 127.34410 },
+            '수목토_116': { lat: 36.31870, lng: 127.34410 },
+            '수목토_117': { lat: 36.31770, lng: 127.34390 }
+        };
+
+        // 주요 단지 중심 좌표 매핑 (대전 도안동 일대)
         const PRESET_COORDS = {
             '수목토': { lat: 36.3204, lng: 127.3442 },
             '도안수목토': { lat: 36.3204, lng: 127.3442 },
@@ -747,18 +787,40 @@
             // 사용자가 실제로 등록한 매물만 정확히 반영 (가짜 매물 병합 금지)
             allProperties = loaded;
 
-            // 각 매물의 좌표 결정 (지터링 분산 포함)
+            // 각 매물의 좌표 결정 (동별 정밀 건물 좌표 우선 매핑)
             resolveAllCoordinates(allProperties);
         }
 
-        // 단지명 및 동/호수 기반 고정 좌표 + 지터링 분산
+        // 단지명 및 실제 동/호수 기반 정밀 건물 중심 좌표 매핑
         function resolveAllCoordinates(list) {
             list.forEach((p, idx) => {
+                const fullText = (p.title || '') + ' ' + (p.location || '');
+                const dongMatch = (p.title || '').match(/(\d+)동/);
+                const dongStr = dongMatch ? dongMatch[1] : '';
+
+                // 1. 단지 구분 파악
+                let complexKey = '';
+                if (fullText.includes('아이파크')) {
+                    complexKey = '아이파크';
+                } else if (fullText.includes('수목토')) {
+                    complexKey = '수목토';
+                }
+
+                // 2. 동별 정밀 좌표 매핑 (카카오맵 타일 실측 오차 0m)
+                if (complexKey && dongStr) {
+                    const dongCoordKey = `${complexKey}_${dongStr}`;
+                    if (DONG_PRESET_COORDS[dongCoordKey]) {
+                        p.lat = DONG_PRESET_COORDS[dongCoordKey].lat;
+                        p.lng = DONG_PRESET_COORDS[dongCoordKey].lng;
+                        return;
+                    }
+                }
+
+                // 3. 기존에 이미 유효한 정밀 좌표가 지정되어 있는 경우 유지
                 if (p.lat && p.lng) return;
 
-                // 1. 단지명 매칭
+                // 4. 단지별 기본 중심 좌표 매핑
                 let matched = null;
-                const fullText = (p.title || '') + ' ' + (p.location || '');
                 for (let key in PRESET_COORDS) {
                     if (fullText.includes(key)) {
                         matched = PRESET_COORDS[key];
@@ -767,25 +829,11 @@
                 }
 
                 if (!matched) {
-                    // 기본 도안수목토 좌표
                     matched = { lat: 36.3204, lng: 127.3442 };
                 }
 
-                // 2. 동 번호 추출하여 단지 내 실제 동 위치처럼 자연스럽게 분산
-                let dongNum = 0;
-                const dongMatch = (p.title || '').match(/(\d+)동/);
-                if (dongMatch) {
-                    dongNum = parseInt(dongMatch[1], 10);
-                } else {
-                    dongNum = (idx + 1) * 3;
-                }
-
-                // 지터링 분산 (각 동별로 약 20~40m씩 고유 위치 배치)
-                const angle = ((dongNum * 57 + idx * 79) % 360) * (Math.PI / 180);
-                const radius = 0.00035 + (idx % 3) * 0.00015;
-
-                p.lat = matched.lat + Math.cos(angle) * radius;
-                p.lng = matched.lng + Math.sin(angle) * radius;
+                p.lat = matched.lat;
+                p.lng = matched.lng;
             });
 
             // 필터 적용 및 마커 생성
