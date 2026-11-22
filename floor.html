@@ -58,6 +58,115 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css?v=20261116_FINAL">
     <style>
+        /* 모니터 및 노트북 환경 가로 짤림 방지 및 유동형 자동 맞춤 */
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        /* 1024px ~ 1300px: 소형~일반 노트북 (13~14인치, Windows 배율 125%~150%) */
+        @media (min-width: 1024px) and (max-width: 1300px) {
+            .nav-item-text {
+                font-size: 11.5px !important;
+                letter-spacing: -0.03em !important;
+                padding-left: 2px !important;
+                padding-right: 2px !important;
+            }
+            .brand-title-wrap {
+                font-size: 13.5px !important;
+                letter-spacing: -0.03em !important;
+            }
+            .brand-title-bold {
+                font-size: 15.5px !important;
+                margin-left: 1px !important;
+                margin-right: 1px !important;
+            }
+            .brand-logo-img {
+                width: 28px !important;
+                height: 28px !important;
+                margin-right: 4px !important;
+            }
+            .nav-container {
+                gap: 0.15rem !important;
+            }
+            .header-action-btn {
+                padding: 4px 6px !important;
+                font-size: 10.5px !important;
+                letter-spacing: -0.02em !important;
+            }
+            .header-action-btn svg, .header-action-btn img {
+                width: 12px !important;
+                height: 12px !important;
+            }
+            .header-inner {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+        }
+
+        /* 1301px ~ 1480px: 일반 노트북 및 14~15인치 모니터 (1366px, 1440px 등) */
+        @media (min-width: 1301px) and (max-width: 1480px) {
+            .nav-item-text {
+                font-size: 12.5px !important;
+                padding-left: 3px !important;
+                padding-right: 3px !important;
+            }
+            .brand-title-wrap {
+                font-size: 14px !important;
+            }
+            .brand-title-bold {
+                font-size: 16.5px !important;
+            }
+            .brand-logo-img {
+                width: 30px !important;
+                height: 30px !important;
+                margin-right: 6px !important;
+            }
+            .nav-container {
+                gap: 0.35rem !important;
+            }
+            .header-action-btn {
+                padding: 5px 8px !important;
+                font-size: 11px !important;
+            }
+            .header-inner {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+        }
+
+        /* 1481px ~ 1680px: 중대형 모니터 */
+        @media (min-width: 1481px) and (max-width: 1680px) {
+            .nav-item-text {
+                font-size: 13.5px !important;
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+            .brand-title-wrap {
+                font-size: 15.5px !important;
+            }
+            .brand-title-bold {
+                font-size: 18.5px !important;
+            }
+            .brand-logo-img {
+                width: 34px !important;
+                height: 34px !important;
+                margin-right: 8px !important;
+            }
+            .nav-container {
+                gap: 0.5rem !important;
+            }
+            .header-action-btn {
+                padding: 6px 10px !important;
+                font-size: 11.5px !important;
+            }
+            .header-inner {
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+            }
+        }
+
         .text-gradient-gold {
             background: linear-gradient(135deg, #FFF6D6 0%, #D4AF37 50%, #AA820A 100%);
             -webkit-background-clip: text;
@@ -94,22 +203,22 @@
     <!-- 1. Header / Navigation                     -->
     <!-- ========================================== -->
     <header class="fixed w-full top-0 z-50 bg-black/85 backdrop-blur-md border-b border-dark-border transition-all duration-300">
-        <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="w-full max-w-[1920px] mx-auto header-inner px-3 sm:px-4 lg:px-3 xl:px-6 2xl:px-12">
             <div class="flex justify-between items-center h-20">
                 
                 <!-- 상단 좌측: 브랜드 로고 (홈으로 이동 링크) -->
-                <div class="flex items-center gap-3 shrink-0">
+                <div class="flex items-center gap-2 xl:gap-3 shrink-0">
                     <a href="index.html" class="flex-shrink-0 flex items-center cursor-pointer group" title="홈으로 이동">
-                        <img src="logo01.png" alt="재벌부동산 로고" class="w-10 h-10 object-contain mr-3 filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-300">
+                        <img src="logo01.png" alt="재벌부동산 로고" class="brand-logo-img w-8 h-8 lg:w-9 lg:h-9 xl:w-10 xl:h-10 object-contain mr-2 lg:mr-2.5 xl:mr-3 filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-300">
                         <div class="flex flex-col">
-                            <div class="flex items-center tracking-tight font-bold text-lg sm:text-xl">
+                            <div class="flex items-center tracking-tight font-bold text-sm lg:text-base xl:text-lg 2xl:text-xl brand-title-wrap whitespace-nowrap">
                                 <span class="text-gradient-gold">도안수목토</span>
-                                <span class="text-white font-black text-xl sm:text-2xl mx-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">재벌</span>
+                                <span class="text-white font-black text-base lg:text-lg xl:text-xl 2xl:text-2xl mx-1 brand-title-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">재벌</span>
                                 <span class="text-gradient-gold">공인중개사사무소</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-white tracking-wider">Chebol Land Agent</span>
-                                <span class="text-[9px] bg-gold/15 text-gold border border-gold/40 px-1.5 py-0.2 rounded">
+                                <span class="text-[9px] xl:text-[10px] text-white tracking-wider">Chebol Land Agent</span>
+                                <span class="hidden 2xl:inline-block text-[9px] bg-gold/15 text-gold border border-gold/40 px-1.5 py-0.2 rounded">
                                     평면안내 📐
                                 </span>
                             </div>
@@ -117,22 +226,26 @@
                     </a>
                 </div>
 
-                <!-- 상단 중앙 네비게이션: '홈', '추천 매물', '매물검색', '단지안내', '평면안내', '고객 등록', '외부 전달', '분양 정보' -->
-                <nav class="hidden md:flex items-center space-x-3 lg:space-x-6 xl:space-x-7 shrink-0">
-                    <a href="index.html" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
+                <!-- 상단 중앙 네비게이션: '홈', '추천 매물', '매물검색', '지도로 매물 보기', '단지안내', '평면안내', '고객 등록', '외부 전달', '분양 정보' -->
+                <nav class="hidden lg:flex items-center space-x-1 lg:space-x-2 xl:space-x-3.5 2xl:space-x-5 nav-container shrink-0">
+                    <a href="index.html" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">홈</span>
                     </a>
-                    <a href="index.html#featured" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
+                    <a href="index.html#featured" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">추천 매물</span>
                     </a>
-                    <a href="index.html#properties" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
+                    <a href="index.html#properties" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">매물검색</span>
+                    </a>
+                    <a href="map.html" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 xl:w-4 xl:h-4 text-gray-400 group-hover:text-yellow-400 transition-colors duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">지도로 매물 보기</span>
                     </a>
                     <!-- 단지안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출, 상위 클릭 시 이벤트 없음) -->
                     <div class="relative group shrink-0 flex items-center">
-                        <a href="javascript:void(0)" onclick="event.preventDefault()" class="cursor-default whitespace-nowrap text-gray-300 group-hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center gap-1">
+                        <a href="javascript:void(0)" onclick="event.preventDefault()" class="cursor-default whitespace-nowrap text-gray-300 group-hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center gap-0.5">
                             <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">단지안내</span>
-                            <svg class="w-3.5 h-3.5 text-gray-400 group-hover:text-yellow-400 group-hover:rotate-180 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-3 h-3 text-gray-400 group-hover:text-yellow-400 group-hover:rotate-180 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </a>
@@ -149,9 +262,9 @@
                     </div>
                     <!-- 평면안내 (마우스 호버 시 '수목토아파트', '아이파크아파트' 하위 메뉴 노출, 상위 클릭 시 이벤트 없음) -->
                     <div class="relative group shrink-0 flex items-center">
-                        <a href="javascript:void(0)" onclick="event.preventDefault()" class="cursor-default whitespace-nowrap text-gold font-bold transition-colors duration-200 text-[15px] shrink-0 py-2 inline-flex items-center gap-1">
+                        <a href="javascript:void(0)" onclick="event.preventDefault()" class="cursor-default whitespace-nowrap text-gold font-bold transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center gap-0.5">
                             <span class="border-b-2 border-yellow-400 pb-0.5">평면안내</span>
-                            <svg class="w-3.5 h-3.5 text-gold group-hover:rotate-180 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-3 h-3 text-gold group-hover:rotate-180 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </a>
@@ -166,38 +279,40 @@
                             </div>
                         </div>
                     </div>
-                    <a href="index.html#consulting" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center">
+                    <a href="index.html#consulting" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">고객 등록</span>
                     </a>
-                    <a href="javascript:void(0)" onclick="openQrModal()" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center cursor-pointer">
+                    <a href="javascript:void(0)" onclick="openQrModal()" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center cursor-pointer">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">외부 전달</span>
                     </a>
-                    <a href="javascript:void(0)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-[15px] font-medium shrink-0 py-2 inline-flex items-center cursor-pointer">
+                    <a href="javascript:void(0)" class="group whitespace-nowrap text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-xs lg:text-[13px] xl:text-[14px] 2xl:text-[15px] nav-item-text font-medium shrink-0 py-2 px-1 lg:px-1.5 inline-flex items-center cursor-pointer">
                         <span class="border-b-2 border-transparent group-hover:border-yellow-400 pb-0.5 transition-colors duration-200">분양 정보</span>
                     </a>
                 </nav>
 
                 <!-- 상단 우측: 전화, 네이버 블로그, 유튜브 채널 버튼 -->
-                <div class="hidden md:flex items-center gap-2 shrink-0">
-                    <a href="tel:042-546-4900" class="whitespace-nowrap bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0">
+                <div class="hidden lg:flex items-center gap-1.5 xl:gap-2 shrink-0">
+                    <a href="tel:042-546-4900" class="whitespace-nowrap bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold px-2.5 py-1.5 xl:px-3.5 xl:py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1 xl:gap-1.5 header-action-btn shrink-0">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                        042-546-4900
+                        <span>042-546-4900</span>
                     </a>
-                    <a href="https://blog.naver.com/danakim076/224065578833" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#03C75A] hover:bg-[#02b350] text-white border border-[#03C75A] px-3 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-sm hover:brightness-105" title="네이버 블로그 바로가기">
-                        <img src="naver_blog_inverted.png?v=2" alt="네이버 블로그" class="h-[18px] w-auto object-contain" />
-                        <span>네이버 블로그</span>
+                    <a href="https://blog.naver.com/danakim076/224065578833" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#03C75A] hover:bg-[#02b350] text-white border border-[#03C75A] px-2 py-1.5 xl:px-3 xl:py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1 xl:gap-1.5 header-action-btn shrink-0 shadow-sm hover:brightness-105" title="네이버 블로그 바로가기">
+                        <img src="naver_blog_inverted.png?v=2" alt="네이버 블로그" class="h-3.5 xl:h-[18px] w-auto object-contain" />
+                        <span class="hidden 2xl:inline">네이버 블로그</span>
+                        <span class="2xl:hidden">블로그</span>
                     </a>
-                    <a href="https://www.youtube.com/results?search_query=%EB%8F%84%EC%95%88%EC%88%98%EB%AA%A9%ED%86%A0%EC%9E%AC%EB%B2%8C%EB%B6%80%EB%8F%99%EC%82%B0tv" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#FF0000] hover:bg-[#E60000] text-white border border-[#FF0000] px-3 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-sm hover:brightness-105" title="도안수목토재벌부동산tv 유튜브 채널 바로가기">
-                        <svg class="h-[18px] w-auto aspect-[24/17]" viewBox="0 0 24 17" fill="none">
+                    <a href="https://www.youtube.com/results?search_query=%EB%8F%84%EC%95%88%EC%88%98%EB%AA%A9%ED%86%A0%EC%9E%AC%EB%B2%8C%EB%B6%80%EB%8F%99%EC%82%B0tv" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap bg-[#FF0000] hover:bg-[#E60000] text-white border border-[#FF0000] px-2 py-1.5 xl:px-3 xl:py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1 xl:gap-1.5 header-action-btn shrink-0 shadow-sm hover:brightness-105" title="도안수목토재벌부동산tv 유튜브 채널 바로가기">
+                        <svg class="h-3.5 xl:h-[18px] w-auto aspect-[24/17]" viewBox="0 0 24 17" fill="none">
                             <rect width="24" height="17" rx="4.5" fill="white"/>
                             <polygon points="9.5,4.5 16.5,8.5 9.5,12.5" fill="#FF0000"/>
                         </svg>
-                        <span>유튜브 채널</span>
+                        <span class="hidden 2xl:inline">유튜브 채널</span>
+                        <span class="2xl:hidden">유튜브</span>
                     </a>
                 </div>
 
-                <!-- Mobile Menu Hamburger Button -->
-                <div class="md:hidden flex items-center">
+                <!-- Mobile Menu Hamburger Button (1024px 미만에서 표출) -->
+                <div class="lg:hidden flex items-center">
                     <button id="mobileMenuBtn" onclick="document.getElementById('mobileMenu').classList.toggle('hidden');" class="text-gray-300 hover:text-gold focus:outline-none p-2">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -208,10 +323,14 @@
         </div>
 
         <!-- Mobile Navigation Drawer -->
-        <div id="mobileMenu" class="hidden md:hidden bg-zinc-950/95 border-b border-dark-border px-4 pt-2 pb-6 space-y-3">
+        <div id="mobileMenu" class="hidden lg:hidden bg-zinc-950/95 border-b border-dark-border px-4 pt-2 pb-6 space-y-3">
             <a href="index.html" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">홈</a>
             <a href="index.html#featured" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">추천 매물</a>
             <a href="index.html#properties" class="block text-gray-300 hover:text-gold py-2 text-base font-medium">매물검색</a>
+            <a href="map.html" class="flex items-center gap-2 text-gray-300 hover:text-gold py-2 text-base font-medium">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                지도로 매물 보기
+            </a>
             <!-- 모바일: 단지안내 (하위 메뉴: 수목토아파트, 아이파크아파트) -->
             <div class="py-1">
                 <a href="javascript:void(0)" onclick="event.preventDefault()" class="block text-gray-300 py-1 text-base font-medium cursor-default">단지안내</a>
