@@ -32,7 +32,7 @@ const DEFAULT_PROPERTIES = [
       'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80'
     ],
     contact: '042-546-4900',
-    mapImageUrl: 'data/map_sample.jpg'
+    mapImageUrl: 'images/A-Type-Plan03.png'
   },
   {
     id: 'PROP-1002',
@@ -54,7 +54,7 @@ const DEFAULT_PROPERTIES = [
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'
     ],
     contact: '042-546-4900',
-    mapImageUrl: 'data/map_sample.jpg'
+    mapImageUrl: 'images/B-Type-Plan03.png'
   },
   {
     id: 'PROP-1003',
@@ -521,7 +521,7 @@ const GitHubSyncManager = {
 const PropertyManager = {
   KEY_PROPERTIES: 'chebol_properties_data',
   DATA_VERSION_KEY: 'chebol_properties_version',
-  CURRENT_VERSION: '20261123_v1',
+  CURRENT_VERSION: '20261123_v2',
   properties: [],
 
   init() {
@@ -543,13 +543,17 @@ const PropertyManager = {
           if (!p.images || !Array.isArray(p.images) || p.images.length === 0) {
             p.images = p.imageUrl ? [p.imageUrl] : [];
           }
-          if (!p.mapImageUrl && p.title && p.title.includes('수목토')) {
-            p.mapImageUrl = 'data/map_sample.jpg';
-          }
           if (!p.floorType) {
-            if (p.title && p.title.includes('1502동')) p.floorType = 'B-Type';
+            if (p.title && p.title.includes('1502동')) p.floorType = 'D-Type';
             else if (p.title && p.title.includes('101동')) p.floorType = 'A-Type';
             else if (p.title && p.title.includes('108동')) p.floorType = 'C-Type';
+          }
+          // 구버전 지도 캡처나 data:base64, map_sample 등은 공식 세대 평면도로 자동 교체
+          if (!p.mapImageUrl || p.mapImageUrl.startsWith('data:') || p.mapImageUrl.includes('map_sample') || p.mapImageUrl.includes('작동')) {
+            const raw = `${p.floorType || ''} ${p.title || ''}`.toUpperCase();
+            if (raw.includes('B') || raw.includes('D')) p.mapImageUrl = 'images/B-Type-Plan03.png';
+            else if (raw.includes('C')) p.mapImageUrl = 'images/C-Type-Plan03.png';
+            else p.mapImageUrl = 'images/A-Type-Plan03.png';
           }
         });
       } catch (e) {
@@ -586,9 +590,15 @@ const PropertyManager = {
         if (items && items.length > 0) {
           items.forEach(p => {
             if (!p.floorType) {
-              if (p.title && p.title.includes('1502동')) p.floorType = 'B-Type';
+              if (p.title && p.title.includes('1502동')) p.floorType = 'D-Type';
               else if (p.title && p.title.includes('101동')) p.floorType = 'A-Type';
               else if (p.title && p.title.includes('108동')) p.floorType = 'C-Type';
+            }
+            if (!p.mapImageUrl || p.mapImageUrl.startsWith('data:') || p.mapImageUrl.includes('map_sample') || p.mapImageUrl.includes('작동')) {
+              const raw = `${p.floorType || ''} ${p.title || ''}`.toUpperCase();
+              if (raw.includes('B') || raw.includes('D')) p.mapImageUrl = 'images/B-Type-Plan03.png';
+              else if (raw.includes('C')) p.mapImageUrl = 'images/C-Type-Plan03.png';
+              else p.mapImageUrl = 'images/A-Type-Plan03.png';
             }
           });
           this.properties = items;
@@ -1384,32 +1394,57 @@ const UI = {
     grid.innerHTML = html;
   },
 
-  // 주변 현황 지도 이미지 UI 설정 (자동 압축 최적화)
-  async setMapImage(dataUrl) {
-    const hiddenInput = document.getElementById('propMapImageUrl');
-    const previewImg = document.getElementById('mapPreviewImg');
-    const placeholder = document.getElementById('mapPastePlaceholder');
-    const container = document.getElementById('mapPreviewContainer');
-
-    const optimized = await this.compressImage(dataUrl);
-
-    if (hiddenInput) hiddenInput.value = optimized;
-    if (previewImg) previewImg.src = optimized;
-    if (placeholder) placeholder.classList.add('hidden');
-    if (container) container.classList.remove('hidden');
+  // 평면타입에 맞는 공식 평면도 이미지 경로 반환
+  getFloorPlanImage(floorType = '', title = '') {
+    const raw = `${floorType} ${title}`.toUpperCase();
+    if (raw.includes('B') || raw.includes('D')) {
+      return 'images/B-Type-Plan03.png';
+    }
+    if (raw.includes('C')) {
+      return 'images/C-Type-Plan03.png';
+    }
+    if (raw.includes('A')) {
+      return 'images/A-Type-Plan03.png';
+    }
+    return 'images/A-Type-Plan03.png';
   },
 
-  // 주변 현황 지도 이미지 UI 초기화
-  removeMapImage() {
+  // 평면타입 입력 시 평면도 자동 매칭 및 미리보기 업데이트
+  updateAutoFloorPlanPreview() {
+    const floorTypeInput = document.getElementById('propFloorType');
+    const floorType = floorTypeInput ? floorTypeInput.value.trim() : '';
+    const titleInput = document.getElementById('propTitle');
+    const title = titleInput ? titleInput.value.trim() : '';
+    
+    const planImg = this.getFloorPlanImage(floorType, title);
+    
+    const previewImg = document.getElementById('autoFloorPlanPreview');
     const hiddenInput = document.getElementById('propMapImageUrl');
-    const previewImg = document.getElementById('mapPreviewImg');
-    const placeholder = document.getElementById('mapPastePlaceholder');
-    const container = document.getElementById('mapPreviewContainer');
+    const badge = document.getElementById('autoFloorPlanBadge');
+    
+    if (previewImg) previewImg.src = planImg;
+    if (hiddenInput) hiddenInput.value = planImg;
+    if (badge) {
+      let matchedLabel = 'A-Type (84.99㎡)';
+      const raw = `${floorType} ${title}`.toUpperCase();
+      if (raw.includes('B') || raw.includes('D')) {
+        matchedLabel = raw.includes('D') ? 'D-Type (84.98㎡ B호환)' : 'B-Type (84.98㎡)';
+      } else if (raw.includes('C')) {
+        matchedLabel = 'C-Type (84.93㎡)';
+      } else if (raw.includes('A')) {
+        matchedLabel = 'A-Type (84.99㎡)';
+      }
+      badge.textContent = `✓ ${matchedLabel} 공식 평면도 자동 매칭됨`;
+    }
+  },
 
-    if (hiddenInput) hiddenInput.value = '';
-    if (previewImg) previewImg.src = '';
-    if (placeholder) placeholder.classList.remove('hidden');
-    if (container) container.classList.add('hidden');
+  // 구버전 setMapImage / removeMapImage 호환 유지
+  async setMapImage(dataUrl) {
+    this.updateAutoFloorPlanPreview();
+  },
+
+  removeMapImage() {
+    this.updateAutoFloorPlanPreview();
   },
 
   // 일반 모드로 전환 (관계자 모드 종료 / 로그아웃)
@@ -1623,8 +1658,8 @@ const UI = {
             </div>
             <div class="absolute top-4 right-4 flex gap-1.5 items-center">
               ${p.mapImageUrl ? `
-                <div class="bg-black/85 text-emerald-400 border border-emerald-500/50 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow backdrop-blur-sm" title="주변 현황 지도 첨부됨">
-                  📍 지도
+                <div class="bg-black/85 text-emerald-400 border border-emerald-500/50 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow backdrop-blur-sm" title="세대 평면도 첨부됨">
+                  📐 평면도
                 </div>
               ` : ''}
               <div class="bg-gold/90 text-black text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
@@ -1734,8 +1769,8 @@ const UI = {
             </div>
             <div class="absolute top-4 right-4 flex gap-1.5 items-center">
               ${p.mapImageUrl ? `
-                <div class="bg-black/85 text-emerald-400 border border-emerald-500/50 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow backdrop-blur-sm" title="주변 현황 지도 첨부됨">
-                  📍 지도
+                <div class="bg-black/85 text-emerald-400 border border-emerald-500/50 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow backdrop-blur-sm" title="세대 평면도 첨부됨">
+                  📐 평면도
                 </div>
               ` : ''}
               ${p.featured === 'Y' ? `
@@ -1813,9 +1848,9 @@ const UI = {
 
         <div class="px-6 pb-6 pt-0">
           <div class="flex gap-2">
-            <button onclick="UI.showPropertyDetail('${p.id}')" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-gray-200 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5" title="매물 상세 정보 및 배치도 보기">
-              ${p.mapImageUrl ? `<svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>` : ''}
-              ${p.mapImageUrl ? '배치도 / 상세' : '상세보기'}
+            <button onclick="UI.showPropertyDetail('${p.id}')" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-gray-200 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5" title="매물 상세 정보 및 평면도 보기">
+              ${p.mapImageUrl ? `<svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>` : ''}
+              ${p.mapImageUrl ? '평면도 / 상세' : '상세보기'}
             </button>
             <button onclick="UI.openInquiryModal('${p.title}')" class="py-2.5 px-4 bg-gold hover:bg-gold-dark text-black text-sm font-bold rounded-lg transition-colors">
               문의하기
@@ -1915,16 +1950,16 @@ const UI = {
           <div class="mt-4 bg-zinc-900/90 border border-gold/40 p-4 rounded-2xl shadow-xl">
             <div class="flex items-center justify-between mb-3">
               <h4 class="text-sm font-bold text-gold flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-                현황배치도 및 주변 위치도
+                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                ${p.floorType ? `${p.floorType} 공식 세대 평면도` : '평면안내 공식 세대 평면도'}
               </h4>
               <button type="button" onclick="UI.openLightboxForProperty('${p.id}')" class="text-[11px] text-gold hover:text-black hover:bg-gold bg-zinc-800 px-2.5 py-1 rounded-lg border border-gold/40 transition-colors flex items-center gap-1 font-medium cursor-pointer">
-                🔍 전체화면 크게 보기
+                🔍 평면도 크게 보기
               </button>
             </div>
-            <div class="relative rounded-xl overflow-hidden border border-dark-border bg-black/70 group cursor-pointer" onclick="UI.openLightboxForProperty('${p.id}')">
-              <img src="${p.mapImageUrl}" alt="주변 현황 지도" class="w-full max-h-[462px] object-contain mx-auto group-hover:scale-105 transition-transform duration-300" style="image-rendering: -webkit-optimize-contrast;">
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <div class="relative rounded-xl overflow-hidden border border-gray-700 bg-white p-4 group cursor-pointer" onclick="UI.openLightboxForProperty('${p.id}')">
+              <img src="${p.mapImageUrl}" alt="세대 평면도" class="w-full max-h-[462px] object-contain mx-auto group-hover:scale-105 transition-transform duration-300 drop-shadow">
+              <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <span class="bg-black/90 text-gold text-xs px-4 py-2 rounded-full border border-gold/60 font-bold shadow-2xl flex items-center gap-1.5 transform group-hover:scale-105 transition-transform">
                   <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                   전체화면으로 크게 보기 (클릭)
@@ -1964,12 +1999,12 @@ const UI = {
     form.reset();
     document.getElementById('propertyFormId').value = '';
     document.getElementById('propertyModalTitle').textContent = '신규 매물 등록 (관계자)';
-    if (document.getElementById('propFloorType')) document.getElementById('propFloorType').value = '';
+    if (document.getElementById('propFloorType')) document.getElementById('propFloorType').value = 'A-Type';
     
-    // 매물 소개 이미지 및 주변 현황 지도 초기화
+    // 매물 소개 이미지 초기화 및 세대 평면도 자동 매칭
     this.currentGalleryImages = [];
     this.renderGallerySlots();
-    this.removeMapImage();
+    this.updateAutoFloorPlanPreview();
     this.setActivePasteTarget('gallery');
     document.getElementById('propAreaPyungPreview')?.classList.add('hidden');
 
@@ -2013,12 +2048,8 @@ const UI = {
     }
     this.renderGallerySlots();
 
-    // 주변 현황 지도 이미지 동기화
-    if (p.mapImageUrl) {
-      this.setMapImage(p.mapImageUrl);
-    } else {
-      this.removeMapImage();
-    }
+    // 해당 평면타입에 맞는 공식 평면도 자동 매칭
+    this.updateAutoFloorPlanPreview();
     this.setActivePasteTarget('gallery');
 
     this.openModal('propertyFormModal');
@@ -2051,15 +2082,19 @@ const UI = {
       }
     }
 
+    const floorTypeVal = document.getElementById('propFloorType') ? document.getElementById('propFloorType').value.trim() : '';
+    const titleVal = document.getElementById('propTitle').value.trim();
+    const autoPlanImg = this.getFloorPlanImage(floorTypeVal, titleVal);
+
     const propertyData = {
       type: document.getElementById('propType').value,
       subType: document.getElementById('propSubType').value,
       dealType: document.getElementById('propDealType').value,
-      title: document.getElementById('propTitle').value.trim(),
+      title: titleVal,
       location: document.getElementById('propLocation').value.trim(),
       price: document.getElementById('propPrice').value.trim(),
       priceNumber: Number(document.getElementById('propPriceNumber').value) || 0,
-      floorType: document.getElementById('propFloorType') ? document.getElementById('propFloorType').value.trim() : '',
+      floorType: floorTypeVal,
       area: areaVal,
       floor: document.getElementById('propFloor').value.trim(),
       tags: this.parseTags(document.getElementById('propTags').value).join(' '),
@@ -2068,7 +2103,7 @@ const UI = {
       imageUrl: mainImageUrl, // 1~3장의 이미지 중 1번이 대표 이미지
       images: gallery.length > 0 ? gallery : [mainImageUrl],
       contact: document.getElementById('propContact').value.trim() || '042-546-4900',
-      mapImageUrl: document.getElementById('propMapImageUrl').value.trim()
+      mapImageUrl: autoPlanImg || document.getElementById('propMapImageUrl').value.trim() || 'images/A-Type-Plan03.png'
     };
 
     if (editId) {
@@ -2236,18 +2271,18 @@ const UI = {
     }
   },
 
-  // 특정 매물의 현황배치도 라이트박스 열기
+  // 특정 매물의 공식 세대 평면도 라이트박스 열기
   openLightboxForProperty(id) {
     const p = PropertyManager.getById(id) || (PropertyManager.getPropertyById ? PropertyManager.getPropertyById(id) : null);
     if (!p || !p.mapImageUrl) {
-      UI.showToast('등록된 현황배치도 이미지가 없습니다.', 'error');
+      UI.showToast('등록된 세대 평면도 이미지가 없습니다.', 'error');
       return;
     }
-    UI.openLightbox(p.mapImageUrl, p.title);
+    UI.openLightbox(p.mapImageUrl, `${p.title} (${p.floorType || '세대'} 공식 평면도)`);
   },
 
   // 전체화면 고화질 라이트박스 뷰어 열기 (화면에 꽉 차게)
-  openLightbox(imageUrl, title = '현황배치도') {
+  openLightbox(imageUrl, title = '세대 평면도') {
     if (!imageUrl) return;
     const img = document.getElementById('lightboxImage');
     const titleEl = document.getElementById('lightboxTitle');

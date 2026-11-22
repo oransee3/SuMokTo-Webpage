@@ -1060,7 +1060,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-300 mb-1">평면타입</label>
-                        <input id="propFloorType" type="text" placeholder="예: A-Type, B-Type" class="w-full bg-[#121212] border border-gray-700 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-gold">
+                        <input id="propFloorType" type="text" oninput="UI.updateAutoFloorPlanPreview()" placeholder="예: A-Type, B-Type" class="w-full bg-[#121212] border border-gray-700 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-gold">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-1">
@@ -1085,53 +1085,28 @@
                     <input id="propTags" type="text" placeholder="#남향 #초품아 #올수리 #탁트인조망" class="w-full bg-[#121212] border border-gray-700 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-gold">
                 </div>
 
-                <!-- 1. 주변 현황 (지도/위치도) 이미지 붙여넣기 (Ctrl+V) 영역 -->
+                <!-- 1. 평면안내 공식 세대 평면도 자동 매칭 영역 (평면타입 입력 시 자동 연결) -->
                 <div id="mapSectionContainer" class="bg-zinc-900/90 border border-gold/40 rounded-2xl p-4 transition-all">
                     <div class="flex justify-between items-center mb-2">
                         <label class="block text-xs font-bold text-gold flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-                            주변 현황 이미지 (지도 / 단지배치도 / 현장 캡처)
+                            <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            세대 평면도 (평면안내 공식 평면도 자동 등록)
                         </label>
-                        <div class="flex items-center gap-2">
-                            <button type="button" onclick="UI.pasteFromClipboard('map')" class="px-2.5 py-1 bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold/40 rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1">
-                                📋 클립보드 붙여넣기
-                            </button>
-                            <span class="text-[11px] text-gray-400 hidden sm:inline">또는 클릭 후 [Ctrl+V]</span>
-                        </div>
+                        <span id="autoFloorPlanBadge" class="text-[11px] text-emerald-400 bg-emerald-950/80 border border-emerald-700 px-2.5 py-0.5 rounded-full font-bold">
+                            ✓ 평면타입에 맞춰 자동 등록됨
+                        </span>
                     </div>
 
-                    <!-- 클립보드 붙여넣기 & 드래그앤드롭 드롭존 -->
-                    <div id="mapPasteZone" tabindex="0" class="border-2 border-dashed border-gray-600 hover:border-gold focus:border-gold focus:bg-gold/5 rounded-xl p-3.5 text-center cursor-pointer transition-colors outline-none group">
-                        <!-- 이미지 미등록 상태 -->
-                        <div id="mapPastePlaceholder" class="space-y-1.5 py-2">
-                            <div class="w-9 h-9 mx-auto rounded-full bg-gold/10 text-gold flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            </div>
-                            <p class="text-xs text-gray-300 font-medium">
-                                지도를 캡처한 후 <strong>여기를 클릭하고 [Ctrl + V]</strong>를 누르세요.
-                            </p>
-                            <p class="text-[11px] text-gray-500">
-                                또는 클릭하여 지도 이미지 파일(작동01.png 등)을 직접 업로드하세요.
-                            </p>
-                        </div>
-
-                        <!-- 이미지 붙여넣기 완료 시 미리보기 -->
-                        <div id="mapPreviewContainer" class="hidden relative">
-                            <img id="mapPreviewImg" src="" alt="주변 현황 지도 미리보기" class="max-h-72 mx-auto rounded-lg object-contain border border-dark-border shadow-lg">
-                            <button type="button" id="removeMapBtn" class="absolute top-2 right-2 bg-black/80 hover:bg-red-700 text-white rounded-full p-1.5 transition-colors shadow" title="이미지 삭제">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                            <div class="mt-2 text-center">
-                                <span class="text-[11px] text-emerald-400 bg-emerald-950/80 border border-emerald-700 px-2.5 py-0.5 rounded-full">
-                                    ✓ 주변 현황 지도 등록됨 (다시 붙여넣으면 교체됩니다)
-                                </span>
-                            </div>
-                        </div>
+                    <!-- 평면도 미리보기 박스 -->
+                    <div class="rounded-xl overflow-hidden border border-gray-700 bg-white p-3 flex items-center justify-center min-h-[140px] max-h-60">
+                        <img id="autoFloorPlanPreview" src="images/A-Type-Plan03.png" alt="평면도 자동 미리보기" class="max-h-52 w-auto object-contain drop-shadow">
                     </div>
+                    <p class="text-[11px] text-gray-400 mt-2 text-center">
+                        입력하신 <strong class="text-gold">평면타입(A, B, C, D)</strong>에 해당하는 공식 평면안내 도면이 매물 상세에 자동으로 등록됩니다.
+                    </p>
 
-                    <!-- 숨김 인풋 -->
-                    <input type="hidden" id="propMapImageUrl" value="">
-                    <input type="file" id="mapFileInput" accept="image/*" class="hidden">
+                    <!-- 자동 전달용 숨김 인풋 -->
+                    <input type="hidden" id="propMapImageUrl" value="images/A-Type-Plan03.png">
                 </div>
 
                 <!-- 2. 매물 소개 이미지 (대표 이미지 1~3장 붙여넣기 Ctrl+V) 영역 -->
