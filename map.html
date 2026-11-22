@@ -46,11 +46,11 @@
         }
 
         /* ================================================= */
-        /* 카카오맵 타일 레이어에만 정밀 다크모드 필터 적용      */
-        /* (마커, 클러스터러, 인포윈도우는 필터 제외 스코프 분리) */
+        /* 일반지도(ROADMAP) 모드일 때만 타일 레이어에 다크모드 필터 적용 */
+        /* (위성사진 HYBRID 전환 시 필터 자동 해제하여 실제 위성 컬러 보존) */
         /* ================================================= */
-        #map div[style*="z-index: 0"] img,
-        #map div[style*="z-index: 1"] img {
+        #map.dark-map-tiles div[style*="z-index: 0"] img,
+        #map.dark-map-tiles div[style*="z-index: 1"] img {
             filter: invert(90%) hue-rotate(180deg) brightness(92%) contrast(90%) !important;
             -webkit-filter: invert(90%) hue-rotate(180deg) brightness(92%) contrast(90%) !important;
         }
@@ -287,8 +287,8 @@
 
         <!-- [우측 메인 영역]: 전체화면 인터랙티브 카카오맵 & 플로팅 상세 패널 -->
         <div class="flex-1 h-full relative overflow-hidden">
-            <!-- 카카오맵 컨테이너 -->
-            <div id="map" class="w-full h-full bg-[#121212]"></div>
+            <!-- 카카오맵 컨테이너 (기본 ROADMAP 일반지도 모드 다크 필터 적용) -->
+            <div id="map" class="w-full h-full bg-[#121212] dark-map-tiles"></div>
 
             <!-- [PC 전용 당근부동산 스타일 플로팅 상세 패널] (매물 목록 우측 지도 위에 독립 표출) -->
             <div id="desktopDetailPanel" class="hidden absolute left-4 top-4 bottom-4 w-[390px] lg:w-[410px] z-30 bg-[#18181b]/98 backdrop-blur-md border border-zinc-700/80 rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.85)] flex-col overflow-hidden transition-all duration-300">
@@ -401,8 +401,22 @@
                 <span class="text-xs sm:text-sm font-semibold tracking-tight">이 지역 매물 <strong id="mapCountText" class="text-carrot font-bold">0</strong>개</span>
             </div>
 
-            <!-- 지도 우측 컨트롤러 (다크모드 커스텀 UI) -->
-            <div class="absolute right-4 top-4 z-20 flex flex-col gap-2">
+            <!-- 지도 타입 전환 세그먼트 컨트롤러 (일반지도 ROADMAP ↔ 위성사진 HYBRID) -->
+            <div class="absolute right-4 top-4 z-20 flex items-center bg-zinc-900/95 backdrop-blur-md p-1 rounded-xl border border-zinc-700/80 shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
+                <button type="button" id="btnMapTypeRoadmap" onclick="setMapType('ROADMAP')" 
+                        class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all duration-200 bg-carrot text-white shadow-sm flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                    <span>일반지도</span>
+                </button>
+                <button type="button" id="btnMapTypeHybrid" onclick="setMapType('HYBRID')" 
+                        class="px-2.5 py-1 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>위성사진</span>
+                </button>
+            </div>
+
+            <!-- 지도 우측 기능 컨트롤러 (도안 중심 리셋, GPS, 줌 +/-) -->
+            <div class="absolute right-4 top-16 sm:top-[68px] z-20 flex flex-col gap-2">
                 <!-- 도안수목토 중심 리셋 버튼 -->
                 <button type="button" onclick="resetMapCenter()" title="도안동 중심(수목토)으로 이동" 
                         class="w-10 h-10 bg-zinc-900/95 hover:bg-zinc-800 text-gold border border-zinc-700/80 rounded-xl shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95">
@@ -1497,6 +1511,36 @@
                 },
                 { timeout: 7000 }
             );
+        }
+
+        // 10. 지도 타입 전환 (일반지도 ROADMAP ↔ 위성사진 HYBRID)
+        let currentMapTypeId = 'ROADMAP';
+
+        function setMapType(type) {
+            if (!map) return;
+            const mapEl = document.getElementById('map');
+            const btnRoad = document.getElementById('btnMapTypeRoadmap');
+            const btnHyb = document.getElementById('btnMapTypeHybrid');
+
+            if (type === 'HYBRID') {
+                currentMapTypeId = 'HYBRID';
+                map.setMapTypeId(kakao.maps.MapTypeId.HYBRID);
+                if (mapEl) mapEl.classList.remove('dark-map-tiles');
+
+                if (btnRoad && btnHyb) {
+                    btnRoad.className = 'px-2.5 py-1 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 flex items-center gap-1';
+                    btnHyb.className = 'px-2.5 py-1 text-xs font-bold rounded-lg transition-all duration-200 bg-carrot text-white shadow-sm flex items-center gap-1';
+                }
+            } else {
+                currentMapTypeId = 'ROADMAP';
+                map.setMapTypeId(kakao.maps.MapTypeId.ROADMAP);
+                if (mapEl) mapEl.classList.add('dark-map-tiles');
+
+                if (btnRoad && btnHyb) {
+                    btnRoad.className = 'px-2.5 py-1 text-xs font-bold rounded-lg transition-all duration-200 bg-carrot text-white shadow-sm flex items-center gap-1';
+                    btnHyb.className = 'px-2.5 py-1 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 flex items-center gap-1';
+                }
+            }
         }
 
         // 디바운스 유틸
