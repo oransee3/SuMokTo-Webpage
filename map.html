@@ -380,7 +380,7 @@
     <!-- 5. 당근부동산 지도 핵심 스크립트                        -->
     <!-- =================================================== -->
     <script>
-        // 기본 매물 데이터 (로컬 백업)
+        // 실제 등록 매물 데이터 (기본 3건)
         const BACKUP_PROPERTIES = [
             {
                 id: 'PROP-812414',
@@ -428,54 +428,6 @@
                 tags: '#로얄층 #탁트인조망 #일조권우수',
                 description: '21층 고층 로얄 매물로 시원한 뷰와 우수한 일조권을 자랑합니다.',
                 imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
-                contact: '042-546-4900'
-            },
-            {
-                id: 'PROP-1002',
-                type: '주거',
-                subType: '아파트',
-                dealType: '전세',
-                title: '도안 힐스테이트 고층 로얄뷰',
-                location: '대전광역시 서구 도안동',
-                price: '4억 5000만',
-                priceNumber: 45000,
-                area: '84㎡ (25평형)',
-                floor: '22층 / 30층',
-                tags: '#신축급 #역세권 #시스템에어컨 #융자없음',
-                description: '도안 핵심 생활권, 학군 및 편의시설 인접. 융자 없는 안심 전세 매물입니다.',
-                imageUrl: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80',
-                contact: '042-546-4900'
-            },
-            {
-                id: 'PROP-1004',
-                type: '주거',
-                subType: '아파트',
-                dealType: '월세',
-                title: '도안 아이파크 쾌적한 남향',
-                location: '대전광역시 서구 도안동',
-                price: '보증금 5,000만 / 월 180만',
-                priceNumber: 5000,
-                area: '115㎡ (35평형)',
-                floor: '10층 / 20층',
-                tags: '#남서향 #단지내조경 #확장형 #쾌적',
-                description: '넓은 동간 거리와 풍부한 조경, 채광이 우수합니다.',
-                imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-                contact: '042-546-4900'
-            },
-            {
-                id: 'PROP-2001',
-                type: '상가',
-                subType: '근린상가',
-                dealType: '월세',
-                title: '도안 수목토 메인대로변 1층 코너 상가',
-                location: '대전광역시 서구 도안동',
-                price: '보증금 5,000만 / 월 320만',
-                priceNumber: 5000,
-                area: '66㎡ (20평)',
-                floor: '1층 / 5층',
-                tags: '#코너상가 #가시성우수 #유동인구풍부 #추천업종카페',
-                description: '대단지 배후 수요 및 학원가 밀집 메인 도로 1층 상가입니다.',
-                imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
                 contact: '042-546-4900'
             }
         ];
@@ -617,49 +569,45 @@
             });
         }
 
-        // 2. 매물 데이터 로드 및 좌표 보정
+        // 2. 매물 데이터 로드 및 좌표 보정 (등록된 실제 매물만 로드)
         async function loadAllProperties() {
             let loaded = [];
 
-            // 1순위: LocalStorage
+            // 1순위: data/properties.json fetch (서버에 등록된 실제 매물 원본 데이터)
             try {
-                const localData = localStorage.getItem('sumokto_properties');
-                if (localData) {
-                    const parsed = JSON.parse(localData);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        loaded = parsed;
+                const res = await fetch('data/properties.json?t=' + Date.now(), { cache: 'no-store' });
+                if (res.ok) {
+                    const json = await res.json();
+                    const items = Array.isArray(json) ? json : (json.data || []);
+                    if (items && items.length > 0) {
+                        loaded = items;
                     }
                 }
             } catch (e) {
-                console.warn('LocalStorage load error:', e);
+                console.warn('JSON fetch failed:', e);
             }
 
-            // 2순위: data/properties.json fetch
+            // 2순위: LocalStorage (오프라인이거나 관리자 모드에서 즉시 수정한 로컬 데이터)
             if (loaded.length === 0) {
                 try {
-                    const res = await fetch('data/properties.json?t=' + Date.now(), { cache: 'no-store' });
-                    if (res.ok) {
-                        const json = await res.json();
-                        loaded = Array.isArray(json) ? json : (json.data || []);
+                    const localData = localStorage.getItem('sumokto_properties');
+                    if (localData) {
+                        const parsed = JSON.parse(localData);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            loaded = parsed;
+                        }
                     }
                 } catch (e) {
-                    console.warn('JSON fetch failed, using backup:', e);
+                    console.warn('LocalStorage load error:', e);
                 }
             }
 
-            // 3순위: 백업 데이터 통합
+            // 3순위: 기본 백업 (실제 등록 매물 3건)
             if (loaded.length === 0) {
                 loaded = [...BACKUP_PROPERTIES];
-            } else {
-                // 백업 매물 중 ID가 겹치지 않는 매물 추가하여 풍성하게 제공
-                const existingIds = new Set(loaded.map(p => p.id));
-                BACKUP_PROPERTIES.forEach(bp => {
-                    if (!existingIds.has(bp.id)) {
-                        loaded.push(bp);
-                    }
-                });
             }
 
+            // 사용자가 실제로 등록한 매물만 정확히 반영 (가짜 매물 병합 금지)
             allProperties = loaded;
 
             // 각 매물의 좌표 결정 (지터링 분산 포함)
