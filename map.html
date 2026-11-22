@@ -136,6 +136,15 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 111, 15, 0); }
         }
 
+        /* Gold Gradient Text (index.html과 동일) */
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
         /* 모바일 바텀시트 트랜지션 */
         .bottom-sheet {
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -148,17 +157,23 @@
     <!-- 1. 상단 글로벌 네비게이션 & 필터 바                   -->
     <!-- =================================================== -->
     <header class="h-16 md:h-[68px] bg-zinc-950/95 border-b border-dark-border px-3 sm:px-5 flex items-center justify-between shrink-0 z-40 backdrop-blur-md">
-        <!-- 좌측: 브랜드 로고 및 홈 링크 -->
+        <!-- 좌측: 브랜드 로고 및 홈 링크 (index.html 좌측 상단 디자인 그대로 적용) -->
         <div class="flex items-center gap-3 shrink-0">
-            <a href="index.html" class="flex items-center gap-2 group cursor-pointer" title="메인 페이지로 이동">
-                <img src="logo01.png" alt="재벌부동산 로고" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform">
-                <div class="hidden sm:block">
-                    <span class="text-sm font-black text-white group-hover:text-gold transition-colors tracking-tight">도안수목토 재벌</span>
-                    <span class="text-[10px] text-gold block font-semibold">지도로 매물 보기</span>
+            <a href="index.html" class="flex items-center group cursor-pointer" title="메인 페이지로 이동">
+                <img src="logo01.png" alt="재벌부동산 로고" class="w-8 h-8 sm:w-10 sm:h-10 object-contain mr-2.5 filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-300">
+                <div class="flex flex-col">
+                    <div class="flex items-center tracking-tight font-bold text-xs sm:text-base lg:text-lg whitespace-nowrap">
+                        <span class="text-gradient-gold">도안수목토</span>
+                        <span class="text-white font-black text-sm sm:text-lg lg:text-xl mx-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">재벌</span>
+                        <span class="text-gradient-gold">공인중개사사무소</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] sm:text-[10px] text-white tracking-wider font-normal">Chebol Land Agent</span>
+                    </div>
                 </div>
             </a>
-            <div class="h-5 w-px bg-zinc-800 hidden md:block"></div>
-            <a href="index.html" class="hidden md:flex items-center gap-1 text-xs text-gray-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
+            <div class="h-6 w-px bg-zinc-800 hidden xl:block ml-1"></div>
+            <a href="index.html" class="hidden xl:flex items-center gap-1 text-xs text-gray-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 홈으로
             </a>
