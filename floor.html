@@ -69,18 +69,20 @@
                 transform-origin: center center !important;
             }
             #plan-view-C img {
-                transform: scale(1.23) translateX(-9px) !important;
-                transform-origin: center center !important;
+                max-width: 100% !important;
+                height: auto !important;
+                max-height: 380px !important;
+                transform: none !important;
             }
         }
         @media (min-width: 640px) {
             #plan-view-C img {
-                width: 550px !important;
-                max-width: none !important;
+                width: 500px !important;
+                max-width: 500px !important;
                 height: auto !important;
-                max-height: 440px !important;
-                transform: translateX(-16px) !important;
-                transform-origin: center center !important;
+                max-height: 420px !important;
+                transform: none !important;
+                margin: 0 auto !important;
             }
         }
     </style>
@@ -271,7 +273,7 @@
                     <img src="images/B-Type-Plan03.png" alt="도안수목토 아파트 B-Type 평면도 (84.98㎡)" class="max-w-[520px] sm:max-w-[620px] max-h-[420px] sm:max-h-[490px] w-auto h-full object-contain mx-auto block drop-shadow-sm">
                 </div>
                 <div id="plan-view-C" class="floor-plan-view hidden w-full max-w-2xl mx-auto flex items-center justify-center h-full">
-                    <img src="images/C-Type-Plan03.png?v=20261122_0555" alt="도안수목토 아파트 C-Type 평면도 (84.93㎡)" class="max-w-full sm:max-w-none sm:w-[550px] max-h-[350px] sm:max-h-[440px] w-auto h-auto object-contain mx-auto block drop-shadow-sm scale-[1.23] sm:scale-100 -translate-x-[9px] sm:-translate-x-[16px] origin-center">
+                    <img src="images/C-Type-Plan03.png?v=20261122_2050" alt="도안수목토 아파트 C-Type 평면도 (84.93㎡)" class="w-full sm:w-[500px] sm:max-w-none max-h-[360px] sm:max-h-[420px] w-auto h-auto object-contain mx-auto block drop-shadow-sm origin-center">
                 </div>
                 <div id="plan-view-D" class="floor-plan-view hidden w-full"></div>
             </div>
