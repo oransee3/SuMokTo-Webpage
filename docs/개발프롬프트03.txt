@@ -524,8 +524,11 @@ PC/데스크톱 화면(https://sumokto-webpage.vercel.app/floor.html)에서  '�
 
 //===================================
 
+'C-Type' '우측 흰색 영역'에 이미지 11장을 'B-Type'과 동일하게 만들어줘. C:\Users\OWNER\PycharmProjects\WebPage-Project\SuMokTo-Webpage\images\c-type
+헨드폰 모바일에서도 손으로 사진을 좌, 우로 밀어서 볼 수 있도록 해줘.
+프로그램은 거의 100% 완성되었으므로 코드블록에 락을 걸어서 수정 부분만 수정하여 100% 완성해줘.
 
-
+//===================================
 
 
 
