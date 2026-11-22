@@ -266,7 +266,7 @@ const AuthManager = {
 const CSVParser = {
   // 매물 배열을 CSV 문자열로 변환 (UTF-8)
   toCSV(properties) {
-    const headers = ['id', 'type', 'subType', 'dealType', 'title', 'location', 'price', 'priceNumber', 'area', 'floor', 'tags', 'description', 'featured', 'imageUrl', 'contact', 'mapImageUrl', 'images'];
+    const headers = ['id', 'type', 'subType', 'dealType', 'title', 'location', 'price', 'priceNumber', 'floorType', 'area', 'floor', 'tags', 'description', 'featured', 'imageUrl', 'contact', 'mapImageUrl', 'images'];
     const rows = [headers.join(',')];
 
     properties.forEach(p => {
@@ -315,6 +315,7 @@ const CSVParser = {
         obj.dealType = obj.dealType || '매매';
         obj.price = obj.price || '가격협의';
         obj.priceNumber = Number(obj.priceNumber) || 0;
+        obj.floorType = obj.floorType || '';
         obj.area = obj.area || '-';
         obj.floor = obj.floor || '-';
         obj.tags = obj.tags || '';
@@ -520,28 +521,35 @@ const GitHubSyncManager = {
 const PropertyManager = {
   KEY_PROPERTIES: 'chebol_properties_data',
   DATA_VERSION_KEY: 'chebol_properties_version',
-  CURRENT_VERSION: '20261116_v3',
+  CURRENT_VERSION: '20261123_v1',
   properties: [],
 
   init() {
     const version = localStorage.getItem(this.DATA_VERSION_KEY);
-    const stored = localStorage.getItem(this.KEY_PROPERTIES);
+    let stored = localStorage.getItem(this.KEY_PROPERTIES);
 
     if (version !== this.CURRENT_VERSION) {
       // 캐시 버전이 변경된 경우 최신 데이터 강제 동기화 플래그 처리
       localStorage.setItem(this.DATA_VERSION_KEY, this.CURRENT_VERSION);
+      localStorage.removeItem(this.KEY_PROPERTIES);
+      stored = null;
     }
 
     if (stored) {
       try {
         this.properties = JSON.parse(stored);
-        // 구버전 캐시 호환: images 및 mapImageUrl 보정
+        // 구버전 캐시 호환: images, mapImageUrl 및 floorType 보정
         this.properties.forEach(p => {
           if (!p.images || !Array.isArray(p.images) || p.images.length === 0) {
             p.images = p.imageUrl ? [p.imageUrl] : [];
           }
           if (!p.mapImageUrl && p.title && p.title.includes('수목토')) {
             p.mapImageUrl = 'data/map_sample.jpg';
+          }
+          if (!p.floorType) {
+            if (p.title && p.title.includes('1502동')) p.floorType = 'B-Type';
+            else if (p.title && p.title.includes('101동')) p.floorType = 'A-Type';
+            else if (p.title && p.title.includes('108동')) p.floorType = 'C-Type';
           }
         });
       } catch (e) {
@@ -576,6 +584,13 @@ const PropertyManager = {
         const data = await res.json();
         const items = Array.isArray(data) ? data : (data.data || []);
         if (items && items.length > 0) {
+          items.forEach(p => {
+            if (!p.floorType) {
+              if (p.title && p.title.includes('1502동')) p.floorType = 'B-Type';
+              else if (p.title && p.title.includes('101동')) p.floorType = 'A-Type';
+              else if (p.title && p.title.includes('108동')) p.floorType = 'C-Type';
+            }
+          });
           this.properties = items;
           this.save();
           if (typeof UI !== 'undefined' && UI.renderProperties) {
@@ -1638,13 +1653,19 @@ const UI = {
               <span class="text-2xl font-bold text-gradient-gold">${p.price}</span>
             </div>
             
-            <div class="flex items-center gap-4 text-sm text-gray-300 py-2.5 border-y border-dark-border mb-3">
+            <div class="flex items-center gap-3 sm:gap-4 text-sm text-gray-300 py-2.5 border-y border-dark-border mb-3 flex-wrap">
+              ${p.floorType ? `
+                <span class="flex items-center gap-1 font-semibold text-gold">
+                  <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                  ${p.floorType}
+                </span>
+              ` : ''}
               <span class="flex items-center gap-1">
-                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
                 ${p.area}
               </span>
               <span class="flex items-center gap-1">
-                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                 ${p.floor}
               </span>
             </div>
@@ -1856,7 +1877,11 @@ const UI = {
           </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-zinc-900/80 p-4 rounded-xl border border-dark-border">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-zinc-900/80 p-4 rounded-xl border border-dark-border">
+          <div>
+            <span class="text-xs text-gray-500 block">평면타입</span>
+            <span class="text-gold font-semibold">${p.floorType || '-'}</span>
+          </div>
           <div>
             <span class="text-xs text-gray-500 block">면적</span>
             <span class="text-white font-semibold">${p.area}</span>
@@ -1933,6 +1958,7 @@ const UI = {
     form.reset();
     document.getElementById('propertyFormId').value = '';
     document.getElementById('propertyModalTitle').textContent = '신규 매물 등록 (관계자)';
+    if (document.getElementById('propFloorType')) document.getElementById('propFloorType').value = '';
     
     // 매물 소개 이미지 및 주변 현황 지도 초기화
     this.currentGalleryImages = [];
@@ -1962,6 +1988,7 @@ const UI = {
     document.getElementById('propLocation').value = p.location;
     document.getElementById('propPrice').value = p.price;
     document.getElementById('propPriceNumber').value = p.priceNumber || '';
+    if (document.getElementById('propFloorType')) document.getElementById('propFloorType').value = p.floorType || '';
     document.getElementById('propArea').value = p.area;
     document.getElementById('propAreaPyungPreview')?.classList.add('hidden');
     document.getElementById('propFloor').value = p.floor;
@@ -2026,6 +2053,7 @@ const UI = {
       location: document.getElementById('propLocation').value.trim(),
       price: document.getElementById('propPrice').value.trim(),
       priceNumber: Number(document.getElementById('propPriceNumber').value) || 0,
+      floorType: document.getElementById('propFloorType') ? document.getElementById('propFloorType').value.trim() : '',
       area: areaVal,
       floor: document.getElementById('propFloor').value.trim(),
       tags: this.parseTags(document.getElementById('propTags').value).join(' '),

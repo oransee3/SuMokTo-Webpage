@@ -342,6 +342,10 @@
                     <!-- 핵심 제원 그리드 -->
                     <div class="grid grid-cols-2 gap-2 p-3 bg-zinc-900/90 rounded-xl border border-zinc-800 text-center">
                         <div class="p-1.5 bg-black/30 rounded-lg">
+                            <span class="text-[10px] text-gray-400 block mb-0.5">평면타입</span>
+                            <strong id="deskFloorType" class="text-xs text-carrot font-bold block truncate">B-Type</strong>
+                        </div>
+                        <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[10px] text-gray-400 block mb-0.5">공급 / 전용면적</span>
                             <strong id="deskArea" class="text-xs text-white font-bold block truncate">114.22㎡</strong>
                         </div>
@@ -352,10 +356,6 @@
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[10px] text-gray-400 block mb-0.5">매물 유형</span>
                             <strong id="deskType" class="text-xs text-white font-bold block truncate">아파트</strong>
-                        </div>
-                        <div class="p-1.5 bg-black/30 rounded-lg">
-                            <span class="text-[10px] text-gray-400 block mb-0.5">특징 태그</span>
-                            <strong id="deskTags" class="text-xs text-carrot font-bold block truncate">#로얄층</strong>
                         </div>
                     </div>
 
@@ -508,6 +508,10 @@
                     <!-- 핵심 제원 그리드 -->
                     <div class="grid grid-cols-2 gap-2 p-2.5 bg-zinc-900/90 rounded-xl border border-zinc-800 text-center">
                         <div class="p-1.5 bg-black/30 rounded-lg">
+                            <span class="text-[9px] text-gray-400 block mb-0.5">평면타입</span>
+                            <strong id="mobFloorType" class="text-[11px] text-carrot font-bold block truncate">B-Type</strong>
+                        </div>
+                        <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[9px] text-gray-400 block mb-0.5">공급 / 전용면적</span>
                             <strong id="mobArea" class="text-[11px] text-white font-bold block truncate">114.22㎡</strong>
                         </div>
@@ -518,10 +522,6 @@
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[9px] text-gray-400 block mb-0.5">매물 유형</span>
                             <strong id="mobType" class="text-[11px] text-white font-bold block truncate">아파트</strong>
-                        </div>
-                        <div class="p-1.5 bg-black/30 rounded-lg">
-                            <span class="text-[9px] text-gray-400 block mb-0.5">특징 태그</span>
-                            <strong id="mobTags" class="text-[11px] text-carrot font-bold block truncate">#로얄층</strong>
                         </div>
                     </div>
 
@@ -564,6 +564,7 @@
                 lng: 127.34705,
                 price: '5억 7500만',
                 priceNumber: 57500,
+                floorType: 'B-Type',
                 area: '114.22㎡ (35평형)',
                 floor: '19층 / 25층',
                 tags: '#남향 #로얄층 #뷰좋은집 #갑천뷰영구조망',
@@ -582,10 +583,11 @@
                 lng: 127.34705,
                 price: '4억 7000만',
                 priceNumber: 47000,
-                area: '112.58㎡ (34평형)',
-                floor: '2층 / 20층',
-                tags: '#초품아 #단지조경 #올수리 #남향',
-                description: '도안초등학교 초품아 단지! 단지 내 조경이 아름답고 아이 키우기 최적의 환경입니다.',
+                floorType: 'A-Type',
+                area: '112㎡ (34평형)',
+                floor: '2층 / 15층',
+                tags: '#남서향 #호수공원입접동 #드레스룸넓은구조 #최근리모델링',
+                description: '호수공원과 인접한 저층 세대로 편안한 주거 환경을 영위할 수 있습니다.✨',
                 imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
                 contact: '042-546-4900'
             },
@@ -600,10 +602,11 @@
                 lng: 127.34610,
                 price: '4억 9800만',
                 priceNumber: 49800,
-                area: '112.58㎡ (34평형)',
-                floor: '21층 / 25층',
-                tags: '#로얄층 #탁트인조망 #일조권우수',
-                description: '21층 고층 로얄 매물로 시원한 뷰와 우수한 일조권을 자랑합니다.',
+                floorType: 'C-Type',
+                area: '112㎡ (34평형)',
+                floor: '21층 / 22층',
+                tags: '#남향 #로얄층 #뷰좋은집 #팬트리 #갑천뷰영구조망',
+                description: '* 정남향 C타입으로 따뜻한 햇살이 풍부하게 들어와 밝고 쾌적한 집입니다.\n* 21층 고층 로얄 매물로 시원한 뷰와 우수한 일조권을 자랑합니다.',
                 imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
                 contact: '042-546-4900'
             }
@@ -1120,7 +1123,7 @@
                                     ${p.title}
                                 </h4>
                                 <p class="text-[11px] text-gray-400 mt-0.5 truncate">
-                                    ${p.area || ''} ${p.floor ? '· ' + p.floor : ''}
+                                    ${p.floorType ? `<span class="text-carrot font-bold">${p.floorType}</span> · ` : ''}${p.area || ''} ${p.floor ? '· ' + p.floor : ''}
                                 </p>
                             </div>
                             
@@ -1221,6 +1224,9 @@
                 const deskLocSpan = document.getElementById('deskLocation')?.querySelector('span');
                 if (deskLocSpan) deskLocSpan.textContent = p.location || '대전광역시 서구 도안동';
 
+                const deskFloorTypeEl = document.getElementById('deskFloorType');
+                if (deskFloorTypeEl) deskFloorTypeEl.textContent = p.floorType || '-';
+
                 const deskAreaEl = document.getElementById('deskArea');
                 if (deskAreaEl) deskAreaEl.textContent = p.area || '-';
 
@@ -1258,6 +1264,8 @@
                 document.getElementById('mobTitle').textContent = p.title || '';
                 const mobLocSpan = document.getElementById('mobLocation')?.querySelector('span');
                 if (mobLocSpan) mobLocSpan.textContent = p.location || '대전광역시 서구 도안동';
+                const mobFloorTypeEl = document.getElementById('mobFloorType');
+                if (mobFloorTypeEl) mobFloorTypeEl.textContent = p.floorType || '-';
                 document.getElementById('mobArea').textContent = p.area || '-';
                 document.getElementById('mobFloor').textContent = p.floor || '-';
                 document.getElementById('mobType').textContent = p.subType || p.type || '아파트';
