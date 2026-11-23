@@ -1,12 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v26 - 신규 분양 홈페이지 & 유튜브 링크 추가)
-const CACHE_NAME = 'sumokto-chebol-v26';
+// 도안수목토 재벌부동산 PWA Service Worker (v27 - 일반 모드 삭제 버튼 제거 및 관리자 전용 제어)
+const CACHE_NAME = 'sumokto-chebol-v27';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V2',
-  '/js/subscription_modal.js?v=20261124_V8_URL_LINKS',
+  '/js/subscription_modal.js?v=20261124_V9_ADMIN_DELETE_ONLY',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',

@@ -54,11 +54,21 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = validItems.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 & 썸네일 흰색글씨 제거 & 카드 클릭 새창 차단 & 홈페이지·유튜브 링크 & ✕ 삭제 버튼)
+    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 & 썸네일 흰색글씨 제거 & 카드 클릭 새창 차단 & 홈페이지·유튜브 링크 & 관리자 전용 ✕ 삭제 버튼)
+    const isAdmin = checkAdminMode();
+
     container.innerHTML = pageItems.map((item, index) => {
         const badgesHtml = (item.badges || []).map(b => 
             `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
         ).join('');
+
+        // 관리자 모드에서만 삭제 버튼 노출 (일반 모드에서는 완전 제거)
+        const deleteBtnHtml = isAdmin ? `
+            <button type="button" onclick="event.stopPropagation(); deleteSubscriptionItem('${item.id}');" class="sub-delete-btn px-2.5 py-1 rounded-lg bg-red-950/80 hover:bg-red-800 text-red-300 hover:text-white border border-red-700/60 text-xs font-bold transition-all shadow flex items-center gap-1 shrink-0 cursor-pointer" title="해당 분양 정보 삭제">
+                <span class="text-red-400 font-black text-xs leading-none">✕</span>
+                <span>삭제</span>
+            </button>
+        ` : '';
 
         // 홈페이지 / 유튜브 바로가기 링크 버튼
         let linksHtml = '';
@@ -90,11 +100,8 @@ function renderSubscriptionList(page) {
                             <h4 class="text-base sm:text-[17px] font-bold text-white truncate">
                                 ${item.title}
                             </h4>
-                            <!-- 우측 끝 하트(♥) 모양 삭제하고 그 자리에 ✕ 삭제 버튼 배치 -->
-                            <button type="button" onclick="event.stopPropagation(); deleteSubscriptionItem('${item.id}');" class="sub-delete-btn px-2.5 py-1 rounded-lg bg-red-950/80 hover:bg-red-800 text-red-300 hover:text-white border border-red-700/60 text-xs font-bold transition-all shadow flex items-center gap-1 shrink-0 cursor-pointer" title="해당 분양 정보 삭제">
-                                <span class="text-red-400 font-black text-xs leading-none">✕</span>
-                                <span>삭제</span>
-                            </button>
+                            <!-- 관리자 모드 전용 ✕ 삭제 버튼 (일반 모드에서는 빈 문자열로 미노출) -->
+                            ${deleteBtnHtml}
                         </div>
                         <div class="text-[14px] sm:text-[16px] font-black text-[#58a6ff] tracking-tight mt-0.5">
                             ${item.scale} ${item.scaleSub ? `<span class="text-xs sm:text-[13px] text-gray-400 font-normal ml-1">${item.scaleSub}</span>` : ''}
@@ -465,10 +472,16 @@ function closeAddSubscriptionModal() {
 
 
 // ==========================================
-// 등록된 분양 정보 삭제 함수
+// 등록된 분양 정보 삭제 함수 (관리자 전용)
 // ==========================================
 function deleteSubscriptionItem(id) {
     if (!id) return;
+    if (!checkAdminMode()) {
+        if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+            UI.showToast('삭제 권한이 없습니다. 관리자 로그인이 필요합니다.', 'warning');
+        }
+        return;
+    }
     const item = SUBSCRIPTION_DATA.find(i => i.id === id);
     const title = item ? item.title : '해당';
     const confirmDelete = confirm(`'${title}' 분양 정보를 삭제하시겠습니까?`);
