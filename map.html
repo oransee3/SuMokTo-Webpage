@@ -1236,10 +1236,20 @@
             if (currentViewMode === 'SUBSCRIPTION') return; // 분양 정보 보기 모드일 때는 매물 목록 덮어쓰기 방지
             const bounds = map.getBounds();
 
-            visibleProperties = filteredProperties.filter(p => {
+            let matched = filteredProperties.filter(p => {
                 const latlng = new kakao.maps.LatLng(p.lat, p.lng);
                 return bounds.contain(latlng);
             });
+
+            // 도안동 중심 영역인데 지도 렌더링 타이밍으로 0개가 감지된 경우 필터된 전체 매물 자동 보존
+            if (matched.length === 0 && filteredProperties.length > 0) {
+                const center = map.getCenter();
+                if (center && center.getLat() >= 36.30 && center.getLat() <= 36.35 && center.getLng() >= 127.32 && center.getLng() <= 127.38) {
+                    matched = [...filteredProperties];
+                }
+            }
+
+            visibleProperties = matched;
 
             // 매물 수 뱃지 업데이트
             const count = visibleProperties.length;
@@ -1467,15 +1477,13 @@
                 }
                 adjustOverlayVisibilityByZoom();
 
-                // [요청 반영]: '매물 보기' 클릭 시 지도를 등록된 매물 위치(도안동 중심)로 자동 이동
+                // [요청 반영]: '매물 보기' 클릭 시 지도를 등록된 매물 위치(도안동 중심)로 100% 확실하게 이동
                 if (map) {
                     const isMobile = window.innerWidth < 768;
-                    // 등록된 첫 번째 매물 좌표 또는 도안동 중심 좌표
-                    const propTarget = (allProperties && allProperties.length > 0 && allProperties[0].lat && allProperties[0].lng)
-                        ? new kakao.maps.LatLng(allProperties[0].lat, allProperties[0].lng)
-                        : new kakao.maps.LatLng(36.3215, 127.3442);
-                    map.setLevel(isMobile ? 5 : 4, { animate: true });
-                    map.panTo(propTarget);
+                    const propTarget = new kakao.maps.LatLng(36.3215, 127.3442);
+                    map.setCenter(propTarget);
+                    map.setLevel(isMobile ? 5 : 4);
+                    map.relayout();
                 }
 
                 // 좌측에 등록된 매물이 즉시 보이도록 목록 동기화
@@ -2151,8 +2159,9 @@
         }
         function resetMapCenter() {
             if (map) {
-                map.setLevel(4, { animate: true });
-                map.panTo(new kakao.maps.LatLng(36.3205, 127.3440));
+                map.setCenter(new kakao.maps.LatLng(36.3215, 127.3442));
+                map.setLevel(4);
+                updateVisibleProperties();
             }
         }
         function moveToCurrentLocation() {

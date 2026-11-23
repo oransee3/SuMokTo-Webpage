@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v33 - 좌측 분양등록내용 완전노출 및 지도 파란배경 말풍선 삭제)
-const CACHE_NAME = 'sumokto-chebol-v33';
+// 도안수목토 재벌부동산 PWA Service Worker (v34 - 매물보기 클릭 시 도안동 중심 setCenter 즉시 이동 및 매물목록 100% 보존)
+const CACHE_NAME = 'sumokto-chebol-v34';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
