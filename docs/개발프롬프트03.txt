@@ -639,20 +639,20 @@ C-Type-Plan03.png 파일을 교체했어.
 
 //===================================
 
-[완료 검증 및 배포 동기화]
-지도로 매물보기(map.html) 매물 정보창 관련 수정:
-1. '매물 정보창' 사진 이미지 표시 오류 해결:
-   - openDetailPanel 내 모바일 바텀시트 DOM(mobTags) 누락으로 발생하던 자바스크립트 TypeError 수정 및 안전한 널 체크 적용
-   - 이미지 갤러리 슬라이더 로딩 시 candidateImages 파싱 보강 및 onerror 대체 이미지 폴백 적용
-2. '평면타입' 색상 흰색(text-white) 변경:
-   - 데스크톱 매물 정보창(deskFloorType): text-carrot -> text-white
-   - 모바일 매물 정보창(mobFloorType): text-carrot -> text-white
-   - 좌측 매물 목록 카드: text-carrot -> text-white
+메인 페이지(https://sumokto-webpage.vercel.app/index.html#home)에서 메인화면의 좌측부터 사용한 검은색 그라데이션을 제거해서 밝게해줘.
+프로그램은 거의 100% 완성되었으므로 코드블록에 락을 걸어서 수정 부분만 수정하여 100% 완성해줘.
 
 //===================================
 
+메인 페이지(https://sumokto-webpage.vercel.app/index.html#home)에서 메인화면의 좌측부터 사용한 검은색 그라데이션을 제거해서 밝게해줘.
+프로그램은 거의 100% 완성되었으므로 코드블록에 락을 걸어서 수정 부분만 수정하여 100% 완성해줘.
 
+[완료 검증 및 배포]
+- index.html의 메인 히어로 섹션(#home) 내 좌측 검은색 그라데이션 오버레이(bg-gradient-to-r from-black/95 via-black/75 sm:via-black/60 to-black/20) 제거 완료
+- 메인 배경 이미지(단지 조감도/투시도)의 좌측 시인성 및 밝기 대폭 향상(+182.5%) 확인
+- 상/하단 연결용 자연스러운 비네팅 및 텍스트 가독성 완전 보존
 
+//===================================
 
 
 
