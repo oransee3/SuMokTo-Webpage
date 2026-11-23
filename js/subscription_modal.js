@@ -54,13 +54,18 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = validItems.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 & 썸네일 흰색글씨 제거 & 카드 클릭 새창 차단 & 홈페이지·유튜브 링크 & 관리자 전용 ✕ 삭제 버튼)
+    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 & 썸네일 흰색글씨 제거 & 카드 클릭 새창 차단 & 홈페이지·유튜브 링크 & 상태 배지 '사전접수'/'분양중' & 관리자 전용 ✕ 삭제 버튼)
     const isAdmin = checkAdminMode();
 
     container.innerHTML = pageItems.map((item, index) => {
-        const badgesHtml = (item.badges || []).map(b => 
-            `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
-        ).join('');
+        // 분류/태그 항목에 '분양중' 키워드가 있으면 '분양중', 그 외에는 모두 '사전접수'로 2가지 배지만 노출
+        const tagText = (item.tag || '').trim();
+        const isSaleActive = tagText.includes('분양중');
+        const statusBadgeHtml = isSaleActive ? `
+            <span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm">분양중</span>
+        ` : `
+            <span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border bg-[#0d2a1f] text-[#3fb950] border-[#238636]/50 shadow-sm">사전접수</span>
+        `;
 
         // 관리자 모드에서만 삭제 버튼 노출 (일반 모드에서는 완전 제거)
         const deleteBtnHtml = isAdmin ? `
@@ -112,7 +117,7 @@ function renderSubscriptionList(page) {
                     </div>
                     <div>
                         <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                            ${badgesHtml}
+                            ${statusBadgeHtml}
                             ${linksHtml}
                         </div>
                         <p class="text-[11px] sm:text-xs text-gray-300 mt-0.5 truncate font-normal">
@@ -406,7 +411,7 @@ function openAddSubscriptionModal() {
                     <div class="grid grid-cols-2 gap-2.5">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">분류 / 태그</label>
-                            <input type="text" id="subInputTag" placeholder="예: 105타입, 119타입 분양중" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                            <input type="text" id="subInputTag" placeholder="예: 105타입 분양중 ('분양중' 포함 시 분양중, 그 외 사전접수)" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">공급 규모</label>
@@ -517,6 +522,13 @@ function handleSubscriptionSubmit(e) {
     const youtube = document.getElementById('subInputYoutube') ? document.getElementById('subInputYoutube').value.trim() : '';
     const img = currentCompressedSubImg || 'images/preview_complex.jpg';
 
+    // 분류/태그에 '분양중' 키워드가 있으면 '분양중', 그 외에는 모두 '사전접수' 단일 배지 적용
+    const isSaleActive = tag.includes('분양중');
+    const badgeText = isSaleActive ? '분양중' : '사전접수';
+    const badgeStyle = isSaleActive 
+        ? 'bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm' 
+        : 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/50 shadow-sm';
+
     const newItem = {
         id: 'sub-custom-' + Date.now(),
         title: title,
@@ -529,8 +541,7 @@ function handleSubscriptionSubmit(e) {
         homepage: homepage,
         youtube: youtube,
         badges: [
-            { text: '사전 접수', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '전문 상담', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
+            { text: badgeText, style: badgeStyle }
         ],
         img: img
     };
