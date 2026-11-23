@@ -146,43 +146,43 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = SUBSCRIPTION_DATA.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링
+    // 1. 목록 렌더링 (확대된 모달 창에 맞춘 시원한 썸네일 및 타이포그래피)
     container.innerHTML = pageItems.map((item, index) => {
-        const topPaddingClass = index > 0 ? 'pt-2.5 sm:pt-3' : '';
+        const topPaddingClass = index > 0 ? 'pt-3 sm:pt-3.5' : '';
         const badgesHtml = item.badges.map(b => 
-            `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${b.style}">${b.text}</span>`
+            `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
         ).join('');
 
         return `
-            <div onclick="window.open('subscription.html', '_blank')" class="flex gap-3 sm:gap-3.5 p-2.5 sm:p-3 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative ${topPaddingClass}">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+            <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-5 p-3 sm:p-4 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative ${topPaddingClass}">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
                     <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='images/preview_complex.jpg'">
-                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded ${item.tagBg} text-white shadow">
+                    <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[10px] font-bold rounded ${item.tagBg} text-white shadow">
                         ${item.tag}
                     </span>
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                     <div>
                         <div class="flex items-start justify-between gap-1">
-                            <h4 class="text-sm sm:text-[15px] font-bold text-white group-hover:text-gold transition-colors truncate">
+                            <h4 class="text-base sm:text-lg font-bold text-white group-hover:text-gold transition-colors truncate">
                                 ${item.title}
                             </h4>
-                            <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-0.5 -mr-1 shrink-0" title="관심 단지 등록">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1 shrink-0" title="관심 단지 등록">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                             </button>
                         </div>
-                        <div class="text-[13px] sm:text-base font-black text-[#58a6ff] tracking-tight mt-0.5">
-                            ${item.scale} ${item.scaleSub ? `<span class="text-[11px] sm:text-xs text-gray-400 font-normal">${item.scaleSub}</span>` : ''}
+                        <div class="text-base sm:text-lg font-black text-[#58a6ff] tracking-tight mt-1">
+                            ${item.scale} ${item.scaleSub ? `<span class="text-xs sm:text-sm text-gray-400 font-normal ml-1">${item.scaleSub}</span>` : ''}
                         </div>
-                        <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">
+                        <p class="text-xs sm:text-[13px] text-gray-400 mt-1 truncate">
                             ${item.specs}
                         </p>
                     </div>
                     <div>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                        <div class="flex flex-wrap items-center gap-1.5 mt-2">
                             ${badgesHtml}
                         </div>
-                        <p class="text-[11px] text-gray-400 mt-1 truncate font-normal">
+                        <p class="text-xs sm:text-[13px] text-gray-300 mt-1.5 truncate font-normal">
                             ${item.desc}
                         </p>
                     </div>
@@ -226,7 +226,7 @@ function renderSubscriptionList(page) {
 
             // 총 건수 정보
             pagesHtml += `
-                <span class="text-[11px] text-gray-400 ml-2 font-medium">
+                <span class="text-xs text-gray-400 ml-2 font-medium">
                     (총 <strong class="text-gold font-bold">${totalItems}</strong>개 단지)
                 </span>
             `;
@@ -240,12 +240,83 @@ function renderSubscriptionList(page) {
     }
 }
 
+// ==========================================
+// 마우스가 창 밖에서 마우스 휠을 움직여도 배경이 전혀 움직이지 않도록 하는 스크롤 차단 핸들러
+// ==========================================
+function handleModalWheel(e) {
+    const modal = document.getElementById('subscriptionModal');
+    if (!modal || modal.classList.contains('hidden')) return;
+
+    const modalPanel = modal.querySelector('.sub-modal-panel');
+    const scrollContainer = document.getElementById('subItemListContainer');
+
+    // 1. 마우스가 모달 창 밖(배경 오버레이)에 있을 때는 휠 스크롤 100% 무조건 차단
+    if (!modalPanel || !modalPanel.contains(e.target)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+
+    // 2. 모달 창 내부에 있더라도 스크롤 리스트 영역이 아닌 곳(헤더, 푸터, 넘버링 바 등) 위일 때도 차단
+    if (!scrollContainer || !scrollContainer.contains(e.target)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+
+    // 3. 스크롤 리스트 끝단에서 휠 굴릴 때 배경으로 스크롤이 넘어가는 체이닝(Scroll Chaining) 방지
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+    const isScrollUp = e.deltaY < 0;
+    const isScrollDown = e.deltaY > 0;
+
+    if (isScrollUp && scrollTop <= 0) {
+        e.preventDefault();
+        return false;
+    }
+    if (isScrollDown && (scrollTop + clientHeight >= scrollHeight - 1)) {
+        e.preventDefault();
+        return false;
+    }
+}
+
+function handleModalTouchMove(e) {
+    const modal = document.getElementById('subscriptionModal');
+    if (!modal || modal.classList.contains('hidden')) return;
+
+    const modalPanel = modal.querySelector('.sub-modal-panel');
+    const scrollContainer = document.getElementById('subItemListContainer');
+
+    // 모달 밖 터치 스크롤 차단
+    if (!modalPanel || !modalPanel.contains(e.target) || (scrollContainer && !scrollContainer.contains(e.target))) {
+        e.preventDefault();
+    }
+}
+
+let isModalWheelLocked = false;
+function lockModalScroll() {
+    if (isModalWheelLocked) return;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    window.addEventListener('wheel', handleModalWheel, { passive: false });
+    window.addEventListener('touchmove', handleModalTouchMove, { passive: false });
+    isModalWheelLocked = true;
+}
+
+function unlockModalScroll() {
+    if (!isModalWheelLocked) return;
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    window.removeEventListener('wheel', handleModalWheel);
+    window.removeEventListener('touchmove', handleModalTouchMove);
+    isModalWheelLocked = false;
+}
+
 function openSubscriptionModal() {
     renderSubscriptionList(currentSubPage || 1);
     const m = document.getElementById('subscriptionModal');
     if (m) {
         m.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        lockModalScroll();
     }
 }
 
@@ -253,7 +324,7 @@ function closeSubscriptionModal() {
     const m = document.getElementById('subscriptionModal');
     if (m) {
         m.classList.add('hidden');
-        document.body.style.overflow = '';
+        unlockModalScroll();
     }
 }
 
