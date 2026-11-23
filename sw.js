@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v37 - 상단 메뉴 공통 1줄 고정 및 수평 스크롤바 완전 삭제)
-const CACHE_NAME = 'sumokto-chebol-v37';
+// 도안수목토 재벌부동산 PWA Service Worker (v38 - 지도 기본 스케일 값 레벨 3 50m 적용)
+const CACHE_NAME = 'sumokto-chebol-v38';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

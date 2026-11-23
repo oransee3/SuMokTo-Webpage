@@ -888,7 +888,7 @@
             const initialCenter = new kakao.maps.LatLng(36.3215, 127.3442); // 대전 도안동 중심 (수목토·아이파크)
             const options = {
                 center: initialCenter,
-                level: isMobile ? 5 : 4 // 모바일은 한눈에 다 보이도록 레벨 5, PC는 레벨 4
+                level: isMobile ? 4 : 3 // [요청 반영]: 50m 스케일 값(레벨 3)을 기본 값으로 적용
             };
 
             map = new kakao.maps.Map(container, options);
@@ -1492,7 +1492,7 @@
                     const isMobile = window.innerWidth < 768;
                     const propTarget = new kakao.maps.LatLng(36.3215, 127.3442);
                     map.setCenter(propTarget);
-                    map.setLevel(isMobile ? 5 : 4);
+                    map.setLevel(isMobile ? 4 : 3);
                     map.relayout();
                 }
 
@@ -2160,7 +2160,7 @@
         function resetMapCenter() {
             if (map) {
                 map.setCenter(new kakao.maps.LatLng(36.3215, 127.3442));
-                map.setLevel(4);
+                map.setLevel(3);
                 updateVisibleProperties();
             }
         }
