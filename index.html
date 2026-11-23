@@ -1372,11 +1372,11 @@
         .sub-custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #FF6F0F; }
     </style>
     <div id="subscriptionModal" class="hidden fixed inset-0 z-[200] bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-hidden overscroll-contain select-none" onclick="closeSubscriptionModal()">
-        <div class="sub-modal-panel bg-[#18181b] border border-zinc-700/80 rounded-3xl max-w-2xl sm:max-w-3xl w-full text-left shadow-[0_25px_60px_rgba(0,0,0,0.95)] relative my-auto max-h-[92vh] flex flex-col overflow-hidden overscroll-contain" onclick="event.stopPropagation()">
+        <div class="sub-modal-panel bg-[#18181b] border border-zinc-700/80 rounded-3xl max-w-3xl sm:max-w-4xl w-full text-left shadow-[0_25px_60px_rgba(0,0,0,0.95)] relative my-auto max-h-[94vh] flex flex-col overflow-hidden overscroll-contain" onclick="event.stopPropagation()">
             <!-- 헤더: 01.png 상단 스타일 ('매물' + '알림 받기') -->
-            <div class="px-5 sm:px-6 py-4 sm:py-4.5 border-b border-zinc-800 bg-[#1e1e22]/95 flex items-center justify-between shrink-0">
+            <div class="px-5 sm:px-7 py-4 sm:py-5 border-b border-zinc-800 bg-[#1e1e22]/95 flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-2.5">
-                    <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">분양 정보</h3>
+                    <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">분양 정보</h3>
                     <span class="px-2.5 py-0.5 text-xs font-bold rounded-md bg-carrot text-white">도안신도시</span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -1390,8 +1390,8 @@
                 </div>
             </div>
 
-            <!-- 스크롤 리스트 본문: 4개 높이 최적화(max-h-[500px] sm:max-h-[530px]), 4개 이후에는 상·하 스크롤바로 위아래 이동 -->
-            <div id="subItemListContainer" class="p-3.5 sm:p-5 max-h-[500px] sm:max-h-[530px] overflow-y-auto sub-custom-scrollbar overscroll-contain divide-y divide-zinc-800/70 space-y-1">
+            <!-- 스크롤 리스트 본문: 4개 온전히 표시(max-h-[580px] sm:max-h-[610px]), 4개 이후에는 상·하 스크롤바로 위아래 이동 -->
+            <div id="subItemListContainer" class="p-3.5 sm:p-5 max-h-[580px] sm:max-h-[610px] overflow-y-auto sub-custom-scrollbar overscroll-contain divide-y divide-zinc-800/70 space-y-1">
                 <!-- 동적 렌더링 영역 (js/subscription_modal.js) -->
             </div>
 

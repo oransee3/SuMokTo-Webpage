@@ -1,12 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v12 - 분양 정보 창 확대 및 창 밖 마우스 휠 배경 스크롤 원천 차단)
-const CACHE_NAME = 'sumokto-chebol-v12';
+// 도안수목토 재벌부동산 PWA Service Worker (v13 - 분양 정보 4개 온전히 표시 및 와이드 너비 max-w-4xl 확장)
+const CACHE_NAME = 'sumokto-chebol-v13';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261123_V6_RELEASE',
-  '/js/subscription_modal.js?v=20261124_V3',
+  '/js/subscription_modal.js?v=20261124_V4',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',
