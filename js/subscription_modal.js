@@ -247,45 +247,153 @@ function updateSubscriptionAdminUI() {
     }
 }
 
+
+let currentCompressedSubImg = null;
+
+// 이미지 파일을 썸네일 크기(최대 240x240) 및 저용량(JPEG 0.75, ~20KB)으로 압축하는 함수
+function compressImageToThumbnail(file, callback) {
+    if (!file || !file.type.startsWith('image/')) {
+        alert('이미지 파일만 선택 가능합니다.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            // 썸네일 규격: 최대 240px
+            const maxDim = 240;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > maxDim) {
+                    height = Math.round((height * maxDim) / width);
+                    width = maxDim;
+                }
+            } else {
+                if (height > maxDim) {
+                    width = Math.round((width * maxDim) / height);
+                    height = maxDim;
+                }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // JPEG 75% 품질로 압축 (용량 15~25KB 수준으로 극소화)
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75);
+            
+            // 용량 계산 (KB 단위)
+            const origSizeKB = Math.round(file.size / 1024);
+            const compSizeKB = Math.round((compressedBase64.length * 3 / 4) / 1024);
+
+            callback(compressedBase64, origSizeKB, compSizeKB);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleSubscriptionImageSelect(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const statusText = document.getElementById('subImgStatusText');
+    const previewImg = document.getElementById('subImgPreview');
+    const placeholder = document.getElementById('subImgPlaceholder');
+
+    if (statusText) statusText.textContent = '이미지 압축 중...';
+
+    compressImageToThumbnail(file, function(compressedBase64, origKB, compKB) {
+        currentCompressedSubImg = compressedBase64;
+
+        if (previewImg) {
+            previewImg.src = compressedBase64;
+            previewImg.classList.remove('hidden');
+        }
+        if (placeholder) {
+            placeholder.classList.add('hidden');
+        }
+        if (statusText) {
+            statusText.innerHTML = `<span class="text-emerald-400 font-bold">✓ 썸네일 최적화 완료</span> <span class="text-gray-400">(${origKB}KB → <strong>${compKB}KB</strong>)</span>`;
+        }
+    });
+}
+
+
 function openAddSubscriptionModal() {
+    currentCompressedSubImg = null;
     let addModal = document.getElementById('addSubscriptionModal');
     if (!addModal) {
         const div = document.createElement('div');
         div.id = 'addSubscriptionModal';
-        div.className = 'fixed inset-0 z-[250] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 select-none';
+        div.className = 'fixed inset-0 z-[250] bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 select-none';
         div.innerHTML = `
-            <div class="bg-[#1e1e22] border border-zinc-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative" onclick="event.stopPropagation()">
-                <div class="flex items-center justify-between pb-4 border-b border-zinc-800">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <div class="bg-[#1e1e22] border border-zinc-700 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative max-h-[92vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
+                <div class="flex items-center justify-between pb-3.5 border-b border-zinc-800 shrink-0">
+                    <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-gold"></span>
                         <span>신규 분양 정보 등록</span>
                     </h3>
-                    <button type="button" onclick="closeAddSubscriptionModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1">✕</button>
+                    <button type="button" onclick="closeAddSubscriptionModal()" class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-gray-400 hover:text-white flex items-center justify-center text-sm font-bold transition-colors">✕</button>
                 </div>
-                <form id="addSubscriptionForm" onsubmit="handleSubscriptionSubmit(event)" class="mt-4 space-y-3.5">
+                <form id="addSubscriptionForm" onsubmit="handleSubscriptionSubmit(event)" class="mt-3.5 space-y-3 overflow-y-auto sub-custom-scrollbar pr-1">
+                    <!-- 썸네일 이미지 업로드 및 실시간 압축 영역 -->
+                    <div class="bg-zinc-900/80 p-3 rounded-2xl border border-zinc-800">
+                        <label class="block text-xs font-semibold text-gray-200 mb-1.5">
+                            단지 썸네일 이미지 <span class="text-[11px] text-gold font-normal">(업로드 시 썸네일 규격 자동 압축·저용량 저장)</span>
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <!-- 썸네일 미리보기 박스 -->
+                            <div id="subImgPreviewContainer" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-dashed border-zinc-700 bg-zinc-950 overflow-hidden flex items-center justify-center shrink-0 relative shadow-inner">
+                                <img id="subImgPreview" src="" alt="썸네일 미리보기" class="hidden w-full h-full object-cover">
+                                <div id="subImgPlaceholder" class="flex flex-col items-center justify-center text-gray-500 text-[10px] text-center p-1">
+                                    <svg class="w-5 h-5 text-gray-500 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <span>사진 추가</span>
+                                </div>
+                            </div>
+                            <!-- 파일 첨부 버튼 -->
+                            <div class="flex-1 min-w-0">
+                                <label for="subFileInput" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-xs font-bold text-gray-200 hover:text-white cursor-pointer transition-colors shadow-sm">
+                                    <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    <span>사진 파일 선택</span>
+                                </label>
+                                <input type="file" id="subFileInput" accept="image/*" class="hidden" onchange="handleSubscriptionImageSelect(event)">
+                                <p id="subImgStatusText" class="text-[11px] text-gray-400 mt-1 truncate">
+                                    미선택 시 기본 조감도 이미지가 적용됩니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">단지명 / 프로젝트명 <span class="text-red-400">*</span></label>
-                        <input type="text" id="subInputTitle" required placeholder="예: 도안 3단계 랜드마크 아파트" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                        <input type="text" id="subInputTitle" required placeholder="예: 대전 선화동 하늘채 루시에르" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-2.5">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">분류 / 태그</label>
-                            <input type="text" id="subInputTag" placeholder="예: 도안 2-X, 공급예정" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                            <input type="text" id="subInputTag" placeholder="예: 105타입, 119타입 분양중" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">공급 규모</label>
-                            <input type="text" id="subInputScale" placeholder="예: 분양 1,200세대" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                            <input type="text" id="subInputScale" placeholder="예: 총 998세대" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">상세 위치 / 공급 면적</label>
-                        <input type="text" id="subInputSpecs" placeholder="예: 서구 도안동 · 84㎡~162㎡ · 최고 35층" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                        <input type="text" id="subInputSpecs" placeholder="예: 대전광역시 중구 선화동 95-3 일원" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">핵심 특징 / 설명</label>
-                        <input type="text" id="subInputDesc" placeholder="예: “트램 2호선 역세권 프리미엄 랜드마크”" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                        <input type="text" id="subInputDesc" placeholder="예: “트램 2호선 역세권, 중구청 건립 수혜지역”" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
                     </div>
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
+                    <div class="flex items-center justify-end gap-2 pt-2.5 border-t border-zinc-800 shrink-0">
                         <button type="button" onclick="closeAddSubscriptionModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-bold rounded-xl transition-colors">취소</button>
                         <button type="submit" class="px-5 py-2 bg-gold hover:bg-gold-dark text-black text-xs font-bold rounded-xl transition-colors shadow">등록 완료</button>
                     </div>
@@ -294,6 +402,16 @@ function openAddSubscriptionModal() {
         `;
         document.body.appendChild(div);
         addModal = div;
+    } else {
+        // 기존 폼 초기화
+        const form = document.getElementById('addSubscriptionForm');
+        if (form) form.reset();
+        const previewImg = document.getElementById('subImgPreview');
+        const placeholder = document.getElementById('subImgPlaceholder');
+        const statusText = document.getElementById('subImgStatusText');
+        if (previewImg) { previewImg.src = ''; previewImg.classList.add('hidden'); }
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (statusText) statusText.textContent = '미선택 시 기본 조감도 이미지가 적용됩니다.';
     }
     addModal.classList.remove('hidden');
 }
@@ -312,6 +430,7 @@ function handleSubscriptionSubmit(e) {
     const scale = document.getElementById('subInputScale').value.trim() || '상담 접수 중';
     const specs = document.getElementById('subInputSpecs').value.trim() || '도안신도시 핵심 권역';
     const desc = document.getElementById('subInputDesc').value.trim() || '“도안수목토 재벌부동산 엄선 추천 단지”';
+    const img = currentCompressedSubImg || 'images/preview_complex.jpg';
 
     const newItem = {
         id: 'sub-custom-' + Date.now(),
@@ -326,7 +445,7 @@ function handleSubscriptionSubmit(e) {
             { text: '전문 상담', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
         ],
         desc: desc,
-        img: 'images/preview_complex.jpg'
+        img: img
     };
 
     SUBSCRIPTION_DATA.unshift(newItem);
@@ -338,6 +457,7 @@ function handleSubscriptionSubmit(e) {
     renderSubscriptionList(1);
     alert(`[${title}] 신규 분양 정보가 성공적으로 등록되었습니다.`);
 }
+
 
 function openSubscriptionModal() {
     updateSubscriptionAdminUI();
@@ -365,6 +485,8 @@ window.updateSubscriptionAdminUI = updateSubscriptionAdminUI;
 window.openAddSubscriptionModal = openAddSubscriptionModal;
 window.closeAddSubscriptionModal = closeAddSubscriptionModal;
 window.handleSubscriptionSubmit = handleSubscriptionSubmit;
+window.handleSubscriptionImageSelect = handleSubscriptionImageSelect;
+window.compressImageToThumbnail = compressImageToThumbnail;
 
 document.addEventListener('DOMContentLoaded', () => {
     renderSubscriptionList(1);
