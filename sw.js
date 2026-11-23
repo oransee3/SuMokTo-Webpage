@@ -1,11 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v9 - 분양 정보 01.png 썸네일 리스트 형식 팝업 모달 및 캐시 무효화)
-const CACHE_NAME = 'sumokto-chebol-v9';
+// 도안수목토 재벌부동산 PWA Service Worker (v10 - 분양 정보 4개 이후 스크롤 및 8개 이상 페이지 넘버링 기능 탑재)
+const CACHE_NAME = 'sumokto-chebol-v10';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261123_V6_RELEASE',
+  '/js/subscription_modal.js?v=20261124_V1',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',
