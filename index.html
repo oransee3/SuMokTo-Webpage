@@ -1390,8 +1390,8 @@
                 </div>
             </div>
 
-            <!-- 스크롤 리스트 본문: 4개 온전히 표시(max-h-[610px] sm:max-h-[635px]), 4개 이후에는 상·하 스크롤바로 위아래 이동 -->
-            <div id="subItemListContainer" style="max-height: 630px;" class="p-3 sm:p-4 overflow-y-auto sub-custom-scrollbar overscroll-contain divide-y divide-zinc-800/70 space-y-0.5">
+            <!-- 스크롤 리스트 본문: 4개 온전히 표시, 마지막 페이지도 앞 페이지와 동일한 크기(height: 610px) 유지 -->
+            <div id="subItemListContainer" style="min-height: 610px; height: 610px;" class="p-3 sm:p-4 overflow-y-auto sub-custom-scrollbar overscroll-contain divide-y divide-zinc-800/70 space-y-0.5">
                 <!-- 동적 렌더링 영역 (js/subscription_modal.js) -->
             </div>
 
