@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v29 - 썸네일 이미지 내용과 같은 크기로 확대)
-const CACHE_NAME = 'sumokto-chebol-v29';
+// 도안수목토 재벌부동산 PWA Service Worker (v31 - 지도 매물보기 / 분양정보보기 스위치 및 파란색 마커 이동)
+const CACHE_NAME = 'sumokto-chebol-v31';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
