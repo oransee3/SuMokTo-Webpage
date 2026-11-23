@@ -1,12 +1,13 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v39 - 분양 정보 보기 클릭 시 분양 위치 지도 이동 확실 동기화 및 매물 마커 숨김 방어)
-const CACHE_NAME = 'sumokto-chebol-v39';
+// 도안수목토 재벌부동산 PWA Service Worker (v40 - 모바일 핸드폰 분양 정보 모달 동일 노출 동기화)
+const CACHE_NAME = 'sumokto-chebol-v40';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
+  '/data/subscriptions.json',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V2',
-  '/js/subscription_modal.js?v=20261124_V11_LARGE_THUMB',
+  '/js/subscription_modal.js?v=20261124_V12_MOBILE_SYNC',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',

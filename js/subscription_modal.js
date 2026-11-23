@@ -5,7 +5,29 @@
  * - 8개 이상부터 하단 페이지 넘버링(Pagination) 자동 노출
  */
 
-// 분양 단지 데이터 (사용자 요청: 기본 내용 삭제 및 4개 칸 간격 유지, 관리자 등록 단지 로컬스토리지 연동)
+// 기본 분양 정보 프리셋 (핸드폰 모바일, 신규 기기 접속 시에도 100% 동일한 분양 내용이 노출되도록 보장)
+const DEFAULT_SUBSCRIPTION_DATA = [
+    {
+        id: 'sub-preset-1',
+        title: '대전 선화동 하늘채 루시에르',
+        tag: '105타입, 119타입 분양중',
+        tagBg: 'bg-carrot',
+        scale: '총 998세대',
+        scaleSub: '',
+        specs: '대전광역시 중구 선화동 95-3 일원',
+        desc: '“트램 2호선 역세권, 중구청 건립 수혜지역”',
+        homepage: 'https://www.hanulche.co.kr',
+        youtube: 'https://youtube.com',
+        badges: [
+            { text: '분양중', style: 'bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm' }
+        ],
+        img: 'images/view_2k.jpg',
+        lat: 36.3283,
+        lng: 127.4208
+    }
+];
+
+// 분양 단지 데이터 (로컬스토리지 우선 연동, 미등록/신규 모바일 환경에서는 기본 분양 정보 자동 표출)
 const SUBSCRIPTION_DATA = [];
 try {
     const savedCustomSubs = localStorage.getItem('sumokto_custom_subscriptions');
@@ -16,6 +38,30 @@ try {
         }
     }
 } catch (e) {}
+
+// 핸드폰 모바일 등 로컬스토리지에 데이터가 없는 기기에서도 PC와 100% 동일한 분양 내용이 나오도록 기본값 적용
+if (SUBSCRIPTION_DATA.length === 0) {
+    SUBSCRIPTION_DATA.push(...DEFAULT_SUBSCRIPTION_DATA);
+}
+
+// data/subscriptions.json 서버 데이터 비동기 동기화
+async function syncServerSubscriptions() {
+    try {
+        const res = await fetch('data/subscriptions.json?t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) {
+            const list = await res.json();
+            if (Array.isArray(list) && list.length > 0) {
+                const local = localStorage.getItem('sumokto_custom_subscriptions');
+                if (!local || JSON.parse(local).length === 0) {
+                    SUBSCRIPTION_DATA.length = 0;
+                    SUBSCRIPTION_DATA.push(...list);
+                    renderSubscriptionList(currentSubPage || 1);
+                }
+            }
+        }
+    } catch (e) {}
+}
+syncServerSubscriptions();
 
 let currentSubPage = 1;
 const SUB_ITEMS_PER_PAGE = 6; // 한 페이지당 6개 (4개 높이 제한으로 4개 초과분은 스크롤바로 위아래 확인)

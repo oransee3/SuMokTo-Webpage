@@ -1402,7 +1402,7 @@
 
         </div>
     </div>
-    <script src="js/subscription_modal.js?v=20261124_V11_LARGE_THUMB"></script>
+    <script src="js/subscription_modal.js?v=20261124_V12_MOBILE_SYNC"></script>
 
     <!-- QR & Subscription Modal Control Script -->
     <script>
@@ -1421,6 +1421,8 @@
             }
         }
         function openSubscriptionModal() {
+            if (typeof window.updateSubscriptionAdminUI === 'function') window.updateSubscriptionAdminUI();
+            if (typeof window.renderSubscriptionList === 'function') window.renderSubscriptionList(1);
             const m = document.getElementById('subscriptionModal');
             if (m) {
                 m.classList.remove('hidden');
