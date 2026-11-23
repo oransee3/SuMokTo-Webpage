@@ -200,7 +200,7 @@
 
         /* 모바일 바텀시트 트랜지션 & 상태 */
         .bottom-sheet {
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .bottom-sheet-peek {
             transform: translateY(calc(100% - 195px)) !important;
@@ -209,7 +209,7 @@
             transform: translateY(0%) !important;
         }
         .bottom-sheet-collapsed {
-            transform: translateY(calc(100% - 60px)) !important;
+            transform: translateY(100%) !important;
         }
 
         /* 수평 스크롤바 완전 삭제 및 상단 메뉴 1줄 고정 */
@@ -532,9 +532,24 @@
         </div>
 
         <!-- =================================================== -->
+        <!-- 2-1. 모바일 전용 하단 중앙 플로팅 '목록보기' 버튼 (목록을 위로 올리는 버튼) -->
+        <!-- =================================================== -->
+        <button type="button" id="mobileListFloatingBtn" onclick="expandMobileSheet()" 
+                class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-30 bg-zinc-950/95 backdrop-blur-md border border-carrot text-white px-5 py-3 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center gap-2 cursor-pointer transition-all duration-200 active:scale-95 group hover:border-orange-400">
+            <svg class="w-4 h-4 text-carrot animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"></path>
+            </svg>
+            <span class="text-xs sm:text-sm font-bold text-gray-100 flex items-center gap-1.5">
+                <span id="floatingListLabel">매물 목록보기</span>
+                <strong id="mobileFloatingCount" class="text-carrot font-extrabold text-sm sm:text-base">0</strong>개
+                <span class="text-[11px] text-gray-400 font-normal">▲</span>
+            </span>
+        </button>
+
+        <!-- =================================================== -->
         <!-- 3. 모바일 전용 반응형 바텀시트 (Bottom Sheet)          -->
         <!-- =================================================== -->
-        <div id="mobileBottomSheet" class="md:hidden fixed inset-x-0 bottom-0 z-40 bg-[#161618] border-t border-zinc-800 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.8)] bottom-sheet bottom-sheet-peek flex flex-col max-h-[82vh]">
+        <div id="mobileBottomSheet" class="md:hidden fixed inset-x-0 bottom-0 z-40 bg-[#161618] border-t border-zinc-800 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.8)] bottom-sheet bottom-sheet-collapsed flex flex-col max-h-[82vh]">
             
             <!-- 바텀시트 핸들러 및 헤더 바 -->
             <div class="p-3 border-b border-zinc-800/80 flex flex-col items-center justify-center cursor-pointer select-none shrink-0" onclick="toggleMobileSheet()">
@@ -903,9 +918,9 @@
             const container = document.getElementById('map');
             const isMobile = window.innerWidth < 768;
             // PC: 좌측 사이드바 폭(400px)을 감안한 최적 중심 (36.3215, 127.3442)
-            // 모바일: 하단 바텀시트 가용 공간과 3개 매물(1502동, 101동, 108동)이 화면 중앙에 딱 오도록 정밀 중심 (36.3204, 127.3466)
+            // 모바일: 3개 매물(1502동, 101동, 108동)이 화면 정중앙에 완벽하게 오도록 정밀 중심 (36.3208, 127.3466)
             const initialCenter = isMobile 
-                ? new kakao.maps.LatLng(36.3204, 127.3466) 
+                ? new kakao.maps.LatLng(36.3208, 127.3466) 
                 : new kakao.maps.LatLng(36.3215, 127.3442);
             const options = {
                 center: initialCenter,
@@ -1296,6 +1311,8 @@
             document.getElementById('sidebarCount').textContent = count;
             document.getElementById('mapCountText').textContent = count;
             document.getElementById('mobileHeaderCount').textContent = count;
+            const mobileFloatingCountEl = document.getElementById('mobileFloatingCount');
+            if (mobileFloatingCountEl) mobileFloatingCountEl.textContent = count;
 
             // 사이드바 및 모바일 목록 렌더링
             renderPropertyList();
@@ -1471,6 +1488,10 @@
                 if (mobHeaderLabel) mobHeaderLabel.textContent = '분양 단지 목록';
                 const mobHeaderDot = document.getElementById('mobileHeaderDot');
                 if (mobHeaderDot) { mobHeaderDot.className = 'w-2 h-2 rounded-full bg-blue-500 animate-pulse'; }
+                const floatingLabel = document.getElementById('floatingListLabel');
+                if (floatingLabel) floatingLabel.textContent = '분양 단지 목록보기';
+                const mobileFloatingCountEl = document.getElementById('mobileFloatingCount');
+                if (mobileFloatingCountEl) mobileFloatingCountEl.textContent = subscriptionProjects.length;
 
                 // 사이드바 / 모바일 리스트 컨테이너 전환
                 if (propCardList) propCardList.classList.add('hidden');
@@ -1521,6 +1542,10 @@
                 if (mobHeaderLabel) mobHeaderLabel.textContent = '매물 목록';
                 const mobHeaderDot = document.getElementById('mobileHeaderDot');
                 if (mobHeaderDot) { mobHeaderDot.className = 'w-2 h-2 rounded-full bg-carrot animate-pulse'; }
+                const floatingLabel = document.getElementById('floatingListLabel');
+                if (floatingLabel) floatingLabel.textContent = '매물 목록보기';
+                const mobileFloatingCountEl = document.getElementById('mobileFloatingCount');
+                if (mobileFloatingCountEl) mobileFloatingCountEl.textContent = visibleProperties.length;
                 const mapBadge = document.getElementById('mapBadge');
                 if (mapBadge) mapBadge.style.removeProperty('display');
 
@@ -1544,7 +1569,7 @@
                 if (map) {
                     const isMobile = window.innerWidth < 768;
                     const propTarget = isMobile 
-                        ? new kakao.maps.LatLng(36.3204, 127.3466) 
+                        ? new kakao.maps.LatLng(36.3208, 127.3466) 
                         : new kakao.maps.LatLng(36.3215, 127.3442);
                     map.setCenter(propTarget);
                     map.setLevel(3);
@@ -2145,21 +2170,25 @@
         function expandMobileSheet() {
             const sheet = document.getElementById('mobileBottomSheet');
             const toggleText = document.getElementById('mobileSheetToggleText');
+            const floatingBtn = document.getElementById('mobileListFloatingBtn');
             if (!sheet) return;
-            sheet.classList.remove('bottom-sheet-peek', 'bottom-sheet-collapsed');
+            sheet.classList.remove('bottom-sheet-collapsed', 'bottom-sheet-peek');
             sheet.classList.add('bottom-sheet-expanded');
             isSheetExpanded = true;
             if (toggleText) toggleText.textContent = '지도보기 ▼';
+            if (floatingBtn) floatingBtn.classList.add('hidden');
         }
 
         function collapseMobileSheet() {
             const sheet = document.getElementById('mobileBottomSheet');
             const toggleText = document.getElementById('mobileSheetToggleText');
+            const floatingBtn = document.getElementById('mobileListFloatingBtn');
             if (!sheet) return;
-            sheet.classList.remove('bottom-sheet-expanded');
-            sheet.classList.add('bottom-sheet-peek');
+            sheet.classList.remove('bottom-sheet-expanded', 'bottom-sheet-peek');
+            sheet.classList.add('bottom-sheet-collapsed');
             isSheetExpanded = false;
-            if (toggleText) toggleText.textContent = '목록 펼치기 ▲';
+            if (toggleText) toggleText.textContent = '전체 목록 펼치기 ▲';
+            if (floatingBtn) floatingBtn.classList.remove('hidden');
         }
 
         // 8. 필터 제어 함수
@@ -2215,7 +2244,7 @@
             if (map) {
                 const isMobile = window.innerWidth < 768;
                 const target = isMobile 
-                    ? new kakao.maps.LatLng(36.3204, 127.3466) 
+                    ? new kakao.maps.LatLng(36.3208, 127.3466) 
                     : new kakao.maps.LatLng(36.3215, 127.3442);
                 map.setCenter(target);
                 map.setLevel(3);
