@@ -1461,7 +1461,7 @@
                     if (item.overlay) item.overlay.setVisible(false);
                 });
                 const mapBadge = document.getElementById('mapBadge');
-                if (mapBadge) mapBadge.classList.add('hidden');
+                if (mapBadge) mapBadge.style.setProperty('display', 'none', 'important');
 
                 // 분양 정보 카드 및 파란색 지도 마커 렌더링
                 renderSubscriptionMode();
@@ -1493,7 +1493,7 @@
                 if (sortWrapper) sortWrapper.classList.remove('hidden');
                 if (sidebarHeader) sidebarHeader.textContent = '현재 지도 영역';
                 const mapBadge = document.getElementById('mapBadge');
-                if (mapBadge) mapBadge.classList.remove('hidden');
+                if (mapBadge) mapBadge.style.removeProperty('display');
 
                 // 사이드바 / 모바일 리스트 컨테이너 전환
                 if (propCardList) propCardList.classList.remove('hidden');
