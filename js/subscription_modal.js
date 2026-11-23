@@ -54,18 +54,22 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = validItems.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 최적화)
+    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 최적화 & 관리자 모드 삭제 버튼 연동)
+    const isAdmin = checkAdminMode();
+
     container.innerHTML = pageItems.map((item, index) => {
-        const badgesHtml = item.badges.map(b => 
+        const badgesHtml = (item.badges || []).map(b => 
             `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
         ).join('');
+
+        const safeTitle = (item.title || '').replace(/'/g, "\\'");
 
         return `
             <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative">
                 <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
                     <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='images/preview_complex.jpg'">
-                    <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded ${item.tagBg} text-white shadow">
-                        ${item.tag}
+                    <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded ${item.tagBg || 'bg-carrot'} text-white shadow">
+                        ${item.tag || '신규분양'}
                     </span>
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
@@ -74,9 +78,18 @@ function renderSubscriptionList(page) {
                             <h4 class="text-base sm:text-[17px] font-bold text-white group-hover:text-gold transition-colors truncate">
                                 ${item.title}
                             </h4>
-                            <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1 shrink-0" title="관심 단지 등록">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                            </button>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <!-- 관리자 모드 삭제 버튼 -->
+                                ${isAdmin ? `
+                                    <button type="button" onclick="event.stopPropagation(); deleteSubscriptionItem('${item.id}', '${safeTitle}');" class="sub-delete-btn px-2 py-0.5 rounded-lg bg-red-950/80 hover:bg-red-800 text-red-300 hover:text-white border border-red-700/60 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-sm" title="해당 분양 정보 삭제">
+                                        <svg class="w-3 h-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <span>삭제</span>
+                                    </button>
+                                ` : ''}
+                                <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1" title="관심 단지 등록">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="text-[14px] sm:text-[16px] font-black text-[#58a6ff] tracking-tight mt-0.5">
                             ${item.scale} ${item.scaleSub ? `<span class="text-xs sm:text-[13px] text-gray-400 font-normal ml-1">${item.scaleSub}</span>` : ''}
@@ -423,6 +436,32 @@ function closeAddSubscriptionModal() {
     if (m) m.classList.add('hidden');
 }
 
+
+// ==========================================
+// 등록된 분양 정보 삭제 함수
+// ==========================================
+function deleteSubscriptionItem(id, title) {
+    if (!id) return;
+    const confirmDelete = confirm(`'${title || '해당'}' 분양 정보를 삭제하시겠습니까?`);
+    if (!confirmDelete) return;
+
+    const idx = SUBSCRIPTION_DATA.findIndex(item => item.id === id);
+    if (idx !== -1) {
+        SUBSCRIPTION_DATA.splice(idx, 1);
+        try {
+            localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(SUBSCRIPTION_DATA));
+        } catch (e) {}
+
+        renderSubscriptionList(currentSubPage || 1);
+
+        if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+            UI.showToast(`'${title || '분양 정보'}'가 성공적으로 삭제되었습니다.`);
+        } else {
+            console.log(`'${title || '분양 정보'}' 삭제 완료`);
+        }
+    }
+}
+
 function handleSubscriptionSubmit(e) {
     e.preventDefault();
     const title = document.getElementById('subInputTitle').value.trim();
@@ -493,6 +532,7 @@ window.closeAddSubscriptionModal = closeAddSubscriptionModal;
 window.handleSubscriptionSubmit = handleSubscriptionSubmit;
 window.handleSubscriptionImageSelect = handleSubscriptionImageSelect;
 window.compressImageToThumbnail = compressImageToThumbnail;
+window.deleteSubscriptionItem = deleteSubscriptionItem;
 
 document.addEventListener('DOMContentLoaded', () => {
     renderSubscriptionList(1);

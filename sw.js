@@ -1,12 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v22 - 신규 분양 정보 썸네일 이미지 자동압축 등록 지원)
-const CACHE_NAME = 'sumokto-chebol-v22';
+// 도안수목토 재벌부동산 PWA Service Worker (v23 - 분양 정보 삭제 버튼 추가)
+const CACHE_NAME = 'sumokto-chebol-v23';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V2',
-  '/js/subscription_modal.js?v=20261124_V4',
+  '/js/subscription_modal.js?v=20261124_V5',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',
