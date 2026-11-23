@@ -466,110 +466,209 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- [Modal] 분양 정보 내부 팝업 모달            -->
+    <!-- [Modal] 분양 정보 내부 팝업 모달 (01.png 썸네일 리스트 스타일) -->
     <!-- ========================================== -->
     <div id="subscriptionModal" class="hidden fixed inset-0 z-[200] bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="closeSubscriptionModal()">
-        <div class="bg-zinc-950 border border-gold/60 rounded-3xl max-w-xl w-full text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)] relative my-auto max-h-[90vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
-            <!-- 헤더 -->
-            <div class="p-5 sm:p-6 border-b border-gray-800 bg-zinc-900/90 flex items-start justify-between shrink-0">
-                <div>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/15 border border-gold/40 text-gold text-xs font-bold mb-2">
-                        <span class="w-2 h-2 rounded-full bg-carrot animate-pulse"></span>
-                        도안신도시 분양 캘린더 & 청약 센터
-                    </span>
-                    <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">대전 도안신도시 핵심 분양 정보</h3>
-                    <p class="text-xs text-gray-400 mt-1">청약 일정, 단지 분석 및 분양권 권리분석 전문 상담</p>
+        <div class="bg-[#18181b] border border-zinc-700/80 rounded-3xl max-w-xl w-full text-left shadow-[0_25px_60px_rgba(0,0,0,0.95)] relative my-auto max-h-[92vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
+            <!-- 헤더: 01.png 상단 스타일 ('매물' + '알림 받기') -->
+            <div class="px-5 py-4 border-b border-zinc-800 bg-[#1e1e22]/95 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <h3 class="text-lg sm:text-xl font-black text-white tracking-tight">분양 정보</h3>
+                    <span class="px-2 py-0.5 text-[11px] font-bold rounded-md bg-carrot text-white">도안신도시</span>
                 </div>
-                <button type="button" onclick="closeSubscriptionModal()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors shrink-0 ml-2" aria-label="닫기">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+                <div class="flex items-center gap-2">
+                    <a href="tel:042-546-4900" class="flex items-center gap-1.5 text-xs font-bold text-gray-200 hover:text-white bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-full border border-zinc-700 transition-colors">
+                        <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        <span>알림 받기</span>
+                    </a>
+                    <button type="button" onclick="closeSubscriptionModal()" class="w-8 h-8 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-gray-400 hover:text-white flex items-center justify-center transition-colors shrink-0" aria-label="닫기">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
             </div>
 
-            <!-- 스크롤 본문 -->
-            <div class="p-5 sm:p-6 overflow-y-auto custom-scrollbar space-y-4 text-sm">
-                <!-- 청약홈 바로가기 공식 배너 -->
-                <a href="https://www.applyhome.co.kr/" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-2xl bg-gradient-to-r from-carrot/20 via-gold/20 to-carrot/10 border border-gold/50 hover:border-gold transition-all duration-300 group shadow-md">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-gold/20 border border-gold/50 flex items-center justify-center text-gold font-black text-lg group-hover:scale-105 transition-transform">
-                                🏛️
-                            </div>
-                            <div>
-                                <div class="text-xs text-gold font-bold">한국부동산원 공식</div>
-                                <div class="text-base font-extrabold text-white group-hover:text-gold transition-colors">청약홈(Apply Home) 바로가기</div>
-                            </div>
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-white flex items-center gap-1 bg-black/40 px-3 py-1.5 rounded-lg border border-white/10">
-                            접속 ↗
+            <!-- 스크롤 리스트 본문: 01.png 카드 리스트 형식 -->
+            <div class="p-3 sm:p-4 overflow-y-auto custom-scrollbar divide-y divide-zinc-800/70 space-y-1">
+                <!-- 아이템 1: 힐스테이트 도안리버파크 -->
+                <div onclick="window.open('subscription.html', '_blank')" class="flex gap-3.5 sm:gap-4 p-3 sm:p-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+                        <img src="images/단지조감도_2K.jpg" alt="힐스테이트 도안리버파크" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='images/preview_complex.jpg'">
+                        <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded bg-carrot text-white shadow">
+                            도안 2-2
                         </span>
                     </div>
-                </a>
-
-                <!-- 분양 단지 요약 카드 리스트 -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold text-gray-400 tracking-wider uppercase">핵심 분양 단지 현황</h4>
-
-                    <!-- 1. 힐스테이트 도안리버파크 -->
-                    <div class="p-4 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-gold/40 transition-colors">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-carrot/20 text-carrot border border-carrot/40">도안 2-2지구</span>
-                            <span class="text-xs text-gold font-bold">총 5,329세대 (메머드급)</span>
+                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <div>
+                            <div class="flex items-start justify-between gap-1">
+                                <h4 class="text-sm sm:text-base font-bold text-white group-hover:text-gold transition-colors truncate">
+                                    힐스테이트 도안리버파크
+                                </h4>
+                                <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1 shrink-0" title="관심 단지 등록">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </button>
+                            </div>
+                            <div class="text-base sm:text-lg font-black text-[#58a6ff] tracking-tight mt-0.5">
+                                분양 5,329세대 <span class="text-xs text-gray-400 font-normal">(84㎡~162㎡)</span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">
+                                유성구 학하동 · 공급 34~65평형 · 최고 35층
+                            </p>
                         </div>
-                        <h5 class="text-base font-bold text-white mb-1">힐스테이트 도안리버파크 1·2·3·5단지</h5>
-                        <p class="text-xs text-gray-400 leading-relaxed">
-                            진잠천 수변공원 인접, 도안 최대 규모 브랜드 타운. 단지 내 초·중교 신설 예정 및 트램 2호선 호재.
-                        </p>
-                    </div>
-
-                    <!-- 2. 도안 푸르지오 디아델 -->
-                    <div class="p-4 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-gold/40 transition-colors">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/40">도안 2-5지구</span>
-                            <span class="text-xs text-gold font-bold">총 1,514세대</span>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0d2a1f] text-[#3fb950] border border-[#238636]/40">
+                                    청약홈 접수
+                                </span>
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0c2340] text-[#58a6ff] border border-[#1f6feb]/40">
+                                    안심 권리분석
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1 truncate font-normal">
+                                “진잠천 수변공원을 품은 5천세대 매머드급 랜드마크”
+                            </p>
                         </div>
-                        <h5 class="text-base font-bold text-white mb-1">도안 푸르지오 디아델 29·31블록</h5>
-                        <p class="text-xs text-gray-400 leading-relaxed">
-                            도안대로 및 트램 2호선(예정) 역세권 입지, 중심상업지구 도보 생활권의 프리미엄 하이엔드 주거 단지.
-                        </p>
-                    </div>
-
-                    <!-- 3. 도안 핵심 상가 -->
-                    <div class="p-4 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-gold/40 transition-colors">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">수익형 부동산</span>
-                            <span class="text-xs text-emerald-400 font-bold">배후 1.2만 세대</span>
-                        </div>
-                        <h5 class="text-base font-bold text-white mb-1">도안신도시 중심상업지구 프리미엄 상가</h5>
-                        <p class="text-xs text-gray-400 leading-relaxed">
-                            수목토·아이파크 항아리 상권. 병의원, 대형 학원가, 유명 프랜차이즈 독점 입점 상담 진행 중.
-                        </p>
                     </div>
                 </div>
 
-                <!-- 청약 필수 체크포인트 -->
-                <div class="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800 text-xs text-gray-400 space-y-1.5">
-                    <div class="text-gold font-bold flex items-center gap-1.5 mb-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        청약 전 필수 체크포인트
+                <!-- 아이템 2: 도안 푸르지오 디아델 -->
+                <div onclick="window.open('subscription.html', '_blank')" class="flex gap-3.5 sm:gap-4 p-3 sm:p-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative pt-3">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+                        <img src="images/단지투시도_2K.jpg" alt="도안 푸르지오 디아델" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='images/preview_complex.jpg'">
+                        <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-600 text-white shadow">
+                            도안 2-5
+                        </span>
                     </div>
-                    <p>• <strong>청약 자격:</strong> 대전광역시 및 충남·세종 거주 만 19세 이상</p>
-                    <p>• <strong>통장 요건:</strong> 가입 기간 6개월 이상, 84㎡ 기준 예치금 250만 원 이상</p>
-                    <p>• <strong>전매 제한 및 세제:</strong> 지구별 상이하므로 전문 중개사와 사전 상담 권장</p>
+                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <div>
+                            <div class="flex items-start justify-between gap-1">
+                                <h4 class="text-sm sm:text-base font-bold text-white group-hover:text-gold transition-colors truncate">
+                                    도안 푸르지오 디아델
+                                </h4>
+                                <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1 shrink-0" title="관심 단지 등록">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </button>
+                            </div>
+                            <div class="text-base sm:text-lg font-black text-[#58a6ff] tracking-tight mt-0.5">
+                                분양 1,514세대 <span class="text-xs text-gray-400 font-normal">(59㎡~215㎡)</span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">
+                                서구 용계동 · 공급 24~80평형 · 최고 32층
+                            </p>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0d2a1f] text-[#3fb950] border border-[#238636]/40">
+                                    트램 2호선 역세권
+                                </span>
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0c2340] text-[#58a6ff] border border-[#1f6feb]/40">
+                                    안심송금
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1 truncate font-normal">
+                                “도안대로 직결 및 대전 도시철도 2호선 트램 초역세권 프리미엄”
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 아이템 3: 도안 프리미엄 상가 -->
+                <div onclick="window.open('subscription.html', '_blank')" class="flex gap-3.5 sm:gap-4 p-3 sm:p-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative pt-3">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+                        <img src="images/preview_complex.jpg" alt="도안 프리미엄 상가" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded bg-emerald-600 text-white shadow">
+                            수익형
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <div>
+                            <div class="flex items-start justify-between gap-1">
+                                <h4 class="text-sm sm:text-base font-bold text-white group-hover:text-gold transition-colors truncate">
+                                    도안 중심상업지구 프리미엄 상가
+                                </h4>
+                                <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1 shrink-0" title="관심 단지 등록">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </button>
+                            </div>
+                            <div class="text-base sm:text-lg font-black text-[#58a6ff] tracking-tight mt-0.5">
+                                분양 / 임대 맞춤 상담
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">
+                                서구 도안동 · 배후 1.2만 세대 항아리 상권 · 1~7층
+                            </p>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0d2a1f] text-[#3fb950] border border-[#238636]/40">
+                                    독점 업종 지정
+                                </span>
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0c2340] text-[#58a6ff] border border-[#1f6feb]/40">
+                                    수익률 분석
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1 truncate font-normal">
+                                “수목토·아이파크 2,300여 세대 정문 독점 관문 상권”
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 아이템 4: 도안 2단계 신규 예정 단지 -->
+                <div onclick="window.open('subscription.html', '_blank')" class="flex gap-3.5 sm:gap-4 p-3 sm:p-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative pt-3">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+                        <img src="images/bird_view_2k.jpg" alt="도안 신규 예정 단지" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded bg-purple-600 text-white shadow">
+                            공급예정
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <div>
+                            <div class="flex items-start justify-between gap-1">
+                                <h4 class="text-sm sm:text-base font-bold text-white group-hover:text-gold transition-colors truncate">
+                                    도안 2단계 신규 후속 공급 예정 단지
+                                </h4>
+                                <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1 shrink-0" title="관심 단지 등록">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </button>
+                            </div>
+                            <div class="text-base sm:text-lg font-black text-[#58a6ff] tracking-tight mt-0.5">
+                                사전 청약 상담 접수 중
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">
+                                대전 유성구/서구 도안신도시 핵심권역 · 중대형 평형
+                            </p>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0d2a1f] text-[#3fb950] border border-[#238636]/40">
+                                    사전 관심고객
+                                </span>
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#0c2340] text-[#58a6ff] border border-[#1f6feb]/40">
+                                    일정 실시간 안내
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1 truncate font-normal">
+                                “도안신도시 프리미엄 주거벨트의 완성, VIP 사전 안내”
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 하단 버튼 영역 -->
-            <div class="p-4 sm:p-5 border-t border-gray-800 bg-zinc-900/90 flex flex-col sm:flex-row gap-2 shrink-0">
-                <a href="tel:042-546-4900" class="flex-1 py-3 px-4 rounded-xl bg-carrot hover:bg-carrot/90 text-white font-bold text-sm text-center transition-colors flex items-center justify-center gap-2 shadow-lg">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
-                    분양 전문 상담 (042-546-4900)
+            <!-- 하단 푸터 액션: 01.png '더 보기 >' 및 청약홈/상담 연동 -->
+            <div class="p-3.5 sm:p-4 border-t border-zinc-800 bg-[#1e1e22]/95 flex items-center justify-between gap-2 shrink-0">
+                <a href="subscription.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-300 hover:text-white transition-colors py-1.5 px-2">
+                    <span>더 보기</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </a>
-                <a href="subscription.html" target="_blank" rel="noopener noreferrer" class="py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-gold border border-gold/40 font-bold text-sm text-center transition-colors flex items-center justify-center gap-1">
-                    새 창에서 전체보기 ↗
-                </a>
-                <button type="button" onclick="closeSubscriptionModal()" class="py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-gray-300 font-medium text-sm transition-colors cursor-pointer">
-                    닫기
-                </button>
+                <div class="flex items-center gap-2">
+                    <a href="https://www.applyhome.co.kr/" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-gold border border-gold/40 text-xs font-bold transition-colors flex items-center gap-1">
+                        청약홈 바로가기 ↗
+                    </a>
+                    <a href="tel:042-546-4900" class="py-2 px-3.5 rounded-xl bg-carrot hover:bg-carrot/90 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                        <span>전화 상담</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
