@@ -1138,6 +1138,15 @@ const UI = {
         this.closeModal(modalId);
       });
     });
+
+    // 모달 바깥 배경(오버레이/백드롭) 클릭 시 창 닫기 공통 바인딩
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          this.closeModal(modal.id);
+        }
+      });
+    });
   },
 
   // 붙여넣기 활성 타깃 지정 및 시각적 테두리 하이라이트
@@ -2068,23 +2077,23 @@ const UI = {
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-zinc-900/80 p-4 rounded-xl border border-dark-border">
           <div>
             <span class="text-xs text-gray-500 block">평면타입</span>
-            <span class="text-white font-semibold">${p.floorType || '-'}</span>
+            <span class="text-white font-semibold whitespace-nowrap">${p.floorType || '-'}</span>
           </div>
           <div>
             <span class="text-xs text-gray-500 block">면적</span>
-            <span class="text-white font-semibold">${p.area}</span>
+            <span class="text-white font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.area}</span>
           </div>
           <div>
             <span class="text-xs text-gray-500 block">해당층 / 총층</span>
-            <span class="text-white font-semibold">${p.floor}</span>
+            <span class="text-white font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.floor}</span>
           </div>
           <div>
             <span class="text-xs text-gray-500 block">매물 유형</span>
-            <span class="text-white font-semibold">${p.type} (${p.subType})</span>
+            <span class="text-white font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.type} (${p.subType})</span>
           </div>
           <div>
             <span class="text-xs text-gray-500 block">담당 문의</span>
-            <span class="text-gold font-semibold">${p.contact || '042-546-4900'}</span>
+            <span class="text-gold font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.contact || '042-546-4900'}</span>
           </div>
         </div>
 
