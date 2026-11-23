@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v38 - 지도 기본 스케일 값 레벨 3 50m 적용)
-const CACHE_NAME = 'sumokto-chebol-v38';
+// 도안수목토 재벌부동산 PWA Service Worker (v39 - 분양 정보 보기 클릭 시 분양 위치 지도 이동 확실 동기화 및 매물 마커 숨김 방어)
+const CACHE_NAME = 'sumokto-chebol-v39';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
