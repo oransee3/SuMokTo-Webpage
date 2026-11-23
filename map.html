@@ -1455,7 +1455,25 @@
                     clusterer.addMarkers(propertyMarkers);
                 }
                 adjustOverlayVisibilityByZoom();
-                updateVisibleProperties();
+
+                // [요청 반영]: '매물 보기' 클릭 시 지도를 등록된 매물 위치(도안동 중심)로 자동 이동
+                if (map) {
+                    const isMobile = window.innerWidth < 768;
+                    // 등록된 첫 번째 매물 좌표 또는 도안동 중심 좌표
+                    const propTarget = (allProperties && allProperties.length > 0 && allProperties[0].lat && allProperties[0].lng)
+                        ? new kakao.maps.LatLng(allProperties[0].lat, allProperties[0].lng)
+                        : new kakao.maps.LatLng(36.3215, 127.3442);
+                    map.setLevel(isMobile ? 5 : 4, { animate: true });
+                    map.panTo(propTarget);
+                }
+
+                // 좌측에 등록된 매물이 즉시 보이도록 목록 동기화
+                visibleProperties = [...filteredProperties];
+                const count = visibleProperties.length;
+                document.getElementById('sidebarCount').textContent = count;
+                document.getElementById('mapCountText').textContent = count;
+                document.getElementById('mobileHeaderCount').textContent = count;
+                renderPropertyList();
             }
         }
 
