@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v36 - 분양 썸네일에 있는 '분양중' 문구 배지 삭제)
-const CACHE_NAME = 'sumokto-chebol-v36';
+// 도안수목토 재벌부동산 PWA Service Worker (v37 - 상단 메뉴 공통 1줄 고정 및 수평 스크롤바 완전 삭제)
+const CACHE_NAME = 'sumokto-chebol-v37';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
