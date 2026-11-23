@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v35 - 분양 단지 항목에서 '지도 위치보기 >' 삭제)
-const CACHE_NAME = 'sumokto-chebol-v35';
+// 도안수목토 재벌부동산 PWA Service Worker (v36 - 분양 썸네일에 있는 '분양중' 문구 배지 삭제)
+const CACHE_NAME = 'sumokto-chebol-v36';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
