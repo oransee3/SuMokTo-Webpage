@@ -1,12 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v28 - 분양정보 '사전접수'/'분양중' 2가지 배지 분류)
-const CACHE_NAME = 'sumokto-chebol-v28';
+// 도안수목토 재벌부동산 PWA Service Worker (v29 - 썸네일 이미지 내용과 같은 크기로 확대)
+const CACHE_NAME = 'sumokto-chebol-v29';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V2',
-  '/js/subscription_modal.js?v=20261124_V10_BADGE_STATUS',
+  '/js/subscription_modal.js?v=20261124_V11_LARGE_THUMB',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',

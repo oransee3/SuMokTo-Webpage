@@ -31,8 +31,8 @@ function renderSubscriptionList(page) {
     if (validItems.length === 0) {
         container.innerHTML = [1, 2, 3, 4].map(n => `
             <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/40 transition-colors group relative items-center" style="min-height: 142px; height: 142px;">
-                <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl border border-dashed border-zinc-800/80 bg-zinc-900/40 shrink-0"></div>
-                <div class="flex-1 min-w-0 flex flex-col justify-between py-1 h-20 sm:h-22">
+                <div class="w-[124px] h-[124px] sm:w-[128px] sm:h-[128px] rounded-2xl border border-dashed border-zinc-800/80 bg-zinc-900/40 shrink-0"></div>
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-1 h-[124px] sm:h-[128px]">
                 </div>
             </div>
         `).join('');
@@ -95,11 +95,12 @@ function renderSubscriptionList(page) {
         }
 
         return `
-            <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative">
-                <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+            <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative items-center" style="min-height: 142px;">
+                <!-- 내용과 동일한 크기(124px ~ 128px)로 확대한 썸네일 이미지 -->
+                <div class="w-[124px] h-[124px] sm:w-[128px] sm:h-[128px] rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
                     <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='images/preview_complex.jpg'">
                 </div>
-                <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5 h-[124px] sm:h-[128px]">
                     <div>
                         <div class="flex items-start justify-between gap-2">
                             <h4 class="text-base sm:text-[17px] font-bold text-white truncate">
