@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v32 - 분양정보보기 이후 매물보기 클릭 시 매물 위치로 지도 자동 이동 및 등록 매물 표출)
-const CACHE_NAME = 'sumokto-chebol-v32';
+// 도안수목토 재벌부동산 PWA Service Worker (v33 - 좌측 분양등록내용 완전노출 및 지도 파란배경 말풍선 삭제)
+const CACHE_NAME = 'sumokto-chebol-v33';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
