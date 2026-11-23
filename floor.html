@@ -773,14 +773,33 @@
             }, { passive: true });
         }
 
+        // URL 파라미터(?type=A/B/C/D) 또는 해시(#A/B/C/D) 분석 후 해당 타입 탭 자동 선택
+        function checkUrlFloorType() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                let t = params.get('type') || window.location.hash.replace('#', '');
+                if (t) {
+                    t = t.trim().toUpperCase();
+                    if (t.includes('D')) selectFloorType('D');
+                    else if (t.includes('C')) selectFloorType('C');
+                    else if (t.includes('B')) selectFloorType('B');
+                    else if (t.includes('A')) selectFloorType('A');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 initBTypePhotoSwipe();
                 initCTypePhotoSwipe();
+                checkUrlFloorType();
             });
         } else {
             initBTypePhotoSwipe();
             initCTypePhotoSwipe();
+            checkUrlFloorType();
         }
 
         function openQrModal() {

@@ -1457,6 +1457,47 @@ const UI = {
     return '';
   },
 
+  // 평면안내 이동 대상 URL 반환 (수목토 아파트인 경우 해당 타입 탭 직행, 아이파크는 floor_ipark.html)
+  getFloorGuideUrl(title = '', floorType = '') {
+    const { isSuMokTo, detectedType } = this.detectApartmentAndType(title, floorType);
+    if (isSuMokTo) {
+      const t = detectedType || 'A';
+      return `floor.html?type=${t}`;
+    }
+    const clean = (title || '').replace(/\s+/g, '');
+    if (clean.includes('아이파크')) {
+      return 'floor_ipark.html';
+    }
+    return 'floor.html';
+  },
+
+  // 평면안내 해당 타입으로 새 탭 이동
+  goToFloorGuide(title = '', floorType = '') {
+    const url = this.getFloorGuideUrl(title, floorType);
+    window.open(url, '_blank');
+  },
+
+  // 매물 등록&수정 폼에서 입력된 값 기반으로 평면안내 이동
+  goToFloorGuideFromForm() {
+    const title = document.getElementById('propTitle') ? document.getElementById('propTitle').value : '';
+    const floorType = document.getElementById('propFloorType') ? document.getElementById('propFloorType').value : '';
+    const { isSuMokTo, detectedType } = this.detectApartmentAndType(title, floorType);
+
+    if (isSuMokTo) {
+      const t = detectedType || 'A';
+      window.open(`floor.html?type=${t}`, '_blank');
+      return;
+    }
+
+    const clean = (title || '').replace(/\s+/g, '');
+    if (clean.includes('아이파크')) {
+      window.open('floor_ipark.html', '_blank');
+      return;
+    }
+
+    window.open('floor.html', '_blank');
+  },
+
   // 평면타입 입력 시 평면도 자동 매칭 및 미리보기 업데이트 (없으면 흰색 배경만 표시)
   updateAutoFloorPlanPreview() {
     const floorTypeInput = document.getElementById('propFloorType');
@@ -1478,6 +1519,9 @@ const UI = {
     const emptyBox = document.getElementById('autoFloorPlanEmpty');
     const hiddenInput = document.getElementById('propMapImageUrl');
     const badge = document.getElementById('autoFloorPlanBadge');
+    const linkBtn = document.getElementById('autoFloorPlanLinkBtn');
+    const hoverGuide = document.getElementById('autoFloorPlanHoverGuide');
+    const autoBox = document.getElementById('autoFloorPlanBox');
     
     if (planImg) {
       if (previewImg) {
@@ -1487,6 +1531,16 @@ const UI = {
       }
       if (emptyBox) {
         emptyBox.classList.add('hidden');
+      }
+      if (linkBtn) {
+        linkBtn.classList.remove('hidden');
+      }
+      if (hoverGuide) {
+        hoverGuide.classList.remove('hidden');
+      }
+      if (autoBox) {
+        autoBox.classList.add('cursor-pointer');
+        autoBox.title = '클릭 시 평면안내 해당 타입으로 이동합니다';
       }
       if (hiddenInput) hiddenInput.value = planImg;
       if (badge) {
@@ -1506,6 +1560,16 @@ const UI = {
       }
       if (emptyBox) {
         emptyBox.classList.remove('hidden');
+      }
+      if (linkBtn) {
+        linkBtn.classList.add('hidden');
+      }
+      if (hoverGuide) {
+        hoverGuide.classList.add('hidden');
+      }
+      if (autoBox) {
+        autoBox.classList.remove('cursor-pointer');
+        autoBox.title = '';
       }
       if (hiddenInput) hiddenInput.value = '';
       if (badge) {
@@ -2036,16 +2100,21 @@ const UI = {
                 <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 ${p.floorType ? `${p.floorType} 공식 세대 평면도` : '평면안내 공식 세대 평면도'}
               </h4>
-              <button type="button" onclick="UI.openLightboxForProperty('${p.id}')" class="text-[11px] text-gold hover:text-black hover:bg-gold bg-zinc-800 px-2.5 py-1 rounded-lg border border-gold/40 transition-colors flex items-center gap-1 font-medium cursor-pointer">
-                🔍 평면도 크게 보기
-              </button>
+              <div class="flex items-center gap-2">
+                <a href="${this.getFloorGuideUrl(p.title, p.floorType)}" target="_blank" class="text-[11px] text-yellow-400 hover:text-black hover:bg-yellow-400 bg-zinc-800 px-2.5 py-1 rounded-lg border border-yellow-500/50 transition-colors flex items-center gap-1 font-bold cursor-pointer shadow-sm">
+                  <span>평면안내 바로가기 ↗</span>
+                </a>
+                <button type="button" onclick="UI.openLightboxForProperty('${p.id}')" class="text-[11px] text-gold hover:text-black hover:bg-gold bg-zinc-800 px-2.5 py-1 rounded-lg border border-gold/40 transition-colors flex items-center gap-1 font-medium cursor-pointer">
+                  🔍 크게 보기
+                </button>
+              </div>
             </div>
-            <div class="relative rounded-xl overflow-hidden border border-gray-700 bg-white p-4 group cursor-pointer" onclick="UI.openLightboxForProperty('${p.id}')">
+            <div class="relative rounded-xl overflow-hidden border border-gray-700 bg-white p-4 group cursor-pointer" onclick="UI.goToFloorGuide('${(p.title || '').replace(/'/g, "\\'")}', '${(p.floorType || '').replace(/'/g, "\\'")}')" title="클릭 시 평면안내 해당 타입으로 이동합니다">
               <img src="${p.mapImageUrl}" alt="세대 평면도" class="w-full max-h-[462px] object-contain mx-auto group-hover:scale-105 transition-transform duration-300 drop-shadow">
-              <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <span class="bg-black/90 text-gold text-xs px-4 py-2 rounded-full border border-gold/60 font-bold shadow-2xl flex items-center gap-1.5 transform group-hover:scale-105 transition-transform">
-                  <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
-                  전체화면으로 크게 보기 (클릭)
+                  <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                  평면안내 해당 타입으로 이동 (클릭)
                 </span>
               </div>
             </div>
