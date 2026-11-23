@@ -253,7 +253,9 @@ let currentCompressedSubImg = null;
 // 이미지 파일을 썸네일 크기(최대 240x240) 및 저용량(JPEG 0.75, ~20KB)으로 압축하는 함수
 function compressImageToThumbnail(file, callback) {
     if (!file || !file.type.startsWith('image/')) {
-        alert('이미지 파일만 선택 가능합니다.');
+        if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+            UI.showToast('이미지 파일만 선택 가능합니다.', 'error');
+        }
         return;
     }
 
@@ -455,7 +457,11 @@ function handleSubscriptionSubmit(e) {
 
     closeAddSubscriptionModal();
     renderSubscriptionList(1);
-    alert(`[${title}] 신규 분양 정보가 성공적으로 등록되었습니다.`);
+    if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+        UI.showToast(`[${title}] 신규 분양 정보가 성공적으로 등록되었습니다.`);
+    } else {
+        console.log(`[${title}] 신규 분양 정보 등록 완료`);
+    }
 }
 
 
