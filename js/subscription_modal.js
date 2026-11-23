@@ -5,129 +5,8 @@
  * - 8개 이상부터 하단 페이지 넘버링(Pagination) 자동 노출
  */
 
-// 대전 도안신도시 및 인근 핵심 분양 단지 데이터 (8개 이상 구성)
-const SUBSCRIPTION_DATA = [
-    {
-        id: 'sub-1',
-        title: '힐스테이트 도안리버파크',
-        tag: '도안 2-2',
-        tagBg: 'bg-carrot',
-        scale: '분양 5,329세대',
-        scaleSub: '(84㎡~162㎡)',
-        specs: '유성구 학하동 · 공급 34~65평형 · 최고 35층',
-        badges: [
-            { text: '청약홈 접수', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '안심 권리분석', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“진잠천 수변공원을 품은 5천세대 매머드급 랜드마크”',
-        img: 'images/단지조감도_2K.jpg'
-    },
-    {
-        id: 'sub-2',
-        title: '도안 푸르지오 디아델',
-        tag: '도안 2-5',
-        tagBg: 'bg-blue-600',
-        scale: '분양 1,514세대',
-        scaleSub: '(59㎡~215㎡)',
-        specs: '서구 용계동 · 공급 24~80평형 · 최고 32층',
-        badges: [
-            { text: '트램 2호선 역세권', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '안심송금', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“도안대로 직결 및 대전 도시철도 2호선 트램 초역세권 프리미엄”',
-        img: 'images/단지투시도_2K.jpg'
-    },
-    {
-        id: 'sub-3',
-        title: '도안 중심상업지구 프리미엄 상가',
-        tag: '수익형',
-        tagBg: 'bg-emerald-600',
-        scale: '분양 / 임대 맞춤 상담',
-        scaleSub: '',
-        specs: '서구 도안동 · 배후 1.2만 세대 항아리 상권 · 1~7층',
-        badges: [
-            { text: '독점 업종 지정', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '수익률 분석', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“수목토·아이파크 2,300여 세대 정문 독점 관문 상권”',
-        img: 'images/preview_complex.jpg'
-    },
-    {
-        id: 'sub-4',
-        title: '도안 2단계 신규 후속 공급 예정 단지',
-        tag: '공급예정',
-        tagBg: 'bg-purple-600',
-        scale: '사전 청약 상담 접수 중',
-        scaleSub: '',
-        specs: '대전 유성구/서구 도안신도시 핵심권역 · 중대형 평형',
-        badges: [
-            { text: '사전 관심고객', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '일정 실시간 안내', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“도안신도시 프리미엄 주거벨트의 완성, VIP 사전 안내”',
-        img: 'images/bird_view_2k.jpg'
-    },
-    {
-        id: 'sub-5',
-        title: '도안 우미린 트리쉐이드',
-        tag: '도안 2-3',
-        tagBg: 'bg-indigo-600',
-        scale: '분양 1,754세대',
-        scaleSub: '(84㎡~201㎡)',
-        specs: '유성구 복용동 · 공급 34~78평형 · 최고 38층',
-        badges: [
-            { text: '초품아 단지', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '유성천 수변공원', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“단지 앞 초등학교 및 유성천 수변공원을 품은 숲세권 프리미엄”',
-        img: 'images/단지배치도_2K.jpg'
-    },
-    {
-        id: 'sub-6',
-        title: '힐스테이트 도안퍼스트',
-        tag: '주거용 오피스텔',
-        tagBg: 'bg-teal-600',
-        scale: '분양 432실',
-        scaleSub: '(전용 84㎡ 아파텔)',
-        specs: '유성구 용계동 · 전용 84㎡ 주거형 · 최고 29층',
-        badges: [
-            { text: '도안대로 역세권', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '즉시 입주가능', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“도안신도시 중심상업지구 도보 생활권, 하이엔드 주거형 오피스텔”',
-        img: 'images/view_2k.jpg'
-    },
-    {
-        id: 'sub-7',
-        title: '관저 푸르지오 센트럴파크',
-        tag: '관저지구',
-        tagBg: 'bg-amber-600',
-        scale: '분양 660세대',
-        scaleSub: '(84㎡ 단일)',
-        specs: '서구 관저동 · 공급 34평형 · 최고 25층',
-        badges: [
-            { text: '구봉산 숲세권', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '건양대병원 인접', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“도안신도시 인접 생활권, 구봉산 파노라마 숲세권 힐링 단지”',
-        img: 'images/단지조감도_2K.jpg'
-    },
-    {
-        id: 'sub-8',
-        title: '대전 유성 하늘채 리버뷰',
-        tag: '수변특화',
-        tagBg: 'bg-cyan-600',
-        scale: '분양 980세대',
-        scaleSub: '(84㎡~120㎡)',
-        specs: '유성구 원신흥동 · 공급 34~48평형 · 최고 30층',
-        badges: [
-            { text: '영구 갑천조망', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
-            { text: '도안호수공원 인접', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
-        ],
-        desc: '“갑천 파노라마 조망과 도안호수공원을 동시에 누리는 프리미엄”',
-        img: 'images/단지투시도_2K.jpg'
-    }
-];
+// 분양 단지 데이터 (사용자 요청: 내용 모두 삭제 및 4개 칸 간격 유지)
+const SUBSCRIPTION_DATA = [];
 
 let currentSubPage = 1;
 const SUB_ITEMS_PER_PAGE = 6; // 한 페이지당 6개 (4개 높이 제한으로 4개 초과분은 스크롤바로 위아래 확인)
@@ -138,13 +17,33 @@ function renderSubscriptionList(page) {
     const paginationContainer = document.getElementById('subPaginationContainer');
     if (!container) return;
 
-    const totalItems = SUBSCRIPTION_DATA.length;
+    // 분양 정보 데이터가 없거나 내용이 삭제된 경우: 4개 칸의 간격 및 레이아웃을 100% 동일하게 유지하는 빈 슬롯 4개 렌더링
+    const validItems = SUBSCRIPTION_DATA.filter(item => item && (item.title || item.img));
+    if (validItems.length === 0) {
+        container.innerHTML = [1, 2, 3, 4].map(n => `
+            <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/40 transition-colors group relative items-center" style="min-height: 142px; height: 142px;">
+                <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl border border-dashed border-zinc-800/80 bg-zinc-900/40 shrink-0"></div>
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-1 h-20 sm:h-22">
+                </div>
+            </div>
+        `).join('');
+
+        container.scrollTop = 0;
+
+        if (paginationContainer) {
+            paginationContainer.classList.add('hidden');
+            paginationContainer.innerHTML = '';
+        }
+        return;
+    }
+
+    const totalItems = validItems.length;
     const totalPages = Math.ceil(totalItems / SUB_ITEMS_PER_PAGE);
     if (currentSubPage > totalPages) currentSubPage = totalPages;
     if (currentSubPage < 1) currentSubPage = 1;
 
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
-    const pageItems = SUBSCRIPTION_DATA.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
+    const pageItems = validItems.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
     // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 최적화)
     container.innerHTML = pageItems.map((item, index) => {
