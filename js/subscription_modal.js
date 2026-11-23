@@ -535,6 +535,7 @@ window.handleSubscriptionSubmit = handleSubscriptionSubmit;
 window.handleSubscriptionImageSelect = handleSubscriptionImageSelect;
 window.compressImageToThumbnail = compressImageToThumbnail;
 window.deleteSubscriptionItem = deleteSubscriptionItem;
+window.SUBSCRIPTION_DATA = SUBSCRIPTION_DATA;
 
 document.addEventListener('DOMContentLoaded', () => {
     renderSubscriptionList(1);
