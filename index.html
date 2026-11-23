@@ -295,6 +295,18 @@
                 padding-right: 16px !important;
             }
         }
+
+        /* 메인화면 내용 좌측 자연스러운 오프셋 (모바일은 유지, 태블릿/PC에서만 좌측으로 약 40~55px 이동) */
+        @media (min-width: 768px) {
+            .hero-content-left {
+                transform: translateX(-40px);
+            }
+        }
+        @media (min-width: 1280px) {
+            .hero-content-left {
+                transform: translateX(-55px);
+            }
+        }
     </style>
 </head>
 <body class="bg-dark-bg text-white antialiased overflow-x-hidden">
@@ -515,7 +527,7 @@
         </script>
 
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div class="max-w-3xl">
+            <div class="max-w-3xl hero-content-left">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-gold/60 text-gold text-xs font-bold mb-6 shadow-md drop-shadow">
                     <span class="w-2 h-2 rounded-full bg-gold animate-ping"></span>
                     도안신도시 No.1 전문 부동산
