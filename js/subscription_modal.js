@@ -146,43 +146,42 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = SUBSCRIPTION_DATA.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링 (확대된 모달 창에 맞춘 시원한 썸네일 및 타이포그래피)
+    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 최적화)
     container.innerHTML = pageItems.map((item, index) => {
-        const topPaddingClass = index > 0 ? 'pt-3 sm:pt-3.5' : '';
         const badgesHtml = item.badges.map(b => 
             `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
         ).join('');
 
         return `
-            <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-5 p-3 sm:p-4 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative ${topPaddingClass}">
-                <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+            <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-4.5 p-2.5 sm:p-3 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
                     <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='images/preview_complex.jpg'">
-                    <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[10px] font-bold rounded ${item.tagBg} text-white shadow">
+                    <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded ${item.tagBg} text-white shadow">
                         ${item.tag}
                     </span>
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                     <div>
                         <div class="flex items-start justify-between gap-1">
-                            <h4 class="text-base sm:text-lg font-bold text-white group-hover:text-gold transition-colors truncate">
+                            <h4 class="text-base sm:text-[17px] font-bold text-white group-hover:text-gold transition-colors truncate">
                                 ${item.title}
                             </h4>
                             <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1 shrink-0" title="관심 단지 등록">
-                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                             </button>
                         </div>
-                        <div class="text-base sm:text-lg font-black text-[#58a6ff] tracking-tight mt-1">
-                            ${item.scale} ${item.scaleSub ? `<span class="text-xs sm:text-sm text-gray-400 font-normal ml-1">${item.scaleSub}</span>` : ''}
+                        <div class="text-[14px] sm:text-[16px] font-black text-[#58a6ff] tracking-tight mt-0.5">
+                            ${item.scale} ${item.scaleSub ? `<span class="text-xs sm:text-[13px] text-gray-400 font-normal ml-1">${item.scaleSub}</span>` : ''}
                         </div>
-                        <p class="text-xs sm:text-[13px] text-gray-400 mt-1 truncate">
+                        <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">
                             ${item.specs}
                         </p>
                     </div>
                     <div>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
                             ${badgesHtml}
                         </div>
-                        <p class="text-xs sm:text-[13px] text-gray-300 mt-1.5 truncate font-normal">
+                        <p class="text-[11px] sm:text-xs text-gray-300 mt-1 truncate font-normal">
                             ${item.desc}
                         </p>
                     </div>
