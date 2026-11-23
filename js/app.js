@@ -1399,23 +1399,60 @@ const UI = {
     grid.innerHTML = html;
   },
 
+  // 아파트 단지명 및 평면타입(Type) 지능형 자동 인식 헬퍼
+  detectApartmentAndType(title = '', floorType = '') {
+    // 1. 아파트명 자동 인식 (띄어쓰기 무관하게 '수목토' 포함 여부 검증)
+    const cleanTitle = (title || '').replace(/\s+/g, '');
+    const isSuMokTo = cleanTitle.includes('수목토');
+
+    // 2. 타입명 자동 인식 (floorType 입력값 및 title 매물명 양쪽 모두 정밀 분석)
+    let detectedType = '';
+    const fUpper = (floorType || '').trim().toUpperCase();
+    const tCombined = `${floorType} ${title}`.toUpperCase();
+
+    // floorType 인풋 우선 검사 (A, B, C, D 대소문자/형식 무관)
+    if (fUpper) {
+      if (fUpper.includes('C')) detectedType = 'C';
+      else if (fUpper.includes('B')) detectedType = 'B';
+      else if (fUpper.includes('D')) detectedType = 'D';
+      else if (fUpper.includes('A')) detectedType = 'A';
+    }
+
+    // floorType에 기재되지 않은 경우, 매물명(title)에서 타입 자동 추출
+    if (!detectedType && title) {
+      if (/(?:84[\s\-_]*C|[C][\s\-_]*(?:타입|형|TYPE)|\b[C]\b)/i.test(tCombined)) {
+        detectedType = 'C';
+      } else if (/(?:84[\s\-_]*B|[B][\s\-_]*(?:타입|형|TYPE)|\b[B]\b)/i.test(tCombined)) {
+        detectedType = 'B';
+      } else if (/(?:84[\s\-_]*D|[D][\s\-_]*(?:타입|형|TYPE)|\b[D]\b)/i.test(tCombined)) {
+        detectedType = 'D';
+      } else if (/(?:84[\s\-_]*A|[A][\s\-_]*(?:타입|형|TYPE)|\b[A]\b)/i.test(tCombined)) {
+        detectedType = 'A';
+      }
+    }
+
+    return {
+      isSuMokTo,
+      detectedType, // 'A', 'B', 'C', 'D'
+      standardType: detectedType ? `${detectedType}-Type` : ''
+    };
+  },
+
   // 평면타입에 맞는 공식 평면도 이미지 경로 반환 (도안수목토 아파트 전용)
   getFloorPlanImage(floorType = '', title = '') {
-    // 도안수목토 아파트가 아닌 단지(도안아이파크 등)는 등록된 공식 평면도가 없으므로 빈값 반환
-    const isSuMokTo = (title || '').includes('수목토');
-    if (!isSuMokTo) {
+    const { isSuMokTo, detectedType } = this.detectApartmentAndType(title, floorType);
+    if (!isSuMokTo || !detectedType) {
       return '';
     }
 
-    const t = (floorType || '').toUpperCase();
-    if (t.includes('B') || t.includes('D')) {
+    if (detectedType === 'A') {
+      return 'images/A-Type-Plan03.png';
+    }
+    if (detectedType === 'B' || detectedType === 'D') {
       return 'images/B-Type-Plan03.png';
     }
-    if (t.includes('C')) {
+    if (detectedType === 'C') {
       return 'images/C-Type-Plan03.png';
-    }
-    if (t.includes('A')) {
-      return 'images/A-Type-Plan03.png';
     }
     return '';
   },
@@ -1423,10 +1460,18 @@ const UI = {
   // 평면타입 입력 시 평면도 자동 매칭 및 미리보기 업데이트 (없으면 흰색 배경만 표시)
   updateAutoFloorPlanPreview() {
     const floorTypeInput = document.getElementById('propFloorType');
-    const floorType = floorTypeInput ? floorTypeInput.value.trim() : '';
+    let floorType = floorTypeInput ? floorTypeInput.value.trim() : '';
     const titleInput = document.getElementById('propTitle');
     const title = titleInput ? titleInput.value.trim() : '';
     
+    const { isSuMokTo, detectedType, standardType } = this.detectApartmentAndType(title, floorType);
+
+    // 만약 평면타입 칸이 비어있고 매물명에 타입이 적혀있다면 평면타입 칸에 자동으로 채워줌
+    if (!floorType && detectedType && floorTypeInput) {
+      floorTypeInput.value = standardType;
+      floorType = standardType;
+    }
+
     const planImg = this.getFloorPlanImage(floorType, title);
     
     const previewImg = document.getElementById('autoFloorPlanPreview');
@@ -1445,17 +1490,12 @@ const UI = {
       }
       if (hiddenInput) hiddenInput.value = planImg;
       if (badge) {
-        let matchedLabel = 'A-Type (84.99㎡)';
-        const t = floorType.toUpperCase();
-        if (t.includes('B') || t.includes('D')) {
-          matchedLabel = t.includes('D') ? 'D-Type (84.98㎡ B호환)' : 'B-Type (84.98㎡)';
-        } else if (t.includes('C')) {
-          matchedLabel = 'C-Type (84.93㎡)';
-        } else if (t.includes('A')) {
-          matchedLabel = 'A-Type (84.99㎡)';
-        }
+        let label = 'A-Type (84.99㎡)';
+        if (detectedType === 'B') label = 'B-Type (84.98㎡)';
+        else if (detectedType === 'C') label = 'C-Type (84.93㎡)';
+        else if (detectedType === 'D') label = 'D-Type (84.98㎡ B호환)';
         badge.className = 'text-[11px] text-emerald-400 bg-emerald-950/80 border border-emerald-700 px-2.5 py-0.5 rounded-full font-bold';
-        badge.textContent = `✓ 도안수목토 ${matchedLabel} 공식 평면도 자동 매칭됨`;
+        badge.textContent = `✓ 도안수목토 ${label} 자동 인식 매칭됨`;
       }
     } else {
       // 평면도가 없는 경우: 이미지 숨김, 흰색 배경만 노출
@@ -1470,9 +1510,9 @@ const UI = {
       if (hiddenInput) hiddenInput.value = '';
       if (badge) {
         badge.className = 'text-[11px] text-gray-400 bg-zinc-800 border border-gray-700 px-2.5 py-0.5 rounded-full font-bold';
-        if (title && !title.includes('수목토')) {
+        if (title && !isSuMokTo) {
           badge.textContent = '해당 단지 평면도 없음 (흰색 배경)';
-        } else if (!floorType) {
+        } else if (!detectedType) {
           badge.textContent = '평면타입(A,B,C) 입력 시 자동 매칭';
         } else {
           badge.textContent = '등록된 평면도 없음 (흰색 배경)';
@@ -2125,8 +2165,12 @@ const UI = {
       }
     }
 
-    const floorTypeVal = document.getElementById('propFloorType') ? document.getElementById('propFloorType').value.trim() : '';
+    let floorTypeVal = document.getElementById('propFloorType') ? document.getElementById('propFloorType').value.trim() : '';
     const titleVal = document.getElementById('propTitle').value.trim();
+    const { standardType } = this.detectApartmentAndType(titleVal, floorTypeVal);
+    if (!floorTypeVal && standardType) {
+      floorTypeVal = standardType;
+    }
     const autoPlanImg = this.getFloorPlanImage(floorTypeVal, titleVal);
 
     const propertyData = {
