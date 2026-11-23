@@ -529,7 +529,10 @@
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div class="max-w-3xl hero-content-left">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-gold/60 text-gold text-xs font-bold mb-6 shadow-md drop-shadow">
-                    <span class="w-2 h-2 rounded-full bg-gold animate-ping"></span>
+                    <span class="relative flex h-2.5 w-2.5 items-center justify-center shrink-0">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)] animate-pulse"></span>
+                    </span>
                     도안신도시 No.1 전문 부동산
                 </div>
 
@@ -1194,10 +1197,10 @@
     </div>
 
     <!-- [Modal 4] 매물 상세 모달 -->
-    <div id="propertyDetailModal" class="modal-overlay modal-hidden fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="modal-content bg-dark-card border border-gold/70 p-6 sm:p-8 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
-            <button data-close-modal="propertyDetailModal" class="absolute top-5 right-5 text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <div id="propertyDetailModal" class="modal-overlay modal-hidden fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="modal-content bg-dark-card border border-gold/70 p-5 sm:p-8 rounded-3xl max-w-3xl w-full my-auto max-h-[92vh] overflow-y-auto shadow-2xl relative custom-scrollbar">
+            <button data-close-modal="propertyDetailModal" type="button" class="fixed sm:absolute top-4 right-4 z-50 bg-black/85 hover:bg-black text-gray-300 hover:text-white p-2 rounded-full border border-gray-600 shadow-2xl transition-all cursor-pointer" title="닫기 (창 밖 클릭 또는 ESC)">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <div id="propertyDetailBody">
                 <!-- Javascript Dynamic Rendering -->
@@ -1283,13 +1286,13 @@
     </div>
 
     <!-- Main Application Script -->
-    <script src="js/app.js?v=20261123_V5_RELEASE"></script>
+    <script src="js/app.js?v=20261123_V6_RELEASE"></script>
 
     <!-- PWA Service Worker Registration Script -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js?v=20261123_FINAL')
+                navigator.serviceWorker.register('/sw.js?v=20261123_V6')
                     .then((reg) => {
                         console.log('[PWA] Service Worker registered with scope:', reg.scope);
                         reg.update();

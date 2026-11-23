@@ -1142,10 +1142,20 @@ const UI = {
     // 모달 바깥 배경(오버레이/백드롭) 클릭 시 창 닫기 공통 바인딩
     document.querySelectorAll('.modal-overlay').forEach(modal => {
       modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        // modal-content 내부 클릭이 아닌 모든 바깥 영역 클릭 시 모달 즉시 닫기
+        if (!e.target.closest('.modal-content')) {
           this.closeModal(modal.id);
         }
       });
+    });
+
+    // ESC 키 입력 시 열려있는 모달 즉시 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay:not(.modal-hidden)').forEach(openModalEl => {
+          this.closeModal(openModalEl.id);
+        });
+      }
     });
   },
 
@@ -2074,26 +2084,26 @@ const UI = {
           </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-zinc-900/80 p-4 rounded-xl border border-dark-border">
-          <div>
-            <span class="text-xs text-gray-500 block">평면타입</span>
-            <span class="text-white font-semibold whitespace-nowrap">${p.floorType || '-'}</span>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3 bg-zinc-900/80 p-3 sm:p-4 rounded-xl border border-dark-border">
+          <div class="min-w-0">
+            <span class="text-xs text-gray-400 block mb-0.5">평면타입</span>
+            <span class="text-white font-bold whitespace-nowrap text-xs sm:text-[13px] md:text-sm block truncate" style="color: #ffffff !important;">${p.floorType || '-'}</span>
           </div>
-          <div>
-            <span class="text-xs text-gray-500 block">면적</span>
-            <span class="text-white font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.area}</span>
+          <div class="min-w-0">
+            <span class="text-xs text-gray-400 block mb-0.5">면적</span>
+            <span class="text-white font-bold whitespace-nowrap text-xs sm:text-[13px] md:text-sm block" style="white-space: nowrap !important; word-break: keep-all; color: #ffffff !important;">${p.area}</span>
           </div>
-          <div>
-            <span class="text-xs text-gray-500 block">해당층 / 총층</span>
-            <span class="text-white font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.floor}</span>
+          <div class="min-w-0">
+            <span class="text-xs text-gray-400 block mb-0.5">해당층 / 총층</span>
+            <span class="text-white font-bold whitespace-nowrap text-xs sm:text-[13px] md:text-sm block truncate" style="color: #ffffff !important;">${p.floor}</span>
           </div>
-          <div>
-            <span class="text-xs text-gray-500 block">매물 유형</span>
-            <span class="text-white font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.type} (${p.subType})</span>
+          <div class="min-w-0">
+            <span class="text-xs text-gray-400 block mb-0.5">매물 유형</span>
+            <span class="text-white font-bold whitespace-nowrap text-xs sm:text-[13px] md:text-sm block truncate" style="color: #ffffff !important;">${p.type} (${p.subType})</span>
           </div>
-          <div>
-            <span class="text-xs text-gray-500 block">담당 문의</span>
-            <span class="text-gold font-semibold whitespace-nowrap text-xs sm:text-[13px] md:text-sm">${p.contact || '042-546-4900'}</span>
+          <div class="min-w-0">
+            <span class="text-xs text-gray-400 block mb-0.5">담당 문의</span>
+            <span class="text-gold font-bold whitespace-nowrap text-xs sm:text-[13px] md:text-sm block truncate">${p.contact || '042-546-4900'}</span>
           </div>
         </div>
 

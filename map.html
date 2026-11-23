@@ -313,7 +313,7 @@
                 <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
                     <!-- 갤러리 슬라이더 -->
                     <div id="deskGalleryBox" class="relative w-full aspect-[16/10] bg-black/60 rounded-2xl overflow-hidden border border-zinc-800 select-none shadow-inner">
-                        <img id="deskMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';">
+                        <img id="deskMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='images/view_2k.jpg';">
                         <button type="button" onclick="slideDeskImg(-1)" id="deskPrevBtn" class="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition-all">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
@@ -343,7 +343,7 @@
                     <div class="grid grid-cols-2 gap-2 p-3 bg-zinc-900/90 rounded-xl border border-zinc-800 text-center">
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[10px] text-gray-400 block mb-0.5">평면타입</span>
-                            <strong id="deskFloorType" class="text-xs text-white font-bold block truncate">B-Type</strong>
+                            <strong id="deskFloorType" class="text-xs text-white font-bold block truncate" style="color: #ffffff !important;">B-Type</strong>
                         </div>
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[10px] text-gray-400 block mb-0.5">공급 / 전용면적</span>
@@ -483,7 +483,7 @@
                 <div class="flex-1 overflow-y-auto custom-scrollbar p-3.5 space-y-3.5 pb-6">
                     <!-- 사진 슬라이더 -->
                     <div id="mobGalleryBox" class="relative w-full aspect-[16/10] bg-black/50 rounded-xl overflow-hidden border border-zinc-800 select-none">
-                        <img id="mobMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';">
+                        <img id="mobMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='images/view_2k.jpg';">
                         <button type="button" onclick="slideMobImg(-1)" id="mobPrevBtn" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
@@ -509,7 +509,7 @@
                     <div class="grid grid-cols-2 gap-2 p-2.5 bg-zinc-900/90 rounded-xl border border-zinc-800 text-center">
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[9px] text-gray-400 block mb-0.5">평면타입</span>
-                            <strong id="mobFloorType" class="text-[11px] text-white font-bold block truncate">B-Type</strong>
+                            <strong id="mobFloorType" class="text-[11px] text-white font-bold block truncate" style="color: #ffffff !important;">B-Type</strong>
                         </div>
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[9px] text-gray-400 block mb-0.5">공급 / 전용면적</span>
@@ -791,9 +791,10 @@
         async function loadAllProperties() {
             let loaded = [];
 
-            // 1순위: data/properties.json fetch (서버에 등록된 실제 매물 원본 데이터)
+            // 1순위: GitHub Raw URL fetch (GitHub 커밋 즉시 실시간 동기화)
             try {
-                const res = await fetch('data/properties.json?t=' + Date.now(), { cache: 'no-store' });
+                const rawUrl = `https://raw.githubusercontent.com/oransee3/SuMokTo-Webpage/main/data/properties.json?t=${Date.now()}`;
+                const res = await fetch(rawUrl, { cache: 'no-store' });
                 if (res.ok) {
                     const json = await res.json();
                     const items = Array.isArray(json) ? json : (json.data || []);
@@ -802,13 +803,29 @@
                     }
                 }
             } catch (e) {
-                console.warn('JSON fetch failed:', e);
+                console.warn('GitHub Raw fetch failed:', e);
             }
 
-            // 2순위: LocalStorage (오프라인이거나 관리자 모드에서 즉시 수정한 로컬 데이터)
+            // 2순위: data/properties.json fetch (서버에 등록된 실제 매물 원본 데이터)
             if (loaded.length === 0) {
                 try {
-                    const localData = localStorage.getItem('sumokto_properties');
+                    const res = await fetch('data/properties.json?t=' + Date.now(), { cache: 'no-store' });
+                    if (res.ok) {
+                        const json = await res.json();
+                        const items = Array.isArray(json) ? json : (json.data || []);
+                        if (items && items.length > 0) {
+                            loaded = items;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('JSON fetch failed:', e);
+                }
+            }
+
+            // 3순위: LocalStorage (chebol_properties_data 또는 sumokto_properties)
+            if (loaded.length === 0) {
+                try {
+                    const localData = localStorage.getItem('chebol_properties_data') || localStorage.getItem('sumokto_properties');
                     if (localData) {
                         const parsed = JSON.parse(localData);
                         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -820,7 +837,7 @@
                 }
             }
 
-            // 3순위: 기본 백업 (실제 등록 매물 3건)
+            // 4순위: 기본 백업 (실제 등록 매물 3건)
             if (loaded.length === 0) {
                 loaded = [...BACKUP_PROPERTIES];
             }
@@ -1369,16 +1386,18 @@
             const counterText = `${currentDetailImgIdx + 1} / ${currentDetailImages.length}`;
             const isSingle = currentDetailImages.length <= 1;
 
+            const fallbackImg = 'images/view_2k.jpg';
+
             // PC 플로팅 상세 패널
             const deskImg = document.getElementById('deskMainImg');
             const deskCounter = document.getElementById('deskImgCounter');
             const deskPrev = document.getElementById('deskPrevBtn');
             const deskNext = document.getElementById('deskNextBtn');
             if (deskImg) {
-                deskImg.src = currentImg;
+                deskImg.src = currentImg || fallbackImg;
                 deskImg.onerror = function() {
                     this.onerror = null;
-                    this.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';
+                    this.src = fallbackImg;
                 };
             }
             if (deskCounter) deskCounter.textContent = counterText;
@@ -1398,10 +1417,10 @@
             const mobPrev = document.getElementById('mobPrevBtn');
             const mobNext = document.getElementById('mobNextBtn');
             if (mobImg) {
-                mobImg.src = currentImg;
+                mobImg.src = currentImg || fallbackImg;
                 mobImg.onerror = function() {
                     this.onerror = null;
-                    this.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';
+                    this.src = fallbackImg;
                 };
             }
             if (mobCounter) mobCounter.textContent = counterText;

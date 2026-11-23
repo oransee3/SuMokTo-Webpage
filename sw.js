@@ -1,10 +1,10 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v5 - 캐시 버스팅 및 최신 기능 즉시 동기화)
-const CACHE_NAME = 'sumokto-chebol-v5';
+// 도안수목토 재벌부동산 PWA Service Worker (v6 - 캐시 버스팅 및 최신 기능 즉시 동기화)
+const CACHE_NAME = 'sumokto-chebol-v6';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/css/style.css?v=20261123_V5_RELEASE',
-  '/js/app.js?v=20261123_V5_RELEASE',
+  '/css/style.css?v=20261123_V6_RELEASE',
+  '/js/app.js?v=20261123_V6_RELEASE',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',
