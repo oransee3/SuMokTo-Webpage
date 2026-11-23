@@ -5,8 +5,17 @@
  * - 8개 이상부터 하단 페이지 넘버링(Pagination) 자동 노출
  */
 
-// 분양 단지 데이터 (사용자 요청: 내용 모두 삭제 및 4개 칸 간격 유지)
+// 분양 단지 데이터 (사용자 요청: 기본 내용 삭제 및 4개 칸 간격 유지, 관리자 등록 단지 로컬스토리지 연동)
 const SUBSCRIPTION_DATA = [];
+try {
+    const savedCustomSubs = localStorage.getItem('sumokto_custom_subscriptions');
+    if (savedCustomSubs) {
+        const parsed = JSON.parse(savedCustomSubs);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+            SUBSCRIPTION_DATA.push(...parsed);
+        }
+    }
+} catch (e) {}
 
 let currentSubPage = 1;
 const SUB_ITEMS_PER_PAGE = 6; // 한 페이지당 6개 (4개 높이 제한으로 4개 초과분은 스크롤바로 위아래 확인)
@@ -209,7 +218,129 @@ function unlockModalScroll() {
     isModalWheelLocked = false;
 }
 
+
+// ==========================================
+// 관리자(관계자) 모드 감지 및 신규 분양 정보 등록 UI 제어
+// ==========================================
+function checkAdminMode() {
+    try {
+        if (typeof AuthManager !== 'undefined' && typeof AuthManager.isLoggedIn === 'function') {
+            return AuthManager.isLoggedIn();
+        }
+        return sessionStorage.getItem('chebol_current_user') !== null;
+    } catch (e) {
+        return false;
+    }
+}
+
+function updateSubscriptionAdminUI() {
+    const isAdmin = checkAdminMode();
+    const adminBtn = document.getElementById('adminAddSubscriptionBtn');
+    if (adminBtn) {
+        if (isAdmin) {
+            adminBtn.classList.remove('hidden');
+            adminBtn.style.display = 'inline-flex';
+        } else {
+            adminBtn.classList.add('hidden');
+            adminBtn.style.display = 'none';
+        }
+    }
+}
+
+function openAddSubscriptionModal() {
+    let addModal = document.getElementById('addSubscriptionModal');
+    if (!addModal) {
+        const div = document.createElement('div');
+        div.id = 'addSubscriptionModal';
+        div.className = 'fixed inset-0 z-[250] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 select-none';
+        div.innerHTML = `
+            <div class="bg-[#1e1e22] border border-zinc-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative" onclick="event.stopPropagation()">
+                <div class="flex items-center justify-between pb-4 border-b border-zinc-800">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-gold"></span>
+                        <span>신규 분양 정보 등록</span>
+                    </h3>
+                    <button type="button" onclick="closeAddSubscriptionModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1">✕</button>
+                </div>
+                <form id="addSubscriptionForm" onsubmit="handleSubscriptionSubmit(event)" class="mt-4 space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">단지명 / 프로젝트명 <span class="text-red-400">*</span></label>
+                        <input type="text" id="subInputTitle" required placeholder="예: 도안 3단계 랜드마크 아파트" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">분류 / 태그</label>
+                            <input type="text" id="subInputTag" placeholder="예: 도안 2-X, 공급예정" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">공급 규모</label>
+                            <input type="text" id="subInputScale" placeholder="예: 분양 1,200세대" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">상세 위치 / 공급 면적</label>
+                        <input type="text" id="subInputSpecs" placeholder="예: 서구 도안동 · 84㎡~162㎡ · 최고 35층" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">핵심 특징 / 설명</label>
+                        <input type="text" id="subInputDesc" placeholder="예: “트램 2호선 역세권 프리미엄 랜드마크”" class="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
+                    </div>
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
+                        <button type="button" onclick="closeAddSubscriptionModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-bold rounded-xl transition-colors">취소</button>
+                        <button type="submit" class="px-5 py-2 bg-gold hover:bg-gold-dark text-black text-xs font-bold rounded-xl transition-colors shadow">등록 완료</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.body.appendChild(div);
+        addModal = div;
+    }
+    addModal.classList.remove('hidden');
+}
+
+function closeAddSubscriptionModal() {
+    const m = document.getElementById('addSubscriptionModal');
+    if (m) m.classList.add('hidden');
+}
+
+function handleSubscriptionSubmit(e) {
+    e.preventDefault();
+    const title = document.getElementById('subInputTitle').value.trim();
+    if (!title) return;
+
+    const tag = document.getElementById('subInputTag').value.trim() || '신규분양';
+    const scale = document.getElementById('subInputScale').value.trim() || '상담 접수 중';
+    const specs = document.getElementById('subInputSpecs').value.trim() || '도안신도시 핵심 권역';
+    const desc = document.getElementById('subInputDesc').value.trim() || '“도안수목토 재벌부동산 엄선 추천 단지”';
+
+    const newItem = {
+        id: 'sub-custom-' + Date.now(),
+        title: title,
+        tag: tag,
+        tagBg: 'bg-carrot',
+        scale: scale,
+        scaleSub: '',
+        specs: specs,
+        badges: [
+            { text: '사전 접수', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
+            { text: '전문 상담', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
+        ],
+        desc: desc,
+        img: 'images/preview_complex.jpg'
+    };
+
+    SUBSCRIPTION_DATA.unshift(newItem);
+    try {
+        localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(SUBSCRIPTION_DATA));
+    } catch (err) {}
+
+    closeAddSubscriptionModal();
+    renderSubscriptionList(1);
+    alert(`[${title}] 신규 분양 정보가 성공적으로 등록되었습니다.`);
+}
+
 function openSubscriptionModal() {
+    updateSubscriptionAdminUI();
     renderSubscriptionList(currentSubPage || 1);
     const m = document.getElementById('subscriptionModal');
     if (m) {
@@ -230,6 +361,10 @@ function closeSubscriptionModal() {
 window.openSubscriptionModal = openSubscriptionModal;
 window.closeSubscriptionModal = closeSubscriptionModal;
 window.renderSubscriptionList = renderSubscriptionList;
+window.updateSubscriptionAdminUI = updateSubscriptionAdminUI;
+window.openAddSubscriptionModal = openAddSubscriptionModal;
+window.closeAddSubscriptionModal = closeAddSubscriptionModal;
+window.handleSubscriptionSubmit = handleSubscriptionSubmit;
 
 document.addEventListener('DOMContentLoaded', () => {
     renderSubscriptionList(1);

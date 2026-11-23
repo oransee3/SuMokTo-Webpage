@@ -1,12 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v20 - 분양 정보 내용 삭제 및 4개 칸 간격 유지)
-const CACHE_NAME = 'sumokto-chebol-v20';
+// 도안수목토 재벌부동산 PWA Service Worker (v21 - 관리자 신규 분양 정보 등록 연동)
+const CACHE_NAME = 'sumokto-chebol-v21';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
-  '/js/app.js?v=20261123_V6_RELEASE',
-  '/js/subscription_modal.js?v=20261124_V2',
+  '/js/app.js?v=20261124_V2',
+  '/js/subscription_modal.js?v=20261124_V3',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',

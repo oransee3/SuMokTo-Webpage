@@ -1674,6 +1674,7 @@ const UI = {
         footerAuthBtn.textContent = '일반 모드로 전환 (로그아웃)';
       }
       adminControls.forEach(el => el.classList.remove('hidden'));
+      if (typeof updateSubscriptionAdminUI === 'function') updateSubscriptionAdminUI();
     } else {
       if (brandLogoBtn) {
         brandLogoBtn.title = '클릭하여 관계자 모드(ID/PW) 열기';
@@ -1694,6 +1695,7 @@ const UI = {
         footerAuthBtn.textContent = '관계자 관리자 로그인';
       }
       adminControls.forEach(el => el.classList.add('hidden'));
+      if (typeof updateSubscriptionAdminUI === 'function') updateSubscriptionAdminUI();
     }
 
     // 카카오 키 인풋 불러오기

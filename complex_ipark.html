@@ -477,12 +477,16 @@
     </style>
     <div id="subscriptionModal" class="hidden fixed inset-0 z-[200] bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-hidden overscroll-contain select-none" onclick="closeSubscriptionModal()">
         <div class="sub-modal-panel bg-[#18181b] border border-zinc-700/80 rounded-3xl max-w-3xl sm:max-w-4xl w-full text-left shadow-[0_25px_60px_rgba(0,0,0,0.95)] relative my-auto max-h-[94vh] flex flex-col overflow-hidden overscroll-contain" onclick="event.stopPropagation()">
-            <!-- 헤더: 상단 타이틀 및 닫기 버튼 -->
+            <!-- 헤더: 상단 타이틀 및 닫기 버튼 & 관리자 신규 분양 정보 등록 버튼 -->
             <div class="px-5 sm:px-7 py-4 sm:py-5 border-b border-zinc-800 bg-[#1e1e22]/95 flex items-center justify-between shrink-0">
                 <div>
                     <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">분양 정보</h3>
                 </div>
-                <div>
+                <div class="flex items-center gap-2">
+                    <button id="adminAddSubscriptionBtn" type="button" onclick="openAddSubscriptionModal()" class="admin-only hidden py-1.5 px-3.5 rounded-xl bg-gold hover:bg-gold-dark text-black text-xs sm:text-sm font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer" style="display: none;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                        <span>신규 분양 정보 등록</span>
+                    </button>
                     <button type="button" onclick="closeSubscriptionModal()" class="w-8 h-8 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-gray-400 hover:text-white flex items-center justify-center transition-colors shrink-0" aria-label="닫기">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
@@ -502,7 +506,7 @@
 
         </div>
     </div>
-    <script src="js/subscription_modal.js?v=20261124_V2"></script>
+    <script src="js/subscription_modal.js?v=20261124_V3"></script>
 
     <!-- QR & Subscription Modal Control Script -->
     <script>
