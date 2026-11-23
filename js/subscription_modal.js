@@ -54,24 +54,21 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = validItems.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 최적화 & 하트 제거 후 ✕ 삭제 버튼 연동)
+    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 & 썸네일 흰색글씨 제거 & 카드 클릭 새창 차단 & ✕ 삭제 버튼)
     container.innerHTML = pageItems.map((item, index) => {
         const badgesHtml = (item.badges || []).map(b => 
             `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
         ).join('');
 
         return `
-            <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative">
+            <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative">
                 <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
-                    <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='images/preview_complex.jpg'">
-                    <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded ${item.tagBg || 'bg-carrot'} text-white shadow">
-                        ${item.tag || '신규분양'}
-                    </span>
+                    <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='images/preview_complex.jpg'">
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                     <div>
                         <div class="flex items-start justify-between gap-2">
-                            <h4 class="text-base sm:text-[17px] font-bold text-white group-hover:text-gold transition-colors truncate">
+                            <h4 class="text-base sm:text-[17px] font-bold text-white truncate">
                                 ${item.title}
                             </h4>
                             <!-- 우측 끝 하트(♥) 모양 삭제하고 그 자리에 ✕ 삭제 버튼 배치 -->

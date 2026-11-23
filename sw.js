@@ -1,12 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v24 - 하트 제거 및 ✕삭제 버튼 교체)
-const CACHE_NAME = 'sumokto-chebol-v24';
+// 도안수목토 재벌부동산 PWA Service Worker (v25 - 썸네일 흰색글씨 제거 및 카드 클릭 새창 차단)
+const CACHE_NAME = 'sumokto-chebol-v25';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V2',
-  '/js/subscription_modal.js?v=20261124_V6_DEL_BTN',
+  '/js/subscription_modal.js?v=20261124_V7_NO_OVERLAY',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',
