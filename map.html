@@ -569,7 +569,12 @@
                 floor: '19층 / 25층',
                 tags: '#남향 #로얄층 #뷰좋은집 #갑천뷰영구조망',
                 description: '갑천뷰 영구 조망과 양창으로 뛰어난 채광이 돋보이는 집입니다.\n앞동에 위치해 탁 트인 조망을 누릴 수 있으며 주방 옆 다용도실이 있어 생활이 편리합니다.',
-                imageUrl: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+                imageUrl: 'images/view_2k.jpg',
+                images: [
+                    'images/view_2k.jpg',
+                    'images/preview_complex.jpg',
+                    'images/단지조감도_2K.jpg'
+                ],
                 mapImageUrl: '',
                 contact: '042-546-4900'
             },
@@ -589,7 +594,12 @@
                 floor: '2층 / 15층',
                 tags: '#남서향 #호수공원입접동 #드레스룸넓은구조 #최근리모델링',
                 description: '호수공원과 인접한 저층 세대로 편안한 주거 환경을 영위할 수 있습니다.✨',
-                imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+                imageUrl: 'images/bird_view_2k.jpg',
+                images: [
+                    'images/bird_view_2k.jpg',
+                    'images/preview_complex.jpg',
+                    'images/A-Type-Plan03.png'
+                ],
                 mapImageUrl: 'images/A-Type-Plan03.png',
                 contact: '042-546-4900'
             },
@@ -609,7 +619,12 @@
                 floor: '21층 / 22층',
                 tags: '#남향 #로얄층 #뷰좋은집 #팬트리 #갑천뷰영구조망',
                 description: '* 정남향 C타입으로 따뜻한 햇살이 풍부하게 들어와 밝고 쾌적한 집입니다.\n* 21층 고층 로얄 매물로 시원한 뷰와 우수한 일조권을 자랑합니다.',
-                imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+                imageUrl: 'images/preview_complex.jpg',
+                images: [
+                    'images/preview_complex.jpg',
+                    'images/view_2k.jpg',
+                    'images/C-Type-Plan03.png'
+                ],
                 mapImageUrl: 'images/C-Type-Plan03.png',
                 contact: '042-546-4900'
             }
@@ -1245,7 +1260,11 @@
                 if (deskLocSpan) deskLocSpan.textContent = p.location || '대전광역시 서구 도안동';
 
                 const deskFloorTypeEl = document.getElementById('deskFloorType');
-                if (deskFloorTypeEl) deskFloorTypeEl.textContent = p.floorType || '-';
+                if (deskFloorTypeEl) {
+                    deskFloorTypeEl.textContent = p.floorType || '-';
+                    deskFloorTypeEl.style.setProperty('color', '#ffffff', 'important');
+                    deskFloorTypeEl.className = "text-xs text-white font-bold block truncate";
+                }
 
                 const deskAreaEl = document.getElementById('deskArea');
                 if (deskAreaEl) deskAreaEl.textContent = p.area || '-';
@@ -1290,7 +1309,11 @@
                 if (mobLocSpan) mobLocSpan.textContent = p.location || '대전광역시 서구 도안동';
 
                 const mobFloorTypeEl = document.getElementById('mobFloorType');
-                if (mobFloorTypeEl) mobFloorTypeEl.textContent = p.floorType || '-';
+                if (mobFloorTypeEl) {
+                    mobFloorTypeEl.textContent = p.floorType || '-';
+                    mobFloorTypeEl.style.setProperty('color', '#ffffff', 'important');
+                    mobFloorTypeEl.className = "text-[11px] text-white font-bold block truncate";
+                }
 
                 const mobAreaEl = document.getElementById('mobArea');
                 if (mobAreaEl) mobAreaEl.textContent = p.area || '-';
@@ -1324,8 +1347,10 @@
                 }
             }
 
-            // [이미지 갤러리 슬라이더 세팅]
+            // [이미지 갤러리 슬라이더 세팅 (다중 이미지/배열/문자열/로컬 백업 완벽 지원)]
             currentDetailImages = [];
+            
+            // 1) p.images 후보 추출
             let candidateImages = p.images;
             if (typeof candidateImages === 'string') {
                 try {
@@ -1334,14 +1359,45 @@
                     candidateImages = [candidateImages];
                 }
             }
-            if (Array.isArray(candidateImages) && candidateImages.length > 0) {
-                currentDetailImages = candidateImages.filter(img => typeof img === 'string' && img.trim().length > 0);
+            if (Array.isArray(candidateImages)) {
+                candidateImages.forEach(img => {
+                    if (typeof img === 'string' && img.trim().length > 0) {
+                        currentDetailImages.push(img.trim());
+                    }
+                });
             }
-            if (currentDetailImages.length === 0 && p.imageUrl) {
-                currentDetailImages = [p.imageUrl];
+
+            // 2) p.imageUrl 후보 추출 (배열 또는 단일 문자열 안전 처리)
+            if (p.imageUrl) {
+                if (Array.isArray(p.imageUrl)) {
+                    p.imageUrl.forEach(img => {
+                        if (typeof img === 'string' && img.trim().length > 0 && !currentDetailImages.includes(img.trim())) {
+                            currentDetailImages.push(img.trim());
+                        }
+                    });
+                } else if (typeof p.imageUrl === 'string' && p.imageUrl.trim().length > 0) {
+                    const u = p.imageUrl.trim();
+                    if (!currentDetailImages.includes(u)) {
+                        currentDetailImages.push(u);
+                    }
+                }
             }
+
+            // 3) p.mapImageUrl 보조 추출
+            if (p.mapImageUrl && typeof p.mapImageUrl === 'string' && p.mapImageUrl.trim().length > 0) {
+                const mu = p.mapImageUrl.trim();
+                if (!currentDetailImages.includes(mu)) {
+                    currentDetailImages.push(mu);
+                }
+            }
+
+            // 4) 그래도 이미지가 없으면 아파트별 고화질 로컬 이미지 기본 제공
             if (currentDetailImages.length === 0) {
-                currentDetailImages = ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'];
+                if (p.title && p.title.includes('아이파크')) {
+                    currentDetailImages = ['images/view_2k.jpg', 'images/preview_complex.jpg', 'images/단지조감도_2K.jpg'];
+                } else {
+                    currentDetailImages = ['images/preview_complex.jpg', 'images/view_2k.jpg', 'images/bird_view_2k.jpg'];
+                }
             }
             currentDetailImgIdx = 0;
             updateDetailGallery();
@@ -1396,7 +1452,10 @@
             if (deskImg) {
                 deskImg.src = currentImg || fallbackImg;
                 deskImg.onerror = function() {
-                    this.onerror = null;
+                    this.onerror = function() {
+                        this.onerror = null;
+                        this.src = 'images/preview_complex.jpg';
+                    };
                     this.src = fallbackImg;
                 };
             }
@@ -1419,7 +1478,10 @@
             if (mobImg) {
                 mobImg.src = currentImg || fallbackImg;
                 mobImg.onerror = function() {
-                    this.onerror = null;
+                    this.onerror = function() {
+                        this.onerror = null;
+                        this.src = 'images/preview_complex.jpg';
+                    };
                     this.src = fallbackImg;
                 };
             }

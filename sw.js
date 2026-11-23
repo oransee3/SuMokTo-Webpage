@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v7 - 분양 정보 페이지 새창 연동 및 즉시 동기화)
-const CACHE_NAME = 'sumokto-chebol-v7';
+// 도안수목토 재벌부동산 PWA Service Worker (v8 - 분양 정보 내부 모달 팝업 연동 및 지도 매물 이미지/평면타입 개선)
+const CACHE_NAME = 'sumokto-chebol-v8';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
