@@ -313,7 +313,7 @@
                 <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
                     <!-- 갤러리 슬라이더 -->
                     <div id="deskGalleryBox" class="relative w-full aspect-[16/10] bg-black/60 rounded-2xl overflow-hidden border border-zinc-800 select-none shadow-inner">
-                        <img id="deskMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover">
+                        <img id="deskMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';">
                         <button type="button" onclick="slideDeskImg(-1)" id="deskPrevBtn" class="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition-all">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
@@ -343,7 +343,7 @@
                     <div class="grid grid-cols-2 gap-2 p-3 bg-zinc-900/90 rounded-xl border border-zinc-800 text-center">
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[10px] text-gray-400 block mb-0.5">평면타입</span>
-                            <strong id="deskFloorType" class="text-xs text-carrot font-bold block truncate">B-Type</strong>
+                            <strong id="deskFloorType" class="text-xs text-white font-bold block truncate">B-Type</strong>
                         </div>
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[10px] text-gray-400 block mb-0.5">공급 / 전용면적</span>
@@ -483,7 +483,7 @@
                 <div class="flex-1 overflow-y-auto custom-scrollbar p-3.5 space-y-3.5 pb-6">
                     <!-- 사진 슬라이더 -->
                     <div id="mobGalleryBox" class="relative w-full aspect-[16/10] bg-black/50 rounded-xl overflow-hidden border border-zinc-800 select-none">
-                        <img id="mobMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover">
+                        <img id="mobMainImg" src="" alt="매물 이미지" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';">
                         <button type="button" onclick="slideMobImg(-1)" id="mobPrevBtn" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
@@ -509,7 +509,7 @@
                     <div class="grid grid-cols-2 gap-2 p-2.5 bg-zinc-900/90 rounded-xl border border-zinc-800 text-center">
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[9px] text-gray-400 block mb-0.5">평면타입</span>
-                            <strong id="mobFloorType" class="text-[11px] text-carrot font-bold block truncate">B-Type</strong>
+                            <strong id="mobFloorType" class="text-[11px] text-white font-bold block truncate">B-Type</strong>
                         </div>
                         <div class="p-1.5 bg-black/30 rounded-lg">
                             <span class="text-[9px] text-gray-400 block mb-0.5">공급 / 전용면적</span>
@@ -1126,7 +1126,7 @@
                                     ${p.title}
                                 </h4>
                                 <p class="text-[11px] text-gray-400 mt-0.5 truncate">
-                                    ${p.floorType ? `<span class="text-carrot font-bold">${p.floorType}</span> · ` : ''}${p.area || ''} ${p.floor ? '· ' + p.floor : ''}
+                                    ${p.floorType ? `<span class="text-white font-bold">${p.floorType}</span> · ` : ''}${p.area || ''} ${p.floor ? '· ' + p.floor : ''}
                                 </p>
                             </div>
                             
@@ -1263,17 +1263,32 @@
             const mobDetail = document.getElementById('mobileDetailView');
             const mobList = document.getElementById('mobileListView');
             if (mobDetail && mobList) {
-                document.getElementById('mobPrice').textContent = p.price || '';
-                document.getElementById('mobTitle').textContent = p.title || '';
+                const mobPriceEl = document.getElementById('mobPrice');
+                if (mobPriceEl) mobPriceEl.textContent = p.price || '';
+
+                const mobTitleEl = document.getElementById('mobTitle');
+                if (mobTitleEl) mobTitleEl.textContent = p.title || '';
+
                 const mobLocSpan = document.getElementById('mobLocation')?.querySelector('span');
                 if (mobLocSpan) mobLocSpan.textContent = p.location || '대전광역시 서구 도안동';
+
                 const mobFloorTypeEl = document.getElementById('mobFloorType');
                 if (mobFloorTypeEl) mobFloorTypeEl.textContent = p.floorType || '-';
-                document.getElementById('mobArea').textContent = p.area || '-';
-                document.getElementById('mobFloor').textContent = p.floor || '-';
-                document.getElementById('mobType').textContent = p.subType || p.type || '아파트';
-                document.getElementById('mobTags').textContent = p.tags || '#도안신도시';
-                document.getElementById('mobDesc').textContent = p.description || '상세 설명이 등록되지 않았습니다.';
+
+                const mobAreaEl = document.getElementById('mobArea');
+                if (mobAreaEl) mobAreaEl.textContent = p.area || '-';
+
+                const mobFloorEl = document.getElementById('mobFloor');
+                if (mobFloorEl) mobFloorEl.textContent = p.floor || '-';
+
+                const mobTypeEl = document.getElementById('mobType');
+                if (mobTypeEl) mobTypeEl.textContent = p.subType || p.type || '아파트';
+
+                const mobTagsEl = document.getElementById('mobTags');
+                if (mobTagsEl) mobTagsEl.textContent = p.tags || '#도안신도시';
+
+                const mobDescEl = document.getElementById('mobDesc');
+                if (mobDescEl) mobDescEl.textContent = p.description || '상세 설명이 등록되지 않았습니다.';
 
                 const mobBadge = document.getElementById('mobDetailDealBadge');
                 if (mobBadge) {
@@ -1287,16 +1302,28 @@
                 mobList.classList.add('hidden');
                 mobDetail.classList.remove('hidden');
                 mobDetail.classList.add('flex');
-                expandMobileSheet();
+                if (typeof expandMobileSheet === 'function') {
+                    expandMobileSheet();
+                }
             }
 
             // [이미지 갤러리 슬라이더 세팅]
             currentDetailImages = [];
-            if (Array.isArray(p.images) && p.images.length > 0) {
-                currentDetailImages = p.images;
-            } else if (p.imageUrl) {
+            let candidateImages = p.images;
+            if (typeof candidateImages === 'string') {
+                try {
+                    candidateImages = JSON.parse(candidateImages);
+                } catch(e) {
+                    candidateImages = [candidateImages];
+                }
+            }
+            if (Array.isArray(candidateImages) && candidateImages.length > 0) {
+                currentDetailImages = candidateImages.filter(img => typeof img === 'string' && img.trim().length > 0);
+            }
+            if (currentDetailImages.length === 0 && p.imageUrl) {
                 currentDetailImages = [p.imageUrl];
-            } else {
+            }
+            if (currentDetailImages.length === 0) {
                 currentDetailImages = ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'];
             }
             currentDetailImgIdx = 0;
@@ -1347,7 +1374,13 @@
             const deskCounter = document.getElementById('deskImgCounter');
             const deskPrev = document.getElementById('deskPrevBtn');
             const deskNext = document.getElementById('deskNextBtn');
-            if (deskImg) deskImg.src = currentImg;
+            if (deskImg) {
+                deskImg.src = currentImg;
+                deskImg.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';
+                };
+            }
             if (deskCounter) deskCounter.textContent = counterText;
             if (deskPrev && deskNext) {
                 if (isSingle) {
@@ -1364,7 +1397,13 @@
             const mobCounter = document.getElementById('mobImgCounter');
             const mobPrev = document.getElementById('mobPrevBtn');
             const mobNext = document.getElementById('mobNextBtn');
-            if (mobImg) mobImg.src = currentImg;
+            if (mobImg) {
+                mobImg.src = currentImg;
+                mobImg.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';
+                };
+            }
             if (mobCounter) mobCounter.textContent = counterText;
             if (mobPrev && mobNext) {
                 if (isSingle) {
