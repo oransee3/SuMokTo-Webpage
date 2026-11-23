@@ -1607,17 +1607,12 @@
                             ${sub.desc ? `<p class="text-xs text-gray-400 line-clamp-2 leading-relaxed pt-0.5">${sub.desc}</p>` : ''}
                         </div>
 
-                        <!-- 하단 링크 및 지도 이동 안내 바 -->
-                        <div class="mt-3 pt-2.5 border-t border-zinc-800/90 flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                ${homepageBtn}
-                                ${youtubeBtn}
-                            </div>
-                            <div class="inline-flex items-center gap-1 text-xs font-bold text-blue-400 group-hover:text-blue-300 shrink-0">
-                                <span>지도 위치보기</span>
-                                <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
-                            </div>
-                        </div>
+                        <!-- 하단 링크 영역 (홈페이지 / 유튜브 바로가기, '지도 위치보기' 삭제 완료) -->
+                        ${(homepageBtn || youtubeBtn) ? `
+                        <div class="mt-3 pt-2.5 border-t border-zinc-800/90 flex items-center gap-1.5 flex-wrap">
+                            ${homepageBtn}
+                            ${youtubeBtn}
+                        </div>` : ''}
                     </article>
                 `;
             }).join('');
