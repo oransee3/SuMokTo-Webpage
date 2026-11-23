@@ -1418,7 +1418,7 @@
                 // 열려있던 매물 상세 패널 닫기 및 매물 마커 숨기기
                 closeDetailPanel();
                 hideBlinkingPoint();
-                if (clusterer) clusterer.clearMarkers();
+                if (clusterer && typeof clusterer.clear === 'function') clusterer.clear();
                 propertyOverlays.forEach(item => {
                     if (item.overlay) item.overlay.setVisible(false);
                 });
@@ -1450,7 +1450,10 @@
                 clearSubscriptionOverlays();
 
                 // 매물 마커/오버레이 복구
-                if (clusterer) clusterer.addMarkers(propertyMarkers);
+                if (clusterer && typeof clusterer.clear === 'function') {
+                    clusterer.clear();
+                    clusterer.addMarkers(propertyMarkers);
+                }
                 adjustOverlayVisibilityByZoom();
                 updateVisibleProperties();
             }
