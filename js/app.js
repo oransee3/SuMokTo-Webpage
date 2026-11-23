@@ -54,7 +54,7 @@ const DEFAULT_PROPERTIES = [
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'
     ],
     contact: '042-546-4900',
-    mapImageUrl: 'images/B-Type-Plan03.png'
+    mapImageUrl: ''
   },
   {
     id: 'PROP-1003',
@@ -521,7 +521,7 @@ const GitHubSyncManager = {
 const PropertyManager = {
   KEY_PROPERTIES: 'chebol_properties_data',
   DATA_VERSION_KEY: 'chebol_properties_version',
-  CURRENT_VERSION: '20261123_v2',
+  CURRENT_VERSION: '20261123_v3',
   properties: [],
 
   init() {
@@ -548,12 +548,14 @@ const PropertyManager = {
             else if (p.title && p.title.includes('101동')) p.floorType = 'A-Type';
             else if (p.title && p.title.includes('108동')) p.floorType = 'C-Type';
           }
-          // 구버전 지도 캡처나 data:base64, map_sample 등은 공식 세대 평면도로 자동 교체
-          if (!p.mapImageUrl || p.mapImageUrl.startsWith('data:') || p.mapImageUrl.includes('map_sample') || p.mapImageUrl.includes('작동')) {
-            const raw = `${p.floorType || ''} ${p.title || ''}`.toUpperCase();
+          // 도안수목토 아파트인 경우에만 공식 평면도 매칭, 그 외 단지(도안아이파크 등)는 빈값('') 처리
+          if (p.title && p.title.includes('수목토')) {
+            const raw = (p.floorType || '').toUpperCase();
             if (raw.includes('B') || raw.includes('D')) p.mapImageUrl = 'images/B-Type-Plan03.png';
             else if (raw.includes('C')) p.mapImageUrl = 'images/C-Type-Plan03.png';
             else p.mapImageUrl = 'images/A-Type-Plan03.png';
+          } else {
+            p.mapImageUrl = '';
           }
         });
       } catch (e) {
@@ -594,11 +596,14 @@ const PropertyManager = {
               else if (p.title && p.title.includes('101동')) p.floorType = 'A-Type';
               else if (p.title && p.title.includes('108동')) p.floorType = 'C-Type';
             }
-            if (!p.mapImageUrl || p.mapImageUrl.startsWith('data:') || p.mapImageUrl.includes('map_sample') || p.mapImageUrl.includes('작동')) {
-              const raw = `${p.floorType || ''} ${p.title || ''}`.toUpperCase();
+            // 도안수목토 아파트인 경우에만 공식 평면도 매칭, 그 외 단지는 빈값('') 처리
+            if (p.title && p.title.includes('수목토')) {
+              const raw = (p.floorType || '').toUpperCase();
               if (raw.includes('B') || raw.includes('D')) p.mapImageUrl = 'images/B-Type-Plan03.png';
               else if (raw.includes('C')) p.mapImageUrl = 'images/C-Type-Plan03.png';
               else p.mapImageUrl = 'images/A-Type-Plan03.png';
+            } else {
+              p.mapImageUrl = '';
             }
           });
           this.properties = items;
@@ -1394,22 +1399,28 @@ const UI = {
     grid.innerHTML = html;
   },
 
-  // 평면타입에 맞는 공식 평면도 이미지 경로 반환
+  // 평면타입에 맞는 공식 평면도 이미지 경로 반환 (도안수목토 아파트 전용)
   getFloorPlanImage(floorType = '', title = '') {
-    const raw = `${floorType} ${title}`.toUpperCase();
-    if (raw.includes('B') || raw.includes('D')) {
+    // 도안수목토 아파트가 아닌 단지(도안아이파크 등)는 등록된 공식 평면도가 없으므로 빈값 반환
+    const isSuMokTo = (title || '').includes('수목토');
+    if (!isSuMokTo) {
+      return '';
+    }
+
+    const t = (floorType || '').toUpperCase();
+    if (t.includes('B') || t.includes('D')) {
       return 'images/B-Type-Plan03.png';
     }
-    if (raw.includes('C')) {
+    if (t.includes('C')) {
       return 'images/C-Type-Plan03.png';
     }
-    if (raw.includes('A')) {
+    if (t.includes('A')) {
       return 'images/A-Type-Plan03.png';
     }
-    return 'images/A-Type-Plan03.png';
+    return '';
   },
 
-  // 평면타입 입력 시 평면도 자동 매칭 및 미리보기 업데이트
+  // 평면타입 입력 시 평면도 자동 매칭 및 미리보기 업데이트 (없으면 흰색 배경만 표시)
   updateAutoFloorPlanPreview() {
     const floorTypeInput = document.getElementById('propFloorType');
     const floorType = floorTypeInput ? floorTypeInput.value.trim() : '';
@@ -1419,22 +1430,54 @@ const UI = {
     const planImg = this.getFloorPlanImage(floorType, title);
     
     const previewImg = document.getElementById('autoFloorPlanPreview');
+    const emptyBox = document.getElementById('autoFloorPlanEmpty');
     const hiddenInput = document.getElementById('propMapImageUrl');
     const badge = document.getElementById('autoFloorPlanBadge');
     
-    if (previewImg) previewImg.src = planImg;
-    if (hiddenInput) hiddenInput.value = planImg;
-    if (badge) {
-      let matchedLabel = 'A-Type (84.99㎡)';
-      const raw = `${floorType} ${title}`.toUpperCase();
-      if (raw.includes('B') || raw.includes('D')) {
-        matchedLabel = raw.includes('D') ? 'D-Type (84.98㎡ B호환)' : 'B-Type (84.98㎡)';
-      } else if (raw.includes('C')) {
-        matchedLabel = 'C-Type (84.93㎡)';
-      } else if (raw.includes('A')) {
-        matchedLabel = 'A-Type (84.99㎡)';
+    if (planImg) {
+      if (previewImg) {
+        previewImg.src = planImg;
+        previewImg.classList.remove('hidden');
+        previewImg.style.display = 'block';
       }
-      badge.textContent = `✓ ${matchedLabel} 공식 평면도 자동 매칭됨`;
+      if (emptyBox) {
+        emptyBox.classList.add('hidden');
+      }
+      if (hiddenInput) hiddenInput.value = planImg;
+      if (badge) {
+        let matchedLabel = 'A-Type (84.99㎡)';
+        const t = floorType.toUpperCase();
+        if (t.includes('B') || t.includes('D')) {
+          matchedLabel = t.includes('D') ? 'D-Type (84.98㎡ B호환)' : 'B-Type (84.98㎡)';
+        } else if (t.includes('C')) {
+          matchedLabel = 'C-Type (84.93㎡)';
+        } else if (t.includes('A')) {
+          matchedLabel = 'A-Type (84.99㎡)';
+        }
+        badge.className = 'text-[11px] text-emerald-400 bg-emerald-950/80 border border-emerald-700 px-2.5 py-0.5 rounded-full font-bold';
+        badge.textContent = `✓ 도안수목토 ${matchedLabel} 공식 평면도 자동 매칭됨`;
+      }
+    } else {
+      // 평면도가 없는 경우: 이미지 숨김, 흰색 배경만 노출
+      if (previewImg) {
+        previewImg.src = '';
+        previewImg.classList.add('hidden');
+        previewImg.style.display = 'none';
+      }
+      if (emptyBox) {
+        emptyBox.classList.remove('hidden');
+      }
+      if (hiddenInput) hiddenInput.value = '';
+      if (badge) {
+        badge.className = 'text-[11px] text-gray-400 bg-zinc-800 border border-gray-700 px-2.5 py-0.5 rounded-full font-bold';
+        if (title && !title.includes('수목토')) {
+          badge.textContent = '해당 단지 평면도 없음 (흰색 배경)';
+        } else if (!floorType) {
+          badge.textContent = '평면타입(A,B,C) 입력 시 자동 매칭';
+        } else {
+          badge.textContent = '등록된 평면도 없음 (흰색 배경)';
+        }
+      }
     }
   },
 
@@ -1999,7 +2042,7 @@ const UI = {
     form.reset();
     document.getElementById('propertyFormId').value = '';
     document.getElementById('propertyModalTitle').textContent = '신규 매물 등록 (관계자)';
-    if (document.getElementById('propFloorType')) document.getElementById('propFloorType').value = 'A-Type';
+    if (document.getElementById('propFloorType')) document.getElementById('propFloorType').value = '';
     
     // 매물 소개 이미지 초기화 및 세대 평면도 자동 매칭
     this.currentGalleryImages = [];
@@ -2103,7 +2146,7 @@ const UI = {
       imageUrl: mainImageUrl, // 1~3장의 이미지 중 1번이 대표 이미지
       images: gallery.length > 0 ? gallery : [mainImageUrl],
       contact: document.getElementById('propContact').value.trim() || '042-546-4900',
-      mapImageUrl: autoPlanImg || document.getElementById('propMapImageUrl').value.trim() || 'images/A-Type-Plan03.png'
+      mapImageUrl: autoPlanImg || document.getElementById('propMapImageUrl').value.trim() || ''
     };
 
     if (editId) {
