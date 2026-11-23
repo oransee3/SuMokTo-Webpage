@@ -791,7 +791,8 @@
                 scale: '총 998세대',
                 address: '대전광역시 중구 선화동 95-3 일원',
                 desc: '트램 2호선 역세권, 중구청 건립 수혜지역',
-                thumbnail: 'images/view_2k.jpg',
+                thumbnail: 'images/sub_hanulche_thumb.jpg',
+                img: 'images/sub_hanulche_thumb.jpg',
                 homepageUrl: 'https://www.hanulche.co.kr',
                 youtubeUrl: 'https://youtube.com',
                 lat: 36.3283,
@@ -844,8 +845,10 @@
                 item.address = item.specs || item.address || '대전광역시';
                 item.specs = item.specs || item.address || '';
                 item.desc = item.desc || '';
-                item.thumbnail = item.img || item.thumbnail || 'images/view_2k.jpg';
-                item.img = item.img || item.thumbnail || 'images/view_2k.jpg';
+                item.thumbnail = item.img || item.thumbnail || 'images/sub_hanulche_thumb.jpg';
+                if (item.thumbnail === 'images/view_2k.jpg') item.thumbnail = 'images/sub_hanulche_thumb.jpg';
+                if (item.img === 'images/view_2k.jpg') item.img = 'images/sub_hanulche_thumb.jpg';
+                item.img = item.img || item.thumbnail || 'images/sub_hanulche_thumb.jpg';
                 item.homepageUrl = item.homepage || item.homepageUrl || '';
                 item.youtubeUrl = item.youtube || item.youtubeUrl || '';
             });

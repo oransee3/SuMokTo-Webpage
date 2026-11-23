@@ -21,7 +21,8 @@ const DEFAULT_SUBSCRIPTION_DATA = [
         badges: [
             { text: '분양중', style: 'bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm' }
         ],
-        img: 'images/view_2k.jpg',
+        img: 'images/sub_hanulche_thumb.jpg',
+        thumbnail: 'images/sub_hanulche_thumb.jpg',
         lat: 36.3283,
         lng: 127.4208
     }
@@ -34,6 +35,13 @@ try {
     if (savedCustomSubs) {
         const parsed = JSON.parse(savedCustomSubs);
         if (Array.isArray(parsed) && parsed.length > 0) {
+            // 구버전 임시 이미지(view_2k.jpg)가 캐시되어 있으면 실제 선화동 하늘채 조감도 썸네일로 보정
+            parsed.forEach(item => {
+                if (item.id === 'sub-preset-1' || item.img === 'images/view_2k.jpg' || !item.img) {
+                    item.img = 'images/sub_hanulche_thumb.jpg';
+                    item.thumbnail = 'images/sub_hanulche_thumb.jpg';
+                }
+            });
             SUBSCRIPTION_DATA.push(...parsed);
         }
     }

@@ -16,7 +16,8 @@
         "style": "bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm"
       }
     ],
-    "img": "images/view_2k.jpg",
+    "img": "images/sub_hanulche_thumb.jpg",
+    "thumbnail": "images/sub_hanulche_thumb.jpg",
     "lat": 36.3283,
     "lng": 127.4208
   }

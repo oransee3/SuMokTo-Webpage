@@ -1,10 +1,11 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v40 - 모바일 핸드폰 분양 정보 모달 동일 노출 동기화)
-const CACHE_NAME = 'sumokto-chebol-v40';
+// 도안수목토 재벌부동산 PWA Service Worker (v41 - PC 등록 선화동 하늘채 썸네일 이미지 모바일 동기화)
+const CACHE_NAME = 'sumokto-chebol-v41';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/data/subscriptions.json',
+  '/images/sub_hanulche_thumb.jpg',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V2',
   '/js/subscription_modal.js?v=20261124_V12_MOBILE_SYNC',
