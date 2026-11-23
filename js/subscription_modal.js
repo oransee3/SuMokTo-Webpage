@@ -54,11 +54,30 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = validItems.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 & 썸네일 흰색글씨 제거 & 카드 클릭 새창 차단 & ✕ 삭제 버튼)
+    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 & 썸네일 흰색글씨 제거 & 카드 클릭 새창 차단 & 홈페이지·유튜브 링크 & ✕ 삭제 버튼)
     container.innerHTML = pageItems.map((item, index) => {
         const badgesHtml = (item.badges || []).map(b => 
             `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
         ).join('');
+
+        // 홈페이지 / 유튜브 바로가기 링크 버튼
+        let linksHtml = '';
+        if (item.homepage) {
+            linksHtml += `
+                <a href="${item.homepage}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-blue-950/70 hover:bg-blue-900 text-blue-300 hover:text-white border border-blue-700/50 text-[10px] sm:text-[11px] font-bold transition-colors shadow-sm cursor-pointer" title="공식 홈페이지 바로가기">
+                    <svg class="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    <span>홈페이지</span>
+                </a>
+            `;
+        }
+        if (item.youtube) {
+            linksHtml += `
+                <a href="${item.youtube}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-red-950/70 hover:bg-red-900 text-red-300 hover:text-white border border-red-700/50 text-[10px] sm:text-[11px] font-bold transition-colors shadow-sm cursor-pointer" title="유튜브 영상 바로가기">
+                    <svg class="w-3 h-3 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    <span>유튜브</span>
+                </a>
+            `;
+        }
 
         return `
             <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative">
@@ -87,6 +106,7 @@ function renderSubscriptionList(page) {
                     <div>
                         <div class="flex flex-wrap items-center gap-1.5 mt-1">
                             ${badgesHtml}
+                            ${linksHtml}
                         </div>
                         <p class="text-[11px] sm:text-xs text-gray-300 mt-0.5 truncate font-normal">
                             ${item.desc}
@@ -394,6 +414,23 @@ function openAddSubscriptionModal() {
                         <label class="block text-xs font-semibold text-gray-300 mb-1">핵심 특징 / 설명</label>
                         <input type="text" id="subInputDesc" placeholder="예: “트램 2호선 역세권, 중구청 건립 수혜지역”" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:border-gold outline-none">
                     </div>
+                    <!-- 홈페이지 URL 링크 & 유튜브 URL 링크 입력 영역 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1 flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                                <span>홈페이지 URL 링크</span>
+                            </label>
+                            <input type="url" id="subInputHomepage" placeholder="예: https://www.hanulche.co.kr" class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm focus:border-gold outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1 flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                <span>유튜브 URL 링크</span>
+                            </label>
+                            <input type="url" id="subInputYoutube" placeholder="예: https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm focus:border-gold outline-none">
+                        </div>
+                    </div>
                     <div class="flex items-center justify-end gap-2 pt-2.5 border-t border-zinc-800 shrink-0">
                         <button type="button" onclick="closeAddSubscriptionModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-bold rounded-xl transition-colors">취소</button>
                         <button type="submit" class="px-5 py-2 bg-gold hover:bg-gold-dark text-black text-xs font-bold rounded-xl transition-colors shadow">등록 완료</button>
@@ -410,9 +447,13 @@ function openAddSubscriptionModal() {
         const previewImg = document.getElementById('subImgPreview');
         const placeholder = document.getElementById('subImgPlaceholder');
         const statusText = document.getElementById('subImgStatusText');
+        const hpInput = document.getElementById('subInputHomepage');
+        const ytInput = document.getElementById('subInputYoutube');
         if (previewImg) { previewImg.src = ''; previewImg.classList.add('hidden'); }
         if (placeholder) placeholder.classList.remove('hidden');
         if (statusText) statusText.textContent = '미선택 시 기본 조감도 이미지가 적용됩니다.';
+        if (hpInput) hpInput.value = '';
+        if (ytInput) ytInput.value = '';
     }
     addModal.classList.remove('hidden');
 }
@@ -459,6 +500,8 @@ function handleSubscriptionSubmit(e) {
     const scale = document.getElementById('subInputScale').value.trim() || '상담 접수 중';
     const specs = document.getElementById('subInputSpecs').value.trim() || '도안신도시 핵심 권역';
     const desc = document.getElementById('subInputDesc').value.trim() || '“도안수목토 재벌부동산 엄선 추천 단지”';
+    const homepage = document.getElementById('subInputHomepage') ? document.getElementById('subInputHomepage').value.trim() : '';
+    const youtube = document.getElementById('subInputYoutube') ? document.getElementById('subInputYoutube').value.trim() : '';
     const img = currentCompressedSubImg || 'images/preview_complex.jpg';
 
     const newItem = {
@@ -469,11 +512,13 @@ function handleSubscriptionSubmit(e) {
         scale: scale,
         scaleSub: '',
         specs: specs,
+        desc: desc,
+        homepage: homepage,
+        youtube: youtube,
         badges: [
             { text: '사전 접수', style: 'bg-[#0d2a1f] text-[#3fb950] border-[#238636]/40' },
             { text: '전문 상담', style: 'bg-[#0c2340] text-[#58a6ff] border-[#1f6feb]/40' }
         ],
-        desc: desc,
         img: img
     };
 
