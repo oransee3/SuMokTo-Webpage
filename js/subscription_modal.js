@@ -153,8 +153,8 @@ function renderSubscriptionList(page) {
         ).join('');
 
         return `
-            <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-4.5 p-2.5 sm:p-3 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+            <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative">
+                <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
                     <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='images/preview_complex.jpg'">
                     <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded ${item.tagBg} text-white shadow">
                         ${item.tag}
@@ -181,7 +181,7 @@ function renderSubscriptionList(page) {
                         <div class="flex flex-wrap items-center gap-1.5 mt-1">
                             ${badgesHtml}
                         </div>
-                        <p class="text-[11px] sm:text-xs text-gray-300 mt-1 truncate font-normal">
+                        <p class="text-[11px] sm:text-xs text-gray-300 mt-0.5 truncate font-normal">
                             ${item.desc}
                         </p>
                     </div>

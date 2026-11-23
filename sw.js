@@ -1,12 +1,12 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v15 - 분양 정보 4개 100% 온전 표시 완벽 맞춤)
-const CACHE_NAME = 'sumokto-chebol-v15';
+// 도안수목토 재벌부동산 PWA Service Worker (v16 - 분양 정보 4개 온전 뷰포트 정밀 보정)
+const CACHE_NAME = 'sumokto-chebol-v16';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/subscription.html',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261123_V6_RELEASE',
-  '/js/subscription_modal.js?v=20261124_V6',
+  '/js/subscription_modal.js?v=20261124_V7',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',
