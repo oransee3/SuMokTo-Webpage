@@ -194,9 +194,18 @@
             display: inline-block;
         }
 
-        /* 모바일 바텀시트 트랜지션 */
+        /* 모바일 바텀시트 트랜지션 & 상태 */
         .bottom-sheet {
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bottom-sheet-peek {
+            transform: translateY(calc(100% - 195px)) !important;
+        }
+        .bottom-sheet-expanded {
+            transform: translateY(0%) !important;
+        }
+        .bottom-sheet-collapsed {
+            transform: translateY(calc(100% - 60px)) !important;
         }
 
         /* 수평 스크롤바 완전 삭제 및 상단 메뉴 1줄 고정 */
@@ -521,17 +530,18 @@
         <!-- =================================================== -->
         <!-- 3. 모바일 전용 반응형 바텀시트 (Bottom Sheet)          -->
         <!-- =================================================== -->
-        <div id="mobileBottomSheet" class="md:hidden fixed inset-x-0 bottom-0 z-40 bg-[#161618] border-t border-zinc-800 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.8)] bottom-sheet transform translate-y-[calc(100%-60px)] flex flex-col max-h-[82vh]">
+        <div id="mobileBottomSheet" class="md:hidden fixed inset-x-0 bottom-0 z-40 bg-[#161618] border-t border-zinc-800 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.8)] bottom-sheet bottom-sheet-peek flex flex-col max-h-[82vh]">
             
             <!-- 바텀시트 핸들러 및 헤더 바 -->
             <div class="p-3 border-b border-zinc-800/80 flex flex-col items-center justify-center cursor-pointer select-none shrink-0" onclick="toggleMobileSheet()">
                 <div class="w-10 h-1.5 bg-zinc-600 rounded-full mb-2"></div>
                 <div class="w-full flex items-center justify-between px-2">
-                    <span class="text-xs font-bold text-gray-300">
-                        지도 내 매물 <strong id="mobileHeaderCount" class="text-carrot font-bold">0</strong>개
+                    <span class="text-xs sm:text-sm font-bold text-gray-200 flex items-center gap-1.5">
+                        <span id="mobileHeaderDot" class="w-2 h-2 rounded-full bg-carrot animate-pulse"></span>
+                        <span id="mobileHeaderLabel">매물 목록</span> <strong id="mobileHeaderCount" class="text-carrot font-bold">0</strong>개
                     </span>
-                    <button type="button" id="mobileSheetToggleText" class="text-xs text-carrot font-semibold flex items-center gap-1">
-                        목록 펼치기 ▲
+                    <button type="button" id="mobileSheetToggleText" class="text-xs text-carrot font-bold flex items-center gap-1 px-2.5 py-1 bg-carrot/10 rounded-full border border-carrot/30">
+                        전체 목록 펼치기 ▲
                     </button>
                 </div>
             </div>
@@ -888,10 +898,14 @@
         function initKakaoMap() {
             const container = document.getElementById('map');
             const isMobile = window.innerWidth < 768;
-            const initialCenter = new kakao.maps.LatLng(36.3215, 127.3442); // 대전 도안동 중심 (수목토·아이파크)
+            // PC: 좌측 사이드바 폭(400px)을 감안한 최적 중심 (36.3215, 127.3442)
+            // 모바일: 하단 바텀시트 가용 공간과 3개 매물(1502동, 101동, 108동)이 화면 중앙에 딱 오도록 정밀 중심 (36.3204, 127.3466)
+            const initialCenter = isMobile 
+                ? new kakao.maps.LatLng(36.3204, 127.3466) 
+                : new kakao.maps.LatLng(36.3215, 127.3442);
             const options = {
                 center: initialCenter,
-                level: isMobile ? 4 : 3 // [요청 반영]: 50m 스케일 값(레벨 3)을 기본 값으로 적용
+                level: 3 // 50m 스케일 (등록된 모든 매물이 한눈에 보이는 최적 기본값)
             };
 
             map = new kakao.maps.Map(container, options);
@@ -1449,6 +1463,10 @@
 
                 // [요청 반영]: 상단 메뉴 항목은 모두 공통 1줄로 온전하게 노출 유지 (숨김 없음)
                 if (sidebarHeader) sidebarHeader.textContent = '분양 단지 목록';
+                const mobHeaderLabel = document.getElementById('mobileHeaderLabel');
+                if (mobHeaderLabel) mobHeaderLabel.textContent = '분양 단지 목록';
+                const mobHeaderDot = document.getElementById('mobileHeaderDot');
+                if (mobHeaderDot) { mobHeaderDot.className = 'w-2 h-2 rounded-full bg-blue-500 animate-pulse'; }
 
                 // 사이드바 / 모바일 리스트 컨테이너 전환
                 if (propCardList) propCardList.classList.add('hidden');
@@ -1495,6 +1513,10 @@
                 if (propFilters) propFilters.classList.remove('hidden');
                 if (sortWrapper) sortWrapper.classList.remove('hidden');
                 if (sidebarHeader) sidebarHeader.textContent = '현재 지도 영역';
+                const mobHeaderLabel = document.getElementById('mobileHeaderLabel');
+                if (mobHeaderLabel) mobHeaderLabel.textContent = '매물 목록';
+                const mobHeaderDot = document.getElementById('mobileHeaderDot');
+                if (mobHeaderDot) { mobHeaderDot.className = 'w-2 h-2 rounded-full bg-carrot animate-pulse'; }
                 const mapBadge = document.getElementById('mapBadge');
                 if (mapBadge) mapBadge.style.removeProperty('display');
 
@@ -1517,9 +1539,11 @@
                 // [요청 반영]: '매물 보기' 클릭 시 지도를 등록된 매물 위치(도안동 중심)로 100% 확실하게 이동
                 if (map) {
                     const isMobile = window.innerWidth < 768;
-                    const propTarget = new kakao.maps.LatLng(36.3215, 127.3442);
+                    const propTarget = isMobile 
+                        ? new kakao.maps.LatLng(36.3204, 127.3466) 
+                        : new kakao.maps.LatLng(36.3215, 127.3442);
                     map.setCenter(propTarget);
-                    map.setLevel(isMobile ? 4 : 3);
+                    map.setLevel(3);
                     map.relayout();
                 }
 
@@ -2118,8 +2142,8 @@
             const sheet = document.getElementById('mobileBottomSheet');
             const toggleText = document.getElementById('mobileSheetToggleText');
             if (!sheet) return;
-            sheet.classList.remove('translate-y-[calc(100%-60px)]');
-            sheet.classList.add('translate-y-0');
+            sheet.classList.remove('bottom-sheet-peek', 'bottom-sheet-collapsed');
+            sheet.classList.add('bottom-sheet-expanded');
             isSheetExpanded = true;
             if (toggleText) toggleText.textContent = '지도보기 ▼';
         }
@@ -2128,8 +2152,8 @@
             const sheet = document.getElementById('mobileBottomSheet');
             const toggleText = document.getElementById('mobileSheetToggleText');
             if (!sheet) return;
-            sheet.classList.remove('translate-y-0');
-            sheet.classList.add('translate-y-[calc(100%-60px)]');
+            sheet.classList.remove('bottom-sheet-expanded');
+            sheet.classList.add('bottom-sheet-peek');
             isSheetExpanded = false;
             if (toggleText) toggleText.textContent = '목록 펼치기 ▲';
         }
@@ -2185,7 +2209,11 @@
         }
         function resetMapCenter() {
             if (map) {
-                map.setCenter(new kakao.maps.LatLng(36.3215, 127.3442));
+                const isMobile = window.innerWidth < 768;
+                const target = isMobile 
+                    ? new kakao.maps.LatLng(36.3204, 127.3466) 
+                    : new kakao.maps.LatLng(36.3215, 127.3442);
+                map.setCenter(target);
                 map.setLevel(3);
                 updateVisibleProperties();
             }

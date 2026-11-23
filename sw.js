@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v41 - PC 등록 선화동 하늘채 썸네일 이미지 모바일 동기화)
-const CACHE_NAME = 'sumokto-chebol-v41';
+// 도안수목토 재벌부동산 PWA Service Worker (v42 - 모바일 매물 목록 상시 노출 및 지도 정중앙 매물 정렬)
+const CACHE_NAME = 'sumokto-chebol-v42';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
