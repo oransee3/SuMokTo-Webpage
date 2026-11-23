@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v42 - 모바일 매물 목록 상시 노출 및 지도 정중앙 매물 정렬)
-const CACHE_NAME = 'sumokto-chebol-v42';
+// 도안수목토 재벌부동산 PWA Service Worker (v43 - 모바일 매물 목록 상시 노출 및 지도 정중앙 매물 정렬 캐시 갱신)
+const CACHE_NAME = 'sumokto-chebol-v43';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
