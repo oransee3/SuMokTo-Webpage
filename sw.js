@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v18 - 분양 정보 상단 도안신도시/알림받기 삭제)
-const CACHE_NAME = 'sumokto-chebol-v18';
+// 도안수목토 재벌부동산 PWA Service Worker (v19 - 분양 정보 하단 푸터 액션 삭제)
+const CACHE_NAME = 'sumokto-chebol-v19';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
