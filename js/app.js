@@ -1837,7 +1837,7 @@ const UI = {
             
             <div class="flex items-center gap-3 sm:gap-4 text-sm text-gray-300 py-2.5 border-y border-dark-border mb-3 flex-wrap">
               ${p.floorType ? `
-                <span class="flex items-center gap-1 font-semibold text-gold">
+                <span class="flex items-center gap-1 font-semibold text-white">
                   <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                   ${p.floorType}
                 </span>
@@ -1950,7 +1950,7 @@ const UI = {
             
             <div class="flex items-center gap-3 sm:gap-4 text-sm text-gray-300 py-3 border-y border-dark-border mb-3 flex-wrap">
               ${p.floorType ? `
-                <span class="flex items-center gap-1 font-semibold text-gold">
+                <span class="flex items-center gap-1 font-semibold text-white">
                   <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                   ${p.floorType}
                 </span>
@@ -2068,7 +2068,7 @@ const UI = {
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-zinc-900/80 p-4 rounded-xl border border-dark-border">
           <div>
             <span class="text-xs text-gray-500 block">평면타입</span>
-            <span class="text-gold font-semibold">${p.floorType || '-'}</span>
+            <span class="text-white font-semibold">${p.floorType || '-'}</span>
           </div>
           <div>
             <span class="text-xs text-gray-500 block">면적</span>
