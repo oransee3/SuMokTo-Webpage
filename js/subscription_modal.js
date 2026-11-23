@@ -54,20 +54,11 @@ function renderSubscriptionList(page) {
     const startIdx = (currentSubPage - 1) * SUB_ITEMS_PER_PAGE;
     const pageItems = validItems.slice(startIdx, startIdx + SUB_ITEMS_PER_PAGE);
 
-    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 최적화 & 관리자 모드 삭제 버튼 연동)
-    const isAdmin = checkAdminMode();
-
+    // 1. 목록 렌더링 (와이드 모달 창 & 4개 온전히 표시 최적화 & 하트 제거 후 ✕ 삭제 버튼 연동)
     container.innerHTML = pageItems.map((item, index) => {
         const badgesHtml = (item.badges || []).map(b => 
             `<span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border ${b.style}">${b.text}</span>`
         ).join('');
-
-        const deleteBtnHtml = isAdmin ? `
-            <button type="button" onclick="event.stopPropagation(); deleteSubscriptionItem('${item.id}');" class="sub-delete-btn px-2 py-0.5 rounded-lg bg-red-950/80 hover:bg-red-800 text-red-300 hover:text-white border border-red-700/60 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-sm" title="해당 분양 정보 삭제">
-                <svg class="w-3 h-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                <span>삭제</span>
-            </button>
-        ` : '';
 
         return `
             <div onclick="window.open('subscription.html', '_blank')" class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/80 transition-colors cursor-pointer group relative">
@@ -79,17 +70,15 @@ function renderSubscriptionList(page) {
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                     <div>
-                        <div class="flex items-start justify-between gap-1">
+                        <div class="flex items-start justify-between gap-2">
                             <h4 class="text-base sm:text-[17px] font-bold text-white group-hover:text-gold transition-colors truncate">
                                 ${item.title}
                             </h4>
-                            <div class="flex items-center gap-1.5 shrink-0">
-                                <!-- 관리자 모드 삭제 버튼 -->
-                                ${deleteBtnHtml}
-                                <button type="button" onclick="event.stopPropagation(); this.classList.toggle('text-red-500');" class="text-gray-500 hover:text-red-500 transition-colors p-1 -mr-1" title="관심 단지 등록">
-                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                                </button>
-                            </div>
+                            <!-- 우측 끝 하트(♥) 모양 삭제하고 그 자리에 ✕ 삭제 버튼 배치 -->
+                            <button type="button" onclick="event.stopPropagation(); deleteSubscriptionItem('${item.id}');" class="sub-delete-btn px-2.5 py-1 rounded-lg bg-red-950/80 hover:bg-red-800 text-red-300 hover:text-white border border-red-700/60 text-xs font-bold transition-all shadow flex items-center gap-1 shrink-0 cursor-pointer" title="해당 분양 정보 삭제">
+                                <span class="text-red-400 font-black text-xs leading-none">✕</span>
+                                <span>삭제</span>
+                            </button>
                         </div>
                         <div class="text-[14px] sm:text-[16px] font-black text-[#58a6ff] tracking-tight mt-0.5">
                             ${item.scale} ${item.scaleSub ? `<span class="text-xs sm:text-[13px] text-gray-400 font-normal ml-1">${item.scaleSub}</span>` : ''}
