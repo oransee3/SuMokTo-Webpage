@@ -1410,39 +1410,57 @@
             adjustOverlayVisibilityByZoom();
         }
 
-        // 5. 현재 지도 영역(bounds) 내 매물 추출 및 좌측 리스트 동기화
+        // 5. 현재 지도 영역(bounds) 내 매물 추출 및 좌측 리스트 동기화 (모든 등록 매물 100% 온전히 노출)
         function updateVisibleProperties() {
             if (!map) return;
             if (currentViewMode === 'SUBSCRIPTION') return; // 분양 정보 보기 모드일 때는 매물 목록 덮어쓰기 방지
             const bounds = map.getBounds();
-            const query = (document.getElementById('mapSearchInput')?.value || '').trim();
 
-            let matched = filteredProperties.filter(p => {
-                const latlng = new kakao.maps.LatLng(p.lat, p.lng);
-                return bounds.contain(latlng);
+            // 지도 화면 내 매물과 화면 밖 매물 구분
+            const inBounds = [];
+            const outBounds = [];
+
+            filteredProperties.forEach(p => {
+                if (p.lat && p.lng) {
+                    const latlng = new kakao.maps.LatLng(p.lat, p.lng);
+                    if (bounds && bounds.contain(latlng)) {
+                        inBounds.push(p);
+                    } else {
+                        outBounds.push(p);
+                    }
+                } else {
+                    outBounds.push(p);
+                }
             });
 
-            // 검색어가 입력되어 있거나, 현재 지도 화면에 매물이 없으나 전체 필터된 매물이 있는 경우:
-            // 계룡시, 세종시 등 타 지역 매물이 목록에서 증발하지 않도록 filteredProperties 전체를 유지
-            if (query || matched.length === 0) {
-                matched = [...filteredProperties];
-            } else if (activePropertyId) {
-                // 사용자가 상세창이나 포커스로 선택한 매물은 화면 밖이라도 목록 상단에 유지
-                const activeP = filteredProperties.find(p => p.id === activePropertyId);
-                if (activeP && !matched.some(p => p.id === activePropertyId)) {
-                    matched.unshift(activeP);
+            // [사용자 요구 100% 반영]:
+            // '지도로 매물 보기' 초기 방문 시 및 상단 필터 조회 시,
+            // 현재 화면 영역 안의 매물을 1순위로 배치하고, 다른 지역의 매물(예: 충남 계룡시 '월세' 매물 등)도
+            // 좌측 매물 등록 목록에서 절대 빠지지 않고 '모든 매물(전체)'이 100% 온전히 노출되도록 보장!
+            visibleProperties = [...inBounds, ...outBounds];
+
+            // 매물 수 뱃지 및 사이드바 헤더 업데이트
+            const totalCount = visibleProperties.length;
+            const inBoundsCount = inBounds.length;
+
+            const sidebarHeaderLabel = document.getElementById('sidebarHeaderLabel');
+            if (sidebarHeaderLabel) {
+                if (outBounds.length > 0 && inBoundsCount > 0) {
+                    sidebarHeaderLabel.textContent = '전체 매물';
+                } else {
+                    sidebarHeaderLabel.textContent = '현재 매물';
                 }
             }
 
-            visibleProperties = matched;
+            document.getElementById('sidebarCount').textContent = totalCount;
+            document.getElementById('mobileHeaderCount').textContent = totalCount;
 
-            // 매물 수 뱃지 업데이트
-            const count = visibleProperties.length;
-            document.getElementById('sidebarCount').textContent = count;
-            document.getElementById('mapCountText').textContent = count;
-            document.getElementById('mobileHeaderCount').textContent = count;
+            // 지도 위 플로팅 뱃지 (지도 화면 내 매물 수 표기)
+            const mapCountTextEl = document.getElementById('mapCountText');
+            if (mapCountTextEl) mapCountTextEl.textContent = inBoundsCount > 0 ? inBoundsCount : totalCount;
+
             const mobileFloatingCountEl = document.getElementById('mobileFloatingCount');
-            if (mobileFloatingCountEl) mobileFloatingCountEl.textContent = count;
+            if (mobileFloatingCountEl) mobileFloatingCountEl.textContent = totalCount;
 
             // 사이드바 및 모바일 목록 렌더링
             renderPropertyList();
@@ -2353,6 +2371,17 @@
                 activeBtn.className = 'filter-deal-btn px-2.5 py-1 text-xs font-semibold rounded-full bg-carrot text-white shadow transition-all';
             }
             applyFilters();
+
+            // 거래유형 선택 시(예: '월세'), 해당 매물이 현재 지도 화면 밖에 있으면 첫 번째 매물 위치로 자동 안내
+            if (type !== 'ALL' && filteredProperties.length > 0) {
+                const first = filteredProperties[0];
+                if (first.lat && first.lng && map) {
+                    const bounds = map.getBounds();
+                    if (!bounds || !bounds.contain(new kakao.maps.LatLng(first.lat, first.lng))) {
+                        focusProperty(first.id, false);
+                    }
+                }
+            }
         }
 
         function resetAllFilters() {
