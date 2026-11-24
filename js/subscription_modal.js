@@ -32,10 +32,9 @@ const DEFAULT_SUBSCRIPTION_DATA = [
 const SUBSCRIPTION_DATA = [];
 try {
     const savedCustomSubs = localStorage.getItem('sumokto_custom_subscriptions');
-    if (savedCustomSubs) {
+    if (savedCustomSubs !== null) {
         const parsed = JSON.parse(savedCustomSubs);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-            // 구버전 임시 이미지 및 기본 URL 보정
+        if (Array.isArray(parsed)) {
             parsed.forEach(item => {
                 if (item.id === 'sub-preset-1' || item.img === 'images/view_2k.jpg' || !item.img) {
                     item.img = 'images/sub_hanulche_thumb.jpg';
@@ -51,18 +50,14 @@ try {
     }
 } catch (e) {}
 
-// 핸드폰 모바일 등 로컬스토리지에 데이터가 없는 기기에서도 PC와 100% 동일한 분양 내용이 나오도록 기본값 적용
-if (SUBSCRIPTION_DATA.length === 0) {
-    SUBSCRIPTION_DATA.push(...DEFAULT_SUBSCRIPTION_DATA);
-}
-
 // data/subscriptions.json 서버 데이터 비동기 동기화 (PC-모바일 실시간 값 공유)
 async function syncServerSubscriptions() {
     try {
         const res = await fetch('data/subscriptions.json?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
             const list = await res.json();
-            if (Array.isArray(list) && list.length > 0) {
+            if (Array.isArray(list)) {
+                // 서버에서 삭제되어 빈 배열([])인 경우도 100% 실시간 모바일 동기화 반영
                 SUBSCRIPTION_DATA.length = 0;
                 SUBSCRIPTION_DATA.push(...list);
                 try {
@@ -87,13 +82,15 @@ function renderSubscriptionList(page) {
     // 분양 정보 데이터가 없거나 내용이 삭제된 경우: 4개 칸의 간격 및 레이아웃을 100% 동일하게 유지하는 빈 슬롯 4개 렌더링
     const validItems = SUBSCRIPTION_DATA.filter(item => item && (item.title || item.img));
     if (validItems.length === 0) {
-        container.innerHTML = [1, 2, 3, 4].map(n => `
-            <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/40 transition-colors group relative items-center" style="min-height: 142px; height: 142px;">
-                <div class="w-[124px] h-[124px] sm:w-[128px] sm:h-[128px] rounded-2xl border border-dashed border-zinc-800/80 bg-zinc-900/40 shrink-0"></div>
-                <div class="flex-1 min-w-0 flex flex-col justify-between py-1 h-[124px] sm:h-[128px]">
-                </div>
+        container.innerHTML = `
+            <div class="py-12 flex flex-col items-center justify-center text-center text-gray-400">
+                <svg class="w-12 h-12 mb-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                <p class="text-sm font-semibold text-gray-300">현재 등록된 분양 정보가 없습니다.</p>
+                <p class="text-xs text-gray-500 mt-1">PC 데스크탑 관계자 모드에서 신규 분양 정보를 등록할 수 있습니다.</p>
             </div>
-        `).join('');
+        `;
 
         container.scrollTop = 0;
 
@@ -313,6 +310,10 @@ function unlockModalScroll() {
 // 관리자(관계자) 모드 감지 및 신규 분양 정보 등록 UI 제어
 // ==========================================
 function checkAdminMode() {
+    // [요청 반영]: 'PC 데스크탑'(화면 너비 768px 이상)에서만 관계자 모드로 분양 정보 추가/편집/삭제 가능
+    const isDesktop = window.innerWidth >= 768;
+    if (!isDesktop) return false;
+
     try {
         if (typeof AuthManager !== 'undefined' && typeof AuthManager.isLoggedIn === 'function') {
             return AuthManager.isLoggedIn();

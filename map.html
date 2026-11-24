@@ -845,18 +845,14 @@
             let list = [];
             try {
                 const stored = localStorage.getItem('sumokto_custom_subscriptions');
-                if (stored) {
+                if (stored !== null) {
                     const parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
+                    if (Array.isArray(parsed)) {
                         list = parsed;
                     }
                 }
             } catch (e) {
                 console.warn('Subscription load error:', e);
-            }
-
-            if (list.length === 0) {
-                list = [...DEFAULT_SUBSCRIPTION_ITEMS];
             }
 
             // '사전접수'와 '분양중' 2가지 상태 분류 규칙 및 등록 데이터 필드 완전 매핑
@@ -902,10 +898,11 @@
                 const res = await fetch('data/subscriptions.json?t=' + Date.now(), { cache: 'no-store' });
                 if (res.ok) {
                     const list = await res.json();
-                    if (Array.isArray(list) && list.length > 0) {
+                    if (Array.isArray(list)) {
                         try {
                             localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(list));
                         } catch (e) {}
+                        cachedSubscriptions = list;
                         if (currentViewMode === 'SUBSCRIPTION') {
                             renderSubscriptionMode();
                         }
