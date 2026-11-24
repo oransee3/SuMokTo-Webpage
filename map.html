@@ -1410,46 +1410,33 @@
             adjustOverlayVisibilityByZoom();
         }
 
-        // 5. 현재 지도 영역(bounds) 내 매물 추출 및 좌측 리스트 동기화 (모든 등록 매물 100% 온전히 노출)
+        // 5. 현재 등록 매물 추출 및 좌측 리스트 최신순 동기화
         function updateVisibleProperties() {
             if (!map) return;
             if (currentViewMode === 'SUBSCRIPTION') return; // 분양 정보 보기 모드일 때는 매물 목록 덮어쓰기 방지
             const bounds = map.getBounds();
 
-            // 지도 화면 내 매물과 화면 밖 매물 구분
-            const inBounds = [];
-            const outBounds = [];
-
-            filteredProperties.forEach(p => {
-                if (p.lat && p.lng) {
-                    const latlng = new kakao.maps.LatLng(p.lat, p.lng);
-                    if (bounds && bounds.contain(latlng)) {
-                        inBounds.push(p);
-                    } else {
-                        outBounds.push(p);
+            // 지도 화면 내 매물 수 계산 (하단 플로팅 뱃지용)
+            let inBoundsCount = 0;
+            if (bounds) {
+                filteredProperties.forEach(p => {
+                    if (p.lat && p.lng && bounds.contain(new kakao.maps.LatLng(p.lat, p.lng))) {
+                        inBoundsCount++;
                     }
-                } else {
-                    outBounds.push(p);
-                }
-            });
+                });
+            }
 
             // [사용자 요구 100% 반영]:
-            // '지도로 매물 보기' 초기 방문 시 및 상단 필터 조회 시,
-            // 현재 화면 영역 안의 매물을 1순위로 배치하고, 다른 지역의 매물(예: 충남 계룡시 '월세' 매물 등)도
-            // 좌측 매물 등록 목록에서 절대 빠지지 않고 '모든 매물(전체)'이 100% 온전히 노출되도록 보장!
-            visibleProperties = [...inBounds, ...outBounds];
+            // 좌측 매물 등록 목록은 최신 등록 순서(filteredProperties)를 훼손하지 않고 그대로 유지하여
+            // 가장 최신에 등록된 신규 매물이 무조건 맨 위에 첫 번째로 위치하도록 보장!
+            visibleProperties = [...filteredProperties];
 
             // 매물 수 뱃지 및 사이드바 헤더 업데이트
             const totalCount = visibleProperties.length;
-            const inBoundsCount = inBounds.length;
 
             const sidebarHeaderLabel = document.getElementById('sidebarHeaderLabel');
             if (sidebarHeaderLabel) {
-                if (outBounds.length > 0 && inBoundsCount > 0) {
-                    sidebarHeaderLabel.textContent = '전체 매물';
-                } else {
-                    sidebarHeaderLabel.textContent = '현재 매물';
-                }
+                sidebarHeaderLabel.textContent = '전체 매물';
             }
 
             document.getElementById('sidebarCount').textContent = totalCount;
@@ -1472,7 +1459,7 @@
             const mobileContainer = document.getElementById('mobilePropertyList');
             const sortVal = document.getElementById('sortSelect').value;
 
-            // 정렬
+            // 정렬 (최신등록순 선택 시 최신 등록 매물이 무조건 맨 위 첫 번째로 배치)
             const sorted = [...visibleProperties].sort((a, b) => {
                 if (sortVal === 'PRICE_ASC') {
                     return (a.priceNumber || parsePriceNumber(a.price)) - (b.priceNumber || parsePriceNumber(b.price));
@@ -1485,7 +1472,13 @@
                     const bArea = parseFloat((b.area || '').replace(/[^0-9.]/g, '')) || 0;
                     return bArea - aArea;
                 }
-                return 0; // 기본 최신등록순
+                // 최신등록순 (LATEST): allProperties 원래 배열의 순서(최신 등록 매물이 index 0) 보장
+                const aIdx = allProperties.findIndex(item => item.id === a.id);
+                const bIdx = allProperties.findIndex(item => item.id === b.id);
+                if (aIdx !== -1 && bIdx !== -1) {
+                    return aIdx - bIdx;
+                }
+                return 0;
             });
 
             if (sorted.length === 0) {
