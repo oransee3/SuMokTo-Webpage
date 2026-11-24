@@ -2231,7 +2231,85 @@
             });
         }
 
-        // 갤러리 이미지 슬라이더 업데이트 (PC + 모바일 동시 동기화)
+        // 매물 미리보기 이미지 스마트 자동 맞춤 계산 함수 (평면도 vs 일반 사진 자동 감지)
+        function applySmartImageFit(imgEl, boxEl, currentImgUrl) {
+            if (!imgEl || !boxEl) return;
+
+            const checkAndFit = () => {
+                const nw = imgEl.naturalWidth || 0;
+                const nh = imgEl.naturalHeight || 0;
+                const urlLower = (currentImgUrl || imgEl.src || '').toLowerCase();
+
+                // 평면도 여부 판별:
+                // 1) URL에 plan, floor, type 키워드 또는 .png 도면 파일
+                // 2) 이미지 가로세로 비율(nw/nh)이 1.35 이하 (도면 규격)
+                const isPlanKeyword = urlLower.includes('plan') || urlLower.includes('floor') || urlLower.includes('type') || urlLower.includes('도면') || urlLower.includes('평면');
+                const isPlanAspect = (nw > 0 && nh > 0 && (nw / nh < 1.35));
+                const isPlan = isPlanKeyword || isPlanAspect;
+
+                if (isPlan) {
+                    // 평면도: 내용이 1픽셀도 잘리지 않고 도면 전체가 한눈에 들어오도록 창에 맞게 자동 계산
+                    imgEl.style.setProperty('object-fit', 'contain', 'important');
+                    imgEl.style.setProperty('background-color', '#ffffff', 'important');
+                    imgEl.style.setProperty('padding', '6px', 'important');
+                    imgEl.style.setProperty('cursor', 'zoom-in', 'important');
+                    imgEl.title = '클릭하여 평면도 크게 보기';
+
+                    boxEl.style.setProperty('background-color', '#ffffff', 'important');
+                    boxEl.style.setProperty('aspect-ratio', '4 / 3', 'important');
+                    boxEl.style.setProperty('border-color', '#e4e4e7', 'important');
+                    boxEl.classList.add('is-floor-plan');
+                } else {
+                    // 일반 실내/외관 사진: 창에 꽉 차도록 cover 및 다크 배경
+                    imgEl.style.setProperty('object-fit', 'cover', 'important');
+                    imgEl.style.setProperty('background-color', 'transparent', 'important');
+                    imgEl.style.setProperty('padding', '0px', 'important');
+                    imgEl.style.setProperty('cursor', 'default', 'important');
+                    imgEl.title = '';
+
+                    boxEl.style.setProperty('background-color', 'rgba(0, 0, 0, 0.6)', 'important');
+                    boxEl.style.setProperty('aspect-ratio', '16 / 10', 'important');
+                    boxEl.style.setProperty('border-color', '#27272a', 'important');
+                    boxEl.classList.remove('is-floor-plan');
+                }
+            };
+
+            if (imgEl.complete && imgEl.naturalWidth > 0) {
+                checkAndFit();
+            } else {
+                imgEl.onload = checkAndFit;
+            }
+        }
+
+        // 평면도 고화질 상세 모달 확대 뷰어
+        function openImageZoomModal(imgUrl) {
+            if (!imgUrl) return;
+            let zoomModal = document.getElementById('imageZoomModal');
+            if (!zoomModal) {
+                zoomModal = document.createElement('div');
+                zoomModal.id = 'imageZoomModal';
+                zoomModal.className = 'fixed inset-0 z-[300] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out select-none';
+                zoomModal.onclick = () => zoomModal.classList.add('hidden');
+                zoomModal.innerHTML = `
+                    <div class="relative max-w-4xl max-h-[92vh] bg-white rounded-2xl overflow-hidden p-2 shadow-2xl flex flex-col items-center" onclick="event.stopPropagation()">
+                        <div class="w-full flex justify-between items-center px-4 py-2 border-b border-gray-200 bg-gray-50">
+                            <span class="text-xs sm:text-sm font-bold text-gray-800 flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-carrot" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                                평면도 고화질 상세 보기
+                            </span>
+                            <button type="button" onclick="document.getElementById('imageZoomModal').classList.add('hidden')" class="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-black flex items-center justify-center text-sm font-black transition-colors">✕</button>
+                        </div>
+                        <img id="zoomModalImg" src="" alt="평면도 확대" class="max-w-full max-h-[82vh] object-contain p-3">
+                    </div>
+                `;
+                document.body.appendChild(zoomModal);
+            }
+            const modalImg = document.getElementById('zoomModalImg');
+            if (modalImg) modalImg.src = imgUrl;
+            zoomModal.classList.remove('hidden');
+        }
+
+        // 갤러리 이미지 슬라이더 업데이트 (PC + 모바일 동시 동기화 및 평면도 자동 계산 맞춤)
         function updateDetailGallery() {
             const currentImg = currentDetailImages[currentDetailImgIdx] || '';
             const counterText = `${currentDetailImgIdx + 1} / ${currentDetailImages.length}`;
@@ -2241,11 +2319,18 @@
 
             // PC 플로팅 상세 패널
             const deskImg = document.getElementById('deskMainImg');
+            const deskBox = document.getElementById('deskGalleryBox');
             const deskCounter = document.getElementById('deskImgCounter');
             const deskPrev = document.getElementById('deskPrevBtn');
             const deskNext = document.getElementById('deskNextBtn');
-            if (deskImg) {
+            if (deskImg && deskBox) {
                 deskImg.src = currentImg || fallbackImg;
+                applySmartImageFit(deskImg, deskBox, currentImg);
+                deskImg.onclick = function() {
+                    const urlLower = (currentImg || deskImg.src || '').toLowerCase();
+                    const isPlan = urlLower.includes('plan') || urlLower.includes('floor') || urlLower.includes('type') || urlLower.includes('도면');
+                    if (isPlan) openImageZoomModal(currentImg || deskImg.src);
+                };
                 deskImg.onerror = function() {
                     this.onerror = function() {
                         this.onerror = null;
@@ -2267,11 +2352,18 @@
 
             // Mobile 바텀시트
             const mobImg = document.getElementById('mobMainImg');
+            const mobBox = document.getElementById('mobGalleryBox');
             const mobCounter = document.getElementById('mobImgCounter');
             const mobPrev = document.getElementById('mobPrevBtn');
             const mobNext = document.getElementById('mobNextBtn');
-            if (mobImg) {
+            if (mobImg && mobBox) {
                 mobImg.src = currentImg || fallbackImg;
+                applySmartImageFit(mobImg, mobBox, currentImg);
+                mobImg.onclick = function() {
+                    const urlLower = (currentImg || mobImg.src || '').toLowerCase();
+                    const isPlan = urlLower.includes('plan') || urlLower.includes('floor') || urlLower.includes('type') || urlLower.includes('도면');
+                    if (isPlan) openImageZoomModal(currentImg || mobImg.src);
+                };
                 mobImg.onerror = function() {
                     this.onerror = function() {
                         this.onerror = null;
