@@ -2337,14 +2337,39 @@ const UI = {
           } catch (e) {}
           finalizeSaveAndSync(lat, lng);
         } else {
-          // 정제 실패 시 원본 검색
+          // 정제 실패 시 원본 검색 및 읍/면/동 3차 검색 시도
           geocoder.addressSearch(cleanAddr, (res2, status2) => {
             if (status2 === kakao.maps.services.Status.OK && res2.length > 0) {
               const lat2 = parseFloat(res2[0].y);
               const lng2 = parseFloat(res2[0].x);
+              try {
+                const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+                cache[locVal] = { lat: lat2, lng: lng2 };
+                cache[cleanAddr] = { lat: lat2, lng: lng2 };
+                localStorage.setItem('sumokto_geo_cache', JSON.stringify(cache));
+              } catch (e) {}
               finalizeSaveAndSync(lat2, lng2);
             } else {
-              finalizeSaveAndSync(null, null);
+              // 읍/면/동 단위 3차 검색
+              const broadMatch = cleanAddr.match(/([가-힣]+[시|군|구]\s+[가-힣]+[읍|면|동])/);
+              if (broadMatch) {
+                geocoder.addressSearch(broadMatch[1], (res3, status3) => {
+                  if (status3 === kakao.maps.services.Status.OK && res3.length > 0) {
+                    const lat3 = parseFloat(res3[0].y);
+                    const lng3 = parseFloat(res3[0].x);
+                    try {
+                      const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+                      cache[locVal] = { lat: lat3, lng: lng3 };
+                      localStorage.setItem('sumokto_geo_cache', JSON.stringify(cache));
+                    } catch (e) {}
+                    finalizeSaveAndSync(lat3, lng3);
+                  } else {
+                    finalizeSaveAndSync(null, null);
+                  }
+                });
+              } else {
+                finalizeSaveAndSync(null, null);
+              }
             }
           });
         }

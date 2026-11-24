@@ -1564,6 +1564,15 @@
                 map.setLevel(3);
                 map.panTo(targetPos);
                 showBlinkingPoint(p.lat, p.lng);
+            } else {
+                resolvePropertyCoordinates(p, function(resolvedP) {
+                    if (resolvedP && resolvedP.lat && resolvedP.lng) {
+                        const targetPos = new kakao.maps.LatLng(resolvedP.lat, resolvedP.lng);
+                        map.setLevel(3);
+                        map.panTo(targetPos);
+                        showBlinkingPoint(resolvedP.lat, resolvedP.lng);
+                    }
+                });
             }
 
             // 당근부동산 스타일: 상세 패널 열기
@@ -2305,6 +2314,15 @@
                 map.setLevel(3);
                 map.panTo(targetPos);
                 showBlinkingPoint(p.lat, p.lng);
+            } else {
+                resolvePropertyCoordinates(p, function(resolvedP) {
+                    if (resolvedP && resolvedP.lat && resolvedP.lng) {
+                        const targetPos = new kakao.maps.LatLng(resolvedP.lat, resolvedP.lng);
+                        map.setLevel(3);
+                        map.panTo(targetPos);
+                        showBlinkingPoint(resolvedP.lat, resolvedP.lng);
+                    }
+                });
             }
         }
 
