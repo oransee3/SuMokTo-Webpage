@@ -823,8 +823,8 @@
                 desc: '트램 2호선 역세권, 중구청 건립 수혜지역',
                 thumbnail: 'images/sub_hanulche_thumb.jpg',
                 img: 'images/sub_hanulche_thumb.jpg',
-                homepageUrl: 'https://www.hanulche.co.kr',
-                youtubeUrl: 'https://youtube.com',
+                homepageUrl: 'https://domus-vision.com',
+                youtubeUrl: 'https://www.youtube.com/watch?v=yDVMokqyod8',
                 lat: 36.3283,
                 lng: 127.4208
             }
@@ -879,13 +879,41 @@
                 if (item.thumbnail === 'images/view_2k.jpg') item.thumbnail = 'images/sub_hanulche_thumb.jpg';
                 if (item.img === 'images/view_2k.jpg') item.img = 'images/sub_hanulche_thumb.jpg';
                 item.img = item.img || item.thumbnail || 'images/sub_hanulche_thumb.jpg';
-                item.homepageUrl = item.homepage || item.homepageUrl || '';
-                item.youtubeUrl = item.youtube || item.youtubeUrl || '';
+
+                // [PC-모바일 실시간 값 공유]: 사용자가 등록한 실제 홈페이지/유튜브 주소 완벽 보장
+                if (item.id === 'sub-preset-1' || (item.title && item.title.includes('하늘채'))) {
+                    if (!item.homepageUrl || item.homepageUrl.includes('hanulche.co.kr')) item.homepageUrl = 'https://domus-vision.com';
+                    if (!item.homepage || item.homepage.includes('hanulche.co.kr')) item.homepage = 'https://domus-vision.com';
+                    if (!item.youtubeUrl || item.youtubeUrl === 'https://youtube.com') item.youtubeUrl = 'https://www.youtube.com/watch?v=yDVMokqyod8';
+                    if (!item.youtube || item.youtube === 'https://youtube.com') item.youtube = 'https://www.youtube.com/watch?v=yDVMokqyod8';
+                } else {
+                    item.homepageUrl = item.homepage || item.homepageUrl || '';
+                    item.youtubeUrl = item.youtube || item.youtubeUrl || '';
+                }
             });
 
             cachedSubscriptions = list;
             return list;
         }
+
+        // 서버 data/subscriptions.json 최신 데이터 동기화 (PC-모바일 실시간 값 공유)
+        async function syncServerSubscriptionsMap() {
+            try {
+                const res = await fetch('data/subscriptions.json?t=' + Date.now(), { cache: 'no-store' });
+                if (res.ok) {
+                    const list = await res.json();
+                    if (Array.isArray(list) && list.length > 0) {
+                        try {
+                            localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(list));
+                        } catch (e) {}
+                        if (currentViewMode === 'SUBSCRIPTION') {
+                            renderSubscriptionMode();
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+        syncServerSubscriptionsMap();
 
         // 필터 상태
         let currentDealType = 'ALL';

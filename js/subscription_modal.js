@@ -16,8 +16,8 @@ const DEFAULT_SUBSCRIPTION_DATA = [
         scaleSub: '',
         specs: '대전광역시 중구 선화동 95-3 일원',
         desc: '“트램 2호선 역세권, 중구청 건립 수혜지역”',
-        homepage: 'https://www.hanulche.co.kr',
-        youtube: 'https://youtube.com',
+        homepage: 'https://domus-vision.com',
+        youtube: 'https://www.youtube.com/watch?v=yDVMokqyod8',
         badges: [
             { text: '분양중', style: 'bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm' }
         ],
@@ -28,18 +28,22 @@ const DEFAULT_SUBSCRIPTION_DATA = [
     }
 ];
 
-// 분양 단지 데이터 (로컬스토리지 우선 연동, 미등록/신규 모바일 환경에서는 기본 분양 정보 자동 표출)
+// 분양 단지 데이터 (서버 및 로컬스토리지 연동, PC·모바일 100% 실시간 공유)
 const SUBSCRIPTION_DATA = [];
 try {
     const savedCustomSubs = localStorage.getItem('sumokto_custom_subscriptions');
     if (savedCustomSubs) {
         const parsed = JSON.parse(savedCustomSubs);
         if (Array.isArray(parsed) && parsed.length > 0) {
-            // 구버전 임시 이미지(view_2k.jpg)가 캐시되어 있으면 실제 선화동 하늘채 조감도 썸네일로 보정
+            // 구버전 임시 이미지 및 기본 URL 보정
             parsed.forEach(item => {
                 if (item.id === 'sub-preset-1' || item.img === 'images/view_2k.jpg' || !item.img) {
                     item.img = 'images/sub_hanulche_thumb.jpg';
                     item.thumbnail = 'images/sub_hanulche_thumb.jpg';
+                }
+                if (item.id === 'sub-preset-1' || (item.title && item.title.includes('하늘채'))) {
+                    if (!item.homepage || item.homepage.includes('hanulche.co.kr')) item.homepage = 'https://domus-vision.com';
+                    if (!item.youtube || item.youtube === 'https://youtube.com') item.youtube = 'https://www.youtube.com/watch?v=yDVMokqyod8';
                 }
             });
             SUBSCRIPTION_DATA.push(...parsed);
@@ -52,19 +56,19 @@ if (SUBSCRIPTION_DATA.length === 0) {
     SUBSCRIPTION_DATA.push(...DEFAULT_SUBSCRIPTION_DATA);
 }
 
-// data/subscriptions.json 서버 데이터 비동기 동기화
+// data/subscriptions.json 서버 데이터 비동기 동기화 (PC-모바일 실시간 값 공유)
 async function syncServerSubscriptions() {
     try {
         const res = await fetch('data/subscriptions.json?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
             const list = await res.json();
             if (Array.isArray(list) && list.length > 0) {
-                const local = localStorage.getItem('sumokto_custom_subscriptions');
-                if (!local || JSON.parse(local).length === 0) {
-                    SUBSCRIPTION_DATA.length = 0;
-                    SUBSCRIPTION_DATA.push(...list);
-                    renderSubscriptionList(currentSubPage || 1);
-                }
+                SUBSCRIPTION_DATA.length = 0;
+                SUBSCRIPTION_DATA.push(...list);
+                try {
+                    localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(SUBSCRIPTION_DATA));
+                } catch (e) {}
+                renderSubscriptionList(currentSubPage || 1);
             }
         }
     } catch (e) {}
@@ -534,6 +538,70 @@ function closeAddSubscriptionModal() {
 // ==========================================
 // 등록된 분양 정보 삭제 함수 (관리자 전용)
 // ==========================================
+// 분양 정보 원격 서버 및 GitHub 실시간 동기화 (PC-모바일 기기간 값 공유)
+async function syncSubscriptionToServer(data) {
+    if (!Array.isArray(data)) return;
+    try {
+        localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(data));
+    } catch(e) {}
+
+    // GitHub API 동기화 (PC-모바일 실시간 값 공유)
+    try {
+        const token = (typeof GitHubSyncManager !== 'undefined' && GitHubSyncManager.getToken()) 
+            ? GitHubSyncManager.getToken() 
+            : (localStorage.getItem('chebol_github_token') || '');
+        const repo = (typeof GitHubSyncManager !== 'undefined' && GitHubSyncManager.REPO) 
+            ? GitHubSyncManager.REPO 
+            : 'oransee3/SuMokTo-Webpage';
+
+        if (token) {
+            const path = 'data/subscriptions.json';
+            const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+            let sha = null;
+            const getRes = await fetch(url, {
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (getRes.ok) {
+                const fData = await getRes.json();
+                sha = fData.sha;
+            }
+            const cleanData = data.map(item => ({
+                id: item.id,
+                title: item.title,
+                tag: item.tag || '',
+                tagBg: item.tagBg || 'bg-carrot',
+                scale: item.scale || '',
+                scaleSub: item.scaleSub || '',
+                specs: item.specs || item.address || '',
+                desc: item.desc || '',
+                homepage: item.homepage || item.homepageUrl || '',
+                youtube: item.youtube || item.youtubeUrl || '',
+                badges: item.badges || [],
+                img: item.img || item.thumbnail || '',
+                thumbnail: item.thumbnail || item.img || '',
+                lat: item.lat || 36.3283,
+                lng: item.lng || 127.4208
+            }));
+            const jsonStr = JSON.stringify(cleanData, null, 2);
+            const contentBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
+            const body = {
+                message: `feat: sync subscriptions data (${new Date().toLocaleString('ko-KR')})`,
+                content: contentBase64,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+            await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            console.log('GitHub subscriptions sync succeeded');
+        }
+    } catch (err) {
+        console.warn('Subscription remote sync error:', err);
+    }
+}
+
 function deleteSubscriptionItem(id) {
     if (!id) return;
     if (!checkAdminMode()) {
@@ -550,9 +618,7 @@ function deleteSubscriptionItem(id) {
     const idx = SUBSCRIPTION_DATA.findIndex(i => i.id === id);
     if (idx !== -1) {
         SUBSCRIPTION_DATA.splice(idx, 1);
-        try {
-            localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(SUBSCRIPTION_DATA));
-        } catch (e) {}
+        syncSubscriptionToServer(SUBSCRIPTION_DATA);
 
         renderSubscriptionList(currentSubPage || 1);
 
@@ -602,9 +668,7 @@ function handleSubscriptionSubmit(e) {
     };
 
     SUBSCRIPTION_DATA.unshift(newItem);
-    try {
-        localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(SUBSCRIPTION_DATA));
-    } catch (err) {}
+    syncSubscriptionToServer(SUBSCRIPTION_DATA);
 
     closeAddSubscriptionModal();
     renderSubscriptionList(1);
