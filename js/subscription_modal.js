@@ -17,7 +17,7 @@ const DEFAULT_SUBSCRIPTION_DATA = [
         specs: '대전광역시 중구 선화동 95-3 일원',
         desc: '“트램 2호선 역세권, 중구청 건립 수혜지역”',
         homepage: 'https://domus-vision.com',
-        youtube: 'https://www.youtube.com/watch?v=yDVMokqyod8',
+        youtube: 'https://www.youtube.com/watch?v=yDVMokqyoD8',
         badges: [
             { text: '분양중', style: 'bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm' }
         ],
@@ -43,7 +43,7 @@ try {
                 }
                 if (item.id === 'sub-preset-1' || (item.title && item.title.includes('하늘채'))) {
                     if (!item.homepage || item.homepage.includes('hanulche.co.kr')) item.homepage = 'https://domus-vision.com';
-                    if (!item.youtube || item.youtube === 'https://youtube.com') item.youtube = 'https://www.youtube.com/watch?v=yDVMokqyod8';
+                    if (!item.youtube || item.youtube === 'https://youtube.com' || item.youtube.includes('yDVMokqyod8')) item.youtube = 'https://www.youtube.com/watch?v=yDVMokqyoD8';
                 }
             });
             SUBSCRIPTION_DATA.push(...parsed);

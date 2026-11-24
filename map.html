@@ -824,7 +824,7 @@
                 thumbnail: 'images/sub_hanulche_thumb.jpg',
                 img: 'images/sub_hanulche_thumb.jpg',
                 homepageUrl: 'https://domus-vision.com',
-                youtubeUrl: 'https://www.youtube.com/watch?v=yDVMokqyod8',
+                youtubeUrl: 'https://www.youtube.com/watch?v=yDVMokqyoD8',
                 lat: 36.3283,
                 lng: 127.4208
             }
@@ -884,8 +884,8 @@
                 if (item.id === 'sub-preset-1' || (item.title && item.title.includes('하늘채'))) {
                     if (!item.homepageUrl || item.homepageUrl.includes('hanulche.co.kr')) item.homepageUrl = 'https://domus-vision.com';
                     if (!item.homepage || item.homepage.includes('hanulche.co.kr')) item.homepage = 'https://domus-vision.com';
-                    if (!item.youtubeUrl || item.youtubeUrl === 'https://youtube.com') item.youtubeUrl = 'https://www.youtube.com/watch?v=yDVMokqyod8';
-                    if (!item.youtube || item.youtube === 'https://youtube.com') item.youtube = 'https://www.youtube.com/watch?v=yDVMokqyod8';
+                    if (!item.youtubeUrl || item.youtubeUrl === 'https://youtube.com' || item.youtubeUrl.includes('yDVMokqyod8')) item.youtubeUrl = 'https://www.youtube.com/watch?v=yDVMokqyoD8';
+                    if (!item.youtube || item.youtube === 'https://youtube.com' || item.youtube.includes('yDVMokqyod8')) item.youtube = 'https://www.youtube.com/watch?v=yDVMokqyoD8';
                 } else {
                     item.homepageUrl = item.homepage || item.homepageUrl || '';
                     item.youtubeUrl = item.youtube || item.youtubeUrl || '';
