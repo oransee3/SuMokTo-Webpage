@@ -552,8 +552,7 @@ function promptGithubTokenManual() {
         : (localStorage.getItem('chebol_github_token') || '');
     
     const input = window.prompt(
-        '🔑 GitHub Personal Access Token(PAT)을 입력해 주세요:
-(토큰을 입력하시면 원격 GitHub 저장소에 실시간 저장되어 모바일과 100% 동기화됩니다)',
+        `🔑 GitHub Personal Access Token(PAT)을 입력해 주세요:\n(토큰을 입력하시면 원격 GitHub 저장소에 실시간 저장되어 모바일과 100% 동기화됩니다)`,
         currentToken || ''
     );
     if (input !== null) {
@@ -603,8 +602,7 @@ async function syncSubscriptionToServer(data, forcePrompt = false) {
         // 토큰이 없거나 강제 입력 요청 시 무조건 입력 창 띄우기
         if (!token || forcePrompt) {
             token = window.prompt(
-                '🚀 GitHub 저장소에 실시간으로 업로드하려면 GitHub Personal Access Token(PAT)을 입력해 주세요:
-(1회만 입력하시면 브라우저에 안전하게 기억되어 다음부터 완전 자동 처리됩니다)',
+                `🚀 GitHub 저장소에 실시간으로 업로드하려면 GitHub Personal Access Token(PAT)을 입력해 주세요:\n(1회만 입력하시면 브라우저에 안전하게 기억되어 다음부터 완전 자동 처리됩니다)`,
                 token || ''
             );
             if (token && token.trim()) {
@@ -621,8 +619,7 @@ async function syncSubscriptionToServer(data, forcePrompt = false) {
 
         if (!token) {
             // 토큰 미입력 시 재확인 창 제공 (원하면 즉시 다시 입력창 띄움)
-            if (confirm('GitHub 토큰이 입력되지 않아 로컬 브라우저에만 임시 보관되었습니다.
-지금 GitHub 토큰을 입력하여 실시간 서버(모바일 공유)에 저장하시겠습니까?')) {
+            if (confirm(`GitHub 토큰이 입력되지 않아 로컬 브라우저에만 임시 보관되었습니다.\n지금 GitHub 토큰을 입력하여 실시간 서버(모바일 공유)에 저장하시겠습니까?`)) {
                 return syncSubscriptionToServer(data, true);
             }
             return;
@@ -638,8 +635,7 @@ async function syncSubscriptionToServer(data, forcePrompt = false) {
         // 토큰이 유효하지 않은 경우 (401 Bad credentials / 403 Forbidden)
         if (getRes.status === 401 || getRes.status === 403) {
             localStorage.removeItem('chebol_github_token');
-            const retryToken = window.prompt('⚠️ 저장된 GitHub 토큰이 만료되었거나 유효하지 않습니다.
-올바른 GitHub Personal Access Token(PAT)을 다시 입력해 주세요:');
+            const retryToken = window.prompt(`⚠️ 저장된 GitHub 토큰이 만료되었거나 유효하지 않습니다.\n올바른 GitHub Personal Access Token(PAT)을 다시 입력해 주세요:`);
             if (retryToken && retryToken.trim()) {
                 token = retryToken.trim();
                 if (typeof GitHubSyncManager !== 'undefined' && typeof GitHubSyncManager.setToken === 'function') {
@@ -702,8 +698,7 @@ async function syncSubscriptionToServer(data, forcePrompt = false) {
             console.warn('GitHub subscriptions sync PUT failed:', putRes.status);
             if (putRes.status === 401 || putRes.status === 403) {
                 localStorage.removeItem('chebol_github_token');
-                if (confirm('GitHub 토큰 권한 문제로 저장이 완료되지 않았습니다.
-토큰을 다시 입력하여 재시도하시겠습니까?')) {
+                if (confirm(`GitHub 토큰 권한 문제로 저장이 완료되지 않았습니다.\n토큰을 다시 입력하여 재시도하시겠습니까?`)) {
                     syncSubscriptionToServer(data, true);
                 }
             }
