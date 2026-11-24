@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v54 - 모바일 분양 썸네일과 문구 내용 높이 완벽 일치 정렬)
-const CACHE_NAME = 'sumokto-chebol-v54';
+// 도안수목토 재벌부동산 PWA Service Worker (v55 - 모바일 분양 썸네일과 문구 내용 높이 1:1 완벽 일치 및 배지 1줄 최적화)
+const CACHE_NAME = 'sumokto-chebol-v55';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -8,7 +8,7 @@ const STATIC_ASSETS = [
   '/images/sub_hanulche_thumb.jpg',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V3',
-  '/js/subscription_modal.js?v=20261124_V20_THUMB_ALIGN',
+  '/js/subscription_modal.js?v=20261124_V21_PERFECT_THUMB',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',

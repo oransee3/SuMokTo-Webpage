@@ -117,9 +117,9 @@ function renderSubscriptionList(page) {
         const tagText = (item.tag || '').trim();
         const isSaleActive = tagText.includes('분양중');
         const statusBadgeHtml = isSaleActive ? `
-            <span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm">분양중</span>
+            <span class="px-2 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border bg-[#2d1200] text-[#ff7a22] border-[#ff7a22]/50 shadow-sm shrink-0">분양중</span>
         ` : `
-            <span class="px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border bg-[#0d2a1f] text-[#3fb950] border-[#238636]/50 shadow-sm">사전접수</span>
+            <span class="px-2 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md border bg-[#0d2a1f] text-[#3fb950] border-[#238636]/50 shadow-sm shrink-0">사전접수</span>
         `;
 
         // 관리자 모드에서만 삭제 버튼 노출 (일반 모드에서는 완전 제거)
@@ -134,7 +134,7 @@ function renderSubscriptionList(page) {
         let linksHtml = '';
         if (item.homepage) {
             linksHtml += `
-                <a href="${item.homepage}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-blue-950/70 hover:bg-blue-900 text-blue-300 hover:text-white border border-blue-700/50 text-[10px] sm:text-[11px] font-bold transition-colors shadow-sm cursor-pointer" title="공식 홈페이지 바로가기">
+                <a href="${item.homepage}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-950/70 hover:bg-blue-900 text-blue-300 hover:text-white border border-blue-700/50 text-[10px] sm:text-[11px] font-bold transition-colors shadow-sm shrink-0 cursor-pointer" title="공식 홈페이지 바로가기">
                     <svg class="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                     <span>홈페이지</span>
                 </a>
@@ -142,30 +142,30 @@ function renderSubscriptionList(page) {
         }
         if (item.youtube) {
             linksHtml += `
-                <a href="${item.youtube}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-red-950/70 hover:bg-red-900 text-red-300 hover:text-white border border-red-700/50 text-[10px] sm:text-[11px] font-bold transition-colors shadow-sm cursor-pointer" title="유튜브 영상 바로가기">
-                    <svg class="w-3 h-3 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <a href="${item.youtube}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-950/70 hover:bg-red-900 text-red-300 hover:text-white border border-red-700/50 text-[10px] sm:text-[11px] font-bold transition-colors shadow-sm shrink-0 cursor-pointer" title="유튜브 영상 바로가기">
+                    <svg class="w-2.5 h-2.5 text-red-500 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                     <span>유튜브</span>
                 </a>
             `;
         }
 
         return `
-            <div class="flex gap-3.5 sm:gap-4.5 py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative items-center" style="min-height: 142px;">
-                <!-- 문구 내용 전체 높이와 수직 정중앙에 완벽하게 일치하는 썸네일 이미지 -->
-                <div class="w-[124px] h-[124px] sm:w-[128px] sm:h-[128px] rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner self-center border border-zinc-800/80">
+            <div class="flex gap-3 sm:gap-4.5 py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative items-center" style="min-height: 136px;">
+                <!-- 문구 내용 전체 높이와 1:1로 완벽하게 일치하는 썸네일 이미지 -->
+                <div class="w-[116px] h-[116px] sm:w-[126px] sm:h-[126px] rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner border border-zinc-800/80">
                     <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='images/preview_complex.jpg'">
                 </div>
-                <!-- h-[124px] 고정 높이를 제거하고 self-center 및 justify-center로 문구 전체 높이와 썸네일 높이를 완벽하게 조화 배치 -->
-                <div class="flex-1 min-w-0 flex flex-col justify-center py-0.5 self-center gap-1 sm:gap-1.5">
+                <!-- 문구 내용 전체 컬럼: 제목, 세대수, 주소, 배지한줄, 설명이 썸네일과 정확히 일치 -->
+                <div class="flex-1 min-w-0 flex flex-col justify-center py-0.5 gap-1 sm:gap-1.5">
                     <div>
                         <div class="flex items-start justify-between gap-2">
-                            <h4 class="text-base sm:text-[17px] font-bold text-white truncate leading-tight">
+                            <h4 class="text-[14.5px] sm:text-[17px] font-bold text-white tracking-tight truncate leading-tight">
                                 ${item.title}
                             </h4>
                             <!-- 관리자 모드 전용 ✕ 삭제 버튼 (일반 모드에서는 빈 문자열로 미노출) -->
                             ${deleteBtnHtml}
                         </div>
-                        <div class="text-[14px] sm:text-[16px] font-black text-[#58a6ff] tracking-tight mt-0.5">
+                        <div class="text-[13.5px] sm:text-[16px] font-black text-[#58a6ff] tracking-tight mt-0.5">
                             ${item.scale} ${item.scaleSub ? `<span class="text-xs sm:text-[13px] text-gray-400 font-normal ml-1">${item.scaleSub}</span>` : ''}
                         </div>
                         <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 truncate">
@@ -173,7 +173,7 @@ function renderSubscriptionList(page) {
                         </p>
                     </div>
                     <div>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
+                        <div class="flex items-center gap-1 sm:gap-1.5 mt-0.5 flex-nowrap overflow-hidden">
                             ${statusBadgeHtml}
                             ${linksHtml}
                         </div>
