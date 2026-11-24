@@ -150,15 +150,16 @@ function renderSubscriptionList(page) {
         }
 
         return `
-            <div class="flex gap-4 sm:gap-4.5 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative items-center" style="min-height: 142px;">
-                <!-- 내용과 동일한 크기(124px ~ 128px)로 확대한 썸네일 이미지 -->
-                <div class="w-[124px] h-[124px] sm:w-[128px] sm:h-[128px] rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner">
+            <div class="flex gap-3.5 sm:gap-4.5 py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-2xl hover:bg-zinc-900/50 transition-colors cursor-default relative items-center" style="min-height: 142px;">
+                <!-- 문구 내용 전체 높이와 수직 정중앙에 완벽하게 일치하는 썸네일 이미지 -->
+                <div class="w-[124px] h-[124px] sm:w-[128px] sm:h-[128px] rounded-2xl overflow-hidden bg-zinc-900 shrink-0 relative shadow-inner self-center border border-zinc-800/80">
                     <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='images/preview_complex.jpg'">
                 </div>
-                <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5 h-[124px] sm:h-[128px]">
+                <!-- h-[124px] 고정 높이를 제거하고 self-center 및 justify-center로 문구 전체 높이와 썸네일 높이를 완벽하게 조화 배치 -->
+                <div class="flex-1 min-w-0 flex flex-col justify-center py-0.5 self-center gap-1 sm:gap-1.5">
                     <div>
                         <div class="flex items-start justify-between gap-2">
-                            <h4 class="text-base sm:text-[17px] font-bold text-white truncate">
+                            <h4 class="text-base sm:text-[17px] font-bold text-white truncate leading-tight">
                                 ${item.title}
                             </h4>
                             <!-- 관리자 모드 전용 ✕ 삭제 버튼 (일반 모드에서는 빈 문자열로 미노출) -->
@@ -172,11 +173,11 @@ function renderSubscriptionList(page) {
                         </p>
                     </div>
                     <div>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                        <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
                             ${statusBadgeHtml}
                             ${linksHtml}
                         </div>
-                        <p class="text-[11px] sm:text-xs text-gray-300 mt-0.5 truncate font-normal">
+                        <p class="text-[11px] sm:text-xs text-gray-300 mt-1 truncate font-normal">
                             ${item.desc}
                         </p>
                     </div>
