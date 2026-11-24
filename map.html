@@ -1553,6 +1553,9 @@
 
                 // 분양 정보 카드 및 파란색 지도 마커 렌더링
                 renderSubscriptionMode();
+                if (typeof syncServerSubscriptionsMap === 'function') {
+                    syncServerSubscriptionsMap();
+                }
 
                 // [요청 반영]: '분양 정보 보기' 클릭 시 지도가 분양 단지 등록 주소 위치로 100% 확실하게 이동
                 const list = getSubscriptionList();

@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v48 - 유튜브 공식 영상 대소문자 고유ID 완벽 보정 및 실시간 공유)
-const CACHE_NAME = 'sumokto-chebol-v48';
+// 도안수목토 재벌부동산 PWA Service Worker (v49 - 분양 정보 GitHub 토큰 실시간 동기화 완벽 보장)
+const CACHE_NAME = 'sumokto-chebol-v49';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -8,7 +8,7 @@ const STATIC_ASSETS = [
   '/images/sub_hanulche_thumb.jpg',
   '/css/style.css?v=20261123_V6_RELEASE',
   '/js/app.js?v=20261124_V2',
-  '/js/subscription_modal.js?v=20261124_V14_YOUTUBE_FIX',
+  '/js/subscription_modal.js?v=20261124_V15_SUB_SYNC_FINAL',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',

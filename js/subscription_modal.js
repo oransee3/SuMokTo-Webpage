@@ -547,12 +547,24 @@ async function syncSubscriptionToServer(data) {
 
     // GitHub API 동기화 (PC-모바일 실시간 값 공유)
     try {
-        const token = (typeof GitHubSyncManager !== 'undefined' && GitHubSyncManager.getToken()) 
+        let token = (typeof GitHubSyncManager !== 'undefined' && GitHubSyncManager.getToken()) 
             ? GitHubSyncManager.getToken() 
             : (localStorage.getItem('chebol_github_token') || '');
         const repo = (typeof GitHubSyncManager !== 'undefined' && GitHubSyncManager.REPO) 
             ? GitHubSyncManager.REPO 
             : 'oransee3/SuMokTo-Webpage';
+
+        if (!token) {
+            token = window.prompt('🚀 GitHub 저장소에 실시간으로 업로드하려면 GitHub Personal Access Token(PAT)을 입력해 주세요:\n(1회만 입력하시면 브라우저에 안전하게 기억되어 다음부터 완전 자동 처리됩니다)');
+            if (token && token.trim()) {
+                token = token.trim();
+                if (typeof GitHubSyncManager !== 'undefined' && typeof GitHubSyncManager.setToken === 'function') {
+                    GitHubSyncManager.setToken(token);
+                } else {
+                    localStorage.setItem('chebol_github_token', token);
+                }
+            }
+        }
 
         if (token) {
             const path = 'data/subscriptions.json';
@@ -590,12 +602,19 @@ async function syncSubscriptionToServer(data) {
                 branch: 'main'
             };
             if (sha) body.sha = sha;
-            await fetch(url, {
+            const putRes = await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-            console.log('GitHub subscriptions sync succeeded');
+            if (putRes.ok) {
+                console.log('GitHub subscriptions sync succeeded');
+                if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+                    UI.showToast('✓ 분양 정보가 GitHub 및 서버에 실시간 저장되었습니다 (모바일 자동 반영).');
+                }
+            } else {
+                console.warn('GitHub subscriptions sync PUT failed:', putRes.status);
+            }
         }
     } catch (err) {
         console.warn('Subscription remote sync error:', err);
@@ -683,6 +702,7 @@ function handleSubscriptionSubmit(e) {
 function openSubscriptionModal() {
     updateSubscriptionAdminUI();
     renderSubscriptionList(currentSubPage || 1);
+    syncServerSubscriptions();
     const m = document.getElementById('subscriptionModal');
     if (m) {
         m.classList.remove('hidden');
