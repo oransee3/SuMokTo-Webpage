@@ -503,13 +503,16 @@ function openAddSubscriptionModal() {
                         </div>
                     </div>
                     <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800 shrink-0">
-                        <button type="button" onclick="promptGithubTokenManual()" class="inline-flex items-center gap-1.5 text-xs text-gold hover:text-white transition-colors py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-gold/40 shadow-sm" title="클릭하여 GitHub Personal Access Token(PAT)을 확인하거나 새 토큰으로 변경합니다">
-                            <span>🔑</span>
-                            <span class="font-semibold">GitHub 토큰 설정/변경</span>
+                        <button type="button" onclick="promptGithubTokenManual()" class="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-gold transition-colors py-1.5 px-2.5 rounded-xl bg-zinc-800/70 hover:bg-zinc-700 border border-zinc-700/60" title="저장된 GitHub Personal Access Token(PAT) 확인 및 변경">
+                            <span>⚙</span>
+                            <span>토큰 변경</span>
                         </button>
                         <div class="flex items-center gap-2">
                             <button type="button" onclick="closeAddSubscriptionModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-bold rounded-xl transition-colors">취소</button>
-                            <button type="submit" class="px-5 py-2 bg-gold hover:bg-gold-dark text-black text-xs font-bold rounded-xl transition-colors shadow">등록 완료</button>
+                            <button type="submit" class="px-5 py-2 bg-gold hover:bg-gold-dark text-black text-xs font-bold rounded-xl transition-colors shadow flex items-center gap-1.5">
+                                <span>🔑</span>
+                                <span>GitHub 토큰으로 저장</span>
+                            </button>
                         </div>
                     </div>
                 </form>
