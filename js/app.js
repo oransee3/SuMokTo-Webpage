@@ -524,13 +524,24 @@ const GitHubSyncManager = {
 // ==========================================
 const PropertyManager = {
   KEY_PROPERTIES: 'chebol_properties_data',
+  KEY_DELETED: 'chebol_deleted_property_ids',
   DATA_VERSION_KEY: 'chebol_properties_version',
-  CURRENT_VERSION: '20261123_v3',
+  CURRENT_VERSION: '20261125_v1',
   properties: [],
+
+  getDeletedIds() {
+    try {
+      const raw = localStorage.getItem(this.KEY_DELETED);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  },
 
   init() {
     const version = localStorage.getItem(this.DATA_VERSION_KEY);
     let stored = localStorage.getItem(this.KEY_PROPERTIES);
+    const deletedIds = this.getDeletedIds();
 
     if (version !== this.CURRENT_VERSION) {
       // 캐시 버전이 변경된 경우 최신 데이터 강제 동기화 플래그 처리
@@ -542,6 +553,10 @@ const PropertyManager = {
     if (stored) {
       try {
         this.properties = JSON.parse(stored);
+        // 삭제된 매물 완벽 배제
+        if (deletedIds.length > 0) {
+          this.properties = this.properties.filter(p => !deletedIds.includes(p.id));
+        }
         // 구버전 캐시 호환: images, mapImageUrl 및 floorType 보정
         this.properties.forEach(p => {
           if (!p.images || !Array.isArray(p.images) || p.images.length === 0) {
@@ -577,6 +592,8 @@ const PropertyManager = {
 
   async fetchRemoteProperties() {
     try {
+      const deletedIds = this.getDeletedIds();
+
       // 1순위: GitHub Raw URL (GitHub 커밋 즉시 0.1초 만에 전 세계 실시간 반영)
       const rawUrl = `https://raw.githubusercontent.com/oransee3/SuMokTo-Webpage/main/data/properties.json?t=${Date.now()}`;
       let res = await fetch(rawUrl, { cache: 'no-store' });
@@ -592,8 +609,13 @@ const PropertyManager = {
 
       if (res.ok) {
         const data = await res.json();
-        const items = Array.isArray(data) ? data : (data.data || []);
+        let items = Array.isArray(data) ? data : (data.data || []);
         if (items && items.length > 0) {
+          // 관계자 모드에서 삭제된 매물 필터링 (다시 부활하지 않도록 영구 방어)
+          if (deletedIds.length > 0) {
+            items = items.filter(p => !deletedIds.includes(p.id));
+          }
+
           items.forEach(p => {
             if (!p.floorType) {
               if (p.title && p.title.includes('1502동')) p.floorType = 'D-Type';
@@ -650,6 +672,15 @@ const PropertyManager = {
     if (!property.id) {
       property.id = 'PROP-' + Date.now().toString().slice(-6);
     }
+    // 신규 등록 시 삭제 목록에서 제거 (혹시 같은 ID일 경우 대비)
+    try {
+      let deletedIds = this.getDeletedIds();
+      if (deletedIds.includes(property.id)) {
+        deletedIds = deletedIds.filter(d => d !== property.id);
+        localStorage.setItem(this.KEY_DELETED, JSON.stringify(deletedIds));
+      }
+    } catch (e) {}
+
     this.properties.unshift(property);
     this.save();
     return property;
@@ -670,6 +701,18 @@ const PropertyManager = {
     if (idx !== -1) {
       this.properties.splice(idx, 1);
       this.save();
+
+      // 삭제된 매물 ID 영구 기록 (새로고침 및 원격 동기화 시 부활 방지)
+      try {
+        const deletedIds = this.getDeletedIds();
+        if (!deletedIds.includes(id)) {
+          deletedIds.push(id);
+          localStorage.setItem(this.KEY_DELETED, JSON.stringify(deletedIds));
+        }
+        // 탭 간 실시간 동기화 트리거 이벤트 발생
+        localStorage.setItem('chebol_properties_last_deleted', JSON.stringify({ id, timestamp: Date.now() }));
+      } catch (e) {}
+
       return true;
     }
     return false;
@@ -2390,9 +2433,14 @@ const UI = {
       this.showToast('매물이 삭제되었습니다.');
       this.renderProperties();
       this.renderFeaturedProperties();
+      this.updateAdminUI();
 
-      // GitHub 동기화
-      GitHubSyncManager.sync(PropertyManager.getAll());
+      // GitHub 및 Vercel 실시간 동기화
+      GitHubSyncManager.sync(PropertyManager.getAll()).then(success => {
+        if (success) {
+          this.showToast('✅ 삭제 상태가 GitHub 저장소에 실시간 반영되었습니다.', 'success');
+        }
+      });
     }
   },
 
@@ -2740,5 +2788,17 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('load', () => {
   if (!window.location.hash || window.location.hash === '#home') {
     window.scrollTo(0, 0);
+  }
+});
+
+// 탭 간 실시간 매물 변경 감지 (삭제/수정/추가 동기화)
+window.addEventListener('storage', (e) => {
+  if (e.key === 'chebol_properties_data' || e.key === 'chebol_properties_last_deleted' || e.key === 'chebol_deleted_property_ids') {
+    PropertyManager.init();
+    if (typeof UI !== 'undefined') {
+      if (UI.renderProperties) UI.renderProperties();
+      if (UI.renderFeaturedProperties) UI.renderFeaturedProperties();
+      if (UI.updateAdminUI) UI.updateAdminUI();
+    }
   }
 });

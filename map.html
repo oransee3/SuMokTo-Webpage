@@ -665,8 +665,29 @@
     <!-- 5. 당근부동산 지도 핵심 스크립트                        -->
     <!-- =================================================== -->
     <script>
-        // 실제 등록 매물 데이터 (기본 3건 - 정확한 동별 건물 좌표 적용)
+        // 실제 등록 매물 데이터 (기본 3건 - 정확한 동별 건물 및 전국 주소 좌표 적용)
         const BACKUP_PROPERTIES = [
+            {
+                id: 'PROP-725042',
+                type: '상가',
+                subType: '상가',
+                dealType: '월세',
+                title: '계룡오피스텔 1층 무권리상가',
+                location: '충청남도 계룡시 엄사면 번영로 12',
+                lat: 36.28828,
+                lng: 127.24377,
+                price: '월세 2,000 / 95만원',
+                priceNumber: 95,
+                floorType: 'None',
+                area: '62.4㎡ (19평형)',
+                floor: '1층 / 5층',
+                tags: '#검증된입지 #장사하기좋은대박자리',
+                description: '📌 계룡시 엄사면 계룡오피스텔 1층 상가\n\n🔥 검증된 입지! 장사하기 좋은 대박 자리!',
+                imageUrl: 'images/preview_complex.jpg',
+                images: ['images/preview_complex.jpg'],
+                mapImageUrl: '',
+                contact: '010-6480-8287'
+            },
             {
                 id: 'PROP-812414',
                 type: '주거',
@@ -715,31 +736,6 @@
                     'images/A-Type-Plan03.png'
                 ],
                 mapImageUrl: 'images/A-Type-Plan03.png',
-                contact: '042-546-4900'
-            },
-            {
-                id: 'PROP-206048',
-                type: '주거',
-                subType: '아파트',
-                dealType: '매매',
-                title: '도안수목토아파트 108동 2104호',
-                location: '대전광역시 서구 도안동',
-                lat: 36.32040,
-                lng: 127.34610,
-                price: '4억 9800만',
-                priceNumber: 49800,
-                floorType: 'C-Type',
-                area: '112㎡ (34평형)',
-                floor: '21층 / 22층',
-                tags: '#남향 #로얄층 #뷰좋은집 #팬트리 #갑천뷰영구조망',
-                description: '* 정남향 C타입으로 따뜻한 햇살이 풍부하게 들어와 밝고 쾌적한 집입니다.\n* 21층 고층 로얄 매물로 시원한 뷰와 우수한 일조권을 자랑합니다.',
-                imageUrl: 'images/preview_complex.jpg',
-                images: [
-                    'images/preview_complex.jpg',
-                    'images/view_2k.jpg',
-                    'images/C-Type-Plan03.png'
-                ],
-                mapImageUrl: 'images/C-Type-Plan03.png',
                 contact: '042-546-4900'
             }
         ];
@@ -1051,22 +1047,43 @@
         async function loadAllProperties() {
             let loaded = [];
 
-            // 1순위: GitHub Raw URL fetch (GitHub 커밋 즉시 실시간 동기화)
+            // 관계자 모드에서 삭제된 매물 ID 목록 (영구 삭제 필터링)
+            let deletedIds = [];
             try {
-                const rawUrl = `https://raw.githubusercontent.com/oransee3/SuMokTo-Webpage/main/data/properties.json?t=${Date.now()}`;
-                const res = await fetch(rawUrl, { cache: 'no-store' });
-                if (res.ok) {
-                    const json = await res.json();
-                    const items = Array.isArray(json) ? json : (json.data || []);
-                    if (items && items.length > 0) {
-                        loaded = items;
+                deletedIds = JSON.parse(localStorage.getItem('chebol_deleted_property_ids') || '[]');
+            } catch (e) {}
+
+            // 1순위: 로컬스토리지에 저장된 최신 매물 데이터 (관계자 수정/삭제 즉시 0초 반영)
+            try {
+                const localData = localStorage.getItem('chebol_properties_data');
+                if (localData) {
+                    const parsed = JSON.parse(localData);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        loaded = parsed.filter(p => !deletedIds.includes(p.id));
                     }
                 }
             } catch (e) {
-                console.warn('GitHub Raw fetch failed:', e);
+                console.warn('LocalStorage load error:', e);
             }
 
-            // 2순위: data/properties.json fetch (서버에 등록된 실제 매물 원본 데이터)
+            // 2순위: GitHub Raw URL fetch (GitHub 커밋 즉시 실시간 동기화)
+            if (loaded.length === 0) {
+                try {
+                    const rawUrl = `https://raw.githubusercontent.com/oransee3/SuMokTo-Webpage/main/data/properties.json?t=${Date.now()}`;
+                    const res = await fetch(rawUrl, { cache: 'no-store' });
+                    if (res.ok) {
+                        const json = await res.json();
+                        const items = Array.isArray(json) ? json : (json.data || []);
+                        if (items && items.length > 0) {
+                            loaded = items.filter(p => !deletedIds.includes(p.id));
+                        }
+                    }
+                } catch (e) {
+                    console.warn('GitHub Raw fetch failed:', e);
+                }
+            }
+
+            // 3순위: data/properties.json fetch (서버에 등록된 실제 매물 원본 데이터)
             if (loaded.length === 0) {
                 try {
                     const res = await fetch('data/properties.json?t=' + Date.now(), { cache: 'no-store' });
@@ -1074,7 +1091,7 @@
                         const json = await res.json();
                         const items = Array.isArray(json) ? json : (json.data || []);
                         if (items && items.length > 0) {
-                            loaded = items;
+                            loaded = items.filter(p => !deletedIds.includes(p.id));
                         }
                     }
                 } catch (e) {
@@ -1082,32 +1099,25 @@
                 }
             }
 
-            // 3순위: LocalStorage (chebol_properties_data 또는 sumokto_properties)
-            if (loaded.length === 0) {
-                try {
-                    const localData = localStorage.getItem('chebol_properties_data') || localStorage.getItem('sumokto_properties');
-                    if (localData) {
-                        const parsed = JSON.parse(localData);
-                        if (Array.isArray(parsed) && parsed.length > 0) {
-                            loaded = parsed;
-                        }
-                    }
-                } catch (e) {
-                    console.warn('LocalStorage load error:', e);
-                }
-            }
-
             // 4순위: 기본 백업 (실제 등록 매물 3건)
             if (loaded.length === 0) {
-                loaded = [...BACKUP_PROPERTIES];
+                loaded = BACKUP_PROPERTIES.filter(p => !deletedIds.includes(p.id));
             }
 
-            // 사용자가 실제로 등록한 매물만 정확히 반영 (가짜 매물 병합 금지)
-            allProperties = loaded;
+            // 사용자가 실제로 등록한 매물만 정확히 반영 (삭제된 매물 배제 보장)
+            allProperties = loaded.filter(p => !deletedIds.includes(p.id));
 
             // 각 매물의 좌표 결정 (동별 정밀 건물 좌표 우선 매핑)
             resolveAllCoordinates(allProperties);
         }
+
+        // 탭 간 실시간 동기화: index.html(관계자 모드)에서 매물 삭제/수정 시 map.html도 즉시 갱신
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'chebol_properties_data' || e.key === 'chebol_properties_last_deleted' || e.key === 'chebol_deleted_property_ids') {
+                console.log('실시간 매물 변경 감지: 지도 및 매물 목록 즉시 갱신');
+                loadAllProperties();
+            }
+        });
 
         // 대한민국 전역 매물 카카오 Geocoder 실시간 좌표 변환 및 캐시 연동
         function resolvePropertyCoordinates(p, callback) {
