@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v49 - 분양 정보 GitHub 토큰 실시간 동기화 완벽 보장)
-const CACHE_NAME = 'sumokto-chebol-v49';
+// 도안수목토 재벌부동산 PWA Service Worker (v50 - 관계자 모드 GitHub 토큰 무조건 보장 및 실시간 동기화)
+const CACHE_NAME = 'sumokto-chebol-v50';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -7,8 +7,8 @@ const STATIC_ASSETS = [
   '/data/subscriptions.json',
   '/images/sub_hanulche_thumb.jpg',
   '/css/style.css?v=20261123_V6_RELEASE',
-  '/js/app.js?v=20261124_V2',
-  '/js/subscription_modal.js?v=20261124_V15_SUB_SYNC_FINAL',
+  '/js/app.js?v=20261124_V3',
+  '/js/subscription_modal.js?v=20261124_V16_TOKEN_PROMPT',
   '/logo01.png',
   '/manifest.json',
   '/icons/icon-192.png',

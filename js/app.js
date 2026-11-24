@@ -504,7 +504,11 @@ const GitHubSyncManager = {
         console.error('GitHub API error:', errData);
         if (errData && errData.message && errData.message.includes('Bad credentials')) {
           localStorage.removeItem(this.KEY_GITHUB_TOKEN);
-          alert('입력된 GitHub 토큰이 유효하지 않습니다. [관계자 모드] 대시보드에서 토큰을 다시 확인해 주세요.');
+          const newToken = window.prompt('⚠️ 입력된 GitHub 토큰이 유효하지 않습니다.\n올바른 GitHub Personal Access Token(PAT)을 다시 입력해 주세요:');
+          if (newToken && newToken.trim()) {
+            this.setToken(newToken.trim());
+            return this.sync(properties);
+          }
         }
         return false;
       }

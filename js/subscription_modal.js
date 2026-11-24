@@ -502,9 +502,15 @@ function openAddSubscriptionModal() {
                             <input type="url" id="subInputYoutube" placeholder="예: https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm focus:border-gold outline-none">
                         </div>
                     </div>
-                    <div class="flex items-center justify-end gap-2 pt-2.5 border-t border-zinc-800 shrink-0">
-                        <button type="button" onclick="closeAddSubscriptionModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-bold rounded-xl transition-colors">취소</button>
-                        <button type="submit" class="px-5 py-2 bg-gold hover:bg-gold-dark text-black text-xs font-bold rounded-xl transition-colors shadow">등록 완료</button>
+                    <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800 shrink-0">
+                        <button type="button" onclick="promptGithubTokenManual()" class="inline-flex items-center gap-1.5 text-xs text-gold hover:text-white transition-colors py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-gold/40 shadow-sm" title="클릭하여 GitHub Personal Access Token(PAT)을 확인하거나 새 토큰으로 변경합니다">
+                            <span>🔑</span>
+                            <span class="font-semibold">GitHub 토큰 설정/변경</span>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="closeAddSubscriptionModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-bold rounded-xl transition-colors">취소</button>
+                            <button type="submit" class="px-5 py-2 bg-gold hover:bg-gold-dark text-black text-xs font-bold rounded-xl transition-colors shadow">등록 완료</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -538,8 +544,48 @@ function closeAddSubscriptionModal() {
 // ==========================================
 // 등록된 분양 정보 삭제 함수 (관리자 전용)
 // ==========================================
+// GitHub 토큰 수동 입력 및 관리 유틸
+// ==========================================
+function promptGithubTokenManual() {
+    const currentToken = (typeof GitHubSyncManager !== 'undefined' && GitHubSyncManager.getToken()) 
+        ? GitHubSyncManager.getToken() 
+        : (localStorage.getItem('chebol_github_token') || '');
+    
+    const input = window.prompt(
+        '🔑 GitHub Personal Access Token(PAT)을 입력해 주세요:
+(토큰을 입력하시면 원격 GitHub 저장소에 실시간 저장되어 모바일과 100% 동기화됩니다)',
+        currentToken || ''
+    );
+    if (input !== null) {
+        const trimmed = input.trim();
+        if (trimmed) {
+            if (typeof GitHubSyncManager !== 'undefined' && typeof GitHubSyncManager.setToken === 'function') {
+                GitHubSyncManager.setToken(trimmed);
+            } else {
+                localStorage.setItem('chebol_github_token', trimmed);
+            }
+            if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+                UI.showToast('✓ GitHub 토큰이 안전하게 저장되었습니다.', 'success');
+            } else {
+                alert('✓ GitHub 토큰이 안전하게 저장되었습니다.');
+            }
+            return trimmed;
+        } else {
+            localStorage.removeItem('chebol_github_token');
+            if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+                UI.showToast('GitHub 토큰이 초기화되었습니다.', 'warning');
+            }
+            return '';
+        }
+    }
+    return currentToken;
+}
+window.promptGithubTokenManual = promptGithubTokenManual;
+
+// ==========================================
 // 분양 정보 원격 서버 및 GitHub 실시간 동기화 (PC-모바일 기기간 값 공유)
-async function syncSubscriptionToServer(data) {
+// ==========================================
+async function syncSubscriptionToServer(data, forcePrompt = false) {
     if (!Array.isArray(data)) return;
     try {
         localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(data));
@@ -554,8 +600,13 @@ async function syncSubscriptionToServer(data) {
             ? GitHubSyncManager.REPO 
             : 'oransee3/SuMokTo-Webpage';
 
-        if (!token) {
-            token = window.prompt('🚀 GitHub 저장소에 실시간으로 업로드하려면 GitHub Personal Access Token(PAT)을 입력해 주세요:\n(1회만 입력하시면 브라우저에 안전하게 기억되어 다음부터 완전 자동 처리됩니다)');
+        // 토큰이 없거나 강제 입력 요청 시 무조건 입력 창 띄우기
+        if (!token || forcePrompt) {
+            token = window.prompt(
+                '🚀 GitHub 저장소에 실시간으로 업로드하려면 GitHub Personal Access Token(PAT)을 입력해 주세요:
+(1회만 입력하시면 브라우저에 안전하게 기억되어 다음부터 완전 자동 처리됩니다)',
+                token || ''
+            );
             if (token && token.trim()) {
                 token = token.trim();
                 if (typeof GitHubSyncManager !== 'undefined' && typeof GitHubSyncManager.setToken === 'function') {
@@ -563,57 +614,98 @@ async function syncSubscriptionToServer(data) {
                 } else {
                     localStorage.setItem('chebol_github_token', token);
                 }
+            } else {
+                token = '';
             }
         }
 
-        if (token) {
-            const path = 'data/subscriptions.json';
-            const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-            let sha = null;
-            const getRes = await fetch(url, {
-                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-            });
-            if (getRes.ok) {
-                const fData = await getRes.json();
-                sha = fData.sha;
+        if (!token) {
+            // 토큰 미입력 시 재확인 창 제공 (원하면 즉시 다시 입력창 띄움)
+            if (confirm('GitHub 토큰이 입력되지 않아 로컬 브라우저에만 임시 보관되었습니다.
+지금 GitHub 토큰을 입력하여 실시간 서버(모바일 공유)에 저장하시겠습니까?')) {
+                return syncSubscriptionToServer(data, true);
             }
-            const cleanData = data.map(item => ({
-                id: item.id,
-                title: item.title,
-                tag: item.tag || '',
-                tagBg: item.tagBg || 'bg-carrot',
-                scale: item.scale || '',
-                scaleSub: item.scaleSub || '',
-                specs: item.specs || item.address || '',
-                desc: item.desc || '',
-                homepage: item.homepage || item.homepageUrl || '',
-                youtube: item.youtube || item.youtubeUrl || '',
-                badges: item.badges || [],
-                img: item.img || item.thumbnail || '',
-                thumbnail: item.thumbnail || item.img || '',
-                lat: item.lat || 36.3283,
-                lng: item.lng || 127.4208
-            }));
-            const jsonStr = JSON.stringify(cleanData, null, 2);
-            const contentBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
-            const body = {
-                message: `feat: sync subscriptions data (${new Date().toLocaleString('ko-KR')})`,
-                content: contentBase64,
-                branch: 'main'
-            };
-            if (sha) body.sha = sha;
-            const putRes = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-            if (putRes.ok) {
-                console.log('GitHub subscriptions sync succeeded');
-                if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
-                    UI.showToast('✓ 분양 정보가 GitHub 및 서버에 실시간 저장되었습니다 (모바일 자동 반영).');
+            return;
+        }
+
+        const path = 'data/subscriptions.json';
+        const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+        let sha = null;
+        let getRes = await fetch(url, {
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+
+        // 토큰이 유효하지 않은 경우 (401 Bad credentials / 403 Forbidden)
+        if (getRes.status === 401 || getRes.status === 403) {
+            localStorage.removeItem('chebol_github_token');
+            const retryToken = window.prompt('⚠️ 저장된 GitHub 토큰이 만료되었거나 유효하지 않습니다.
+올바른 GitHub Personal Access Token(PAT)을 다시 입력해 주세요:');
+            if (retryToken && retryToken.trim()) {
+                token = retryToken.trim();
+                if (typeof GitHubSyncManager !== 'undefined' && typeof GitHubSyncManager.setToken === 'function') {
+                    GitHubSyncManager.setToken(token);
+                } else {
+                    localStorage.setItem('chebol_github_token', token);
                 }
+                getRes = await fetch(url, {
+                    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
             } else {
-                console.warn('GitHub subscriptions sync PUT failed:', putRes.status);
+                return;
+            }
+        }
+
+        if (getRes.ok) {
+            const fData = await getRes.json();
+            sha = fData.sha;
+        }
+
+        const cleanData = data.map(item => ({
+            id: item.id,
+            title: item.title,
+            tag: item.tag || '',
+            tagBg: item.tagBg || 'bg-carrot',
+            scale: item.scale || '',
+            scaleSub: item.scaleSub || '',
+            specs: item.specs || item.address || '',
+            desc: item.desc || '',
+            homepage: item.homepage || item.homepageUrl || '',
+            youtube: item.youtube || item.youtubeUrl || '',
+            badges: item.badges || [],
+            img: item.img || item.thumbnail || '',
+            thumbnail: item.thumbnail || item.img || '',
+            lat: item.lat || 36.3283,
+            lng: item.lng || 127.4208
+        }));
+        const jsonStr = JSON.stringify(cleanData, null, 2);
+        const contentBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
+        const body = {
+            message: `feat: sync subscriptions data (${new Date().toLocaleString('ko-KR')})`,
+            content: contentBase64,
+            branch: 'main'
+        };
+        if (sha) body.sha = sha;
+        const putRes = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (putRes.ok) {
+            console.log('GitHub subscriptions sync succeeded');
+            if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+                UI.showToast('✓ 분양 정보가 GitHub 및 서버에 실시간 저장되었습니다 (모바일 자동 반영).', 'success');
+            } else {
+                alert('✓ 분양 정보가 GitHub 및 서버에 실시간 저장되었습니다 (모바일 자동 반영).');
+            }
+        } else {
+            console.warn('GitHub subscriptions sync PUT failed:', putRes.status);
+            if (putRes.status === 401 || putRes.status === 403) {
+                localStorage.removeItem('chebol_github_token');
+                if (confirm('GitHub 토큰 권한 문제로 저장이 완료되지 않았습니다.
+토큰을 다시 입력하여 재시도하시겠습니까?')) {
+                    syncSubscriptionToServer(data, true);
+                }
             }
         }
     } catch (err) {
