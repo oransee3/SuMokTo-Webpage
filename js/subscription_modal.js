@@ -23,8 +23,8 @@ const DEFAULT_SUBSCRIPTION_DATA = [
         ],
         img: 'images/sub_hanulche_thumb.jpg',
         thumbnail: 'images/sub_hanulche_thumb.jpg',
-        lat: 36.3283,
-        lng: 127.4208
+        lat: 36.33481,
+        lng: 127.41979
     }
 ];
 
@@ -680,8 +680,8 @@ async function syncSubscriptionToServer(data, forcePrompt = false) {
             badges: item.badges || [],
             img: item.img || item.thumbnail || '',
             thumbnail: item.thumbnail || item.img || '',
-            lat: item.lat || 36.3283,
-            lng: item.lng || 127.4208
+            lat: item.lat || (item.title && item.title.includes('하늘채') ? 36.33481 : 36.33481),
+            lng: item.lng || (item.title && item.title.includes('하늘채') ? 127.41979 : 127.41979)
         }));
         const jsonStr = JSON.stringify(cleanData, null, 2);
         const contentBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -780,18 +780,65 @@ function handleSubscriptionSubmit(e) {
         badges: [
             { text: badgeText, style: badgeStyle }
         ],
-        img: img
+        img: img,
+        thumbnail: img,
+        lat: 36.33481,
+        lng: 127.41979
     };
 
-    SUBSCRIPTION_DATA.unshift(newItem);
-    syncSubscriptionToServer(SUBSCRIPTION_DATA);
+    // [신규 분양 등록 자동 Geocoding]: 입력된 분양 주소 정밀 위경도 실시간 추출
+    const proceedSave = (lat, lng) => {
+        if (lat && lng) {
+            newItem.lat = lat;
+            newItem.lng = lng;
+            // 지오코딩 캐시 저장
+            try {
+                const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+                cache[specs] = { lat: lat, lng: lng };
+                localStorage.setItem('sumokto_geo_cache', JSON.stringify(cache));
+            } catch (err) {}
+        }
+        SUBSCRIPTION_DATA.unshift(newItem);
+        syncSubscriptionToServer(SUBSCRIPTION_DATA);
 
-    closeAddSubscriptionModal();
-    renderSubscriptionList(1);
-    if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
-        UI.showToast(`[${title}] 신규 분양 정보가 성공적으로 등록되었습니다.`);
+        closeAddSubscriptionModal();
+        renderSubscriptionList(1);
+        if (typeof UI !== 'undefined' && typeof UI.showToast === 'function') {
+            UI.showToast(`[${title}] 신규 분양 정보가 성공적으로 등록되었습니다.`);
+        } else {
+            console.log(`[${title}] 신규 분양 정보 등록 완료`);
+        }
+    };
+
+    // 1. 카카오 Geocoder를 통한 실시간 주소 변환
+    const cleanAddr = specs.replace(/\(.*?\)/g, '').replace(/일원.*$/g, '').trim();
+    if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.services && kakao.maps.services.Geocoder) {
+        const geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(cleanAddr, function(result, status) {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                proceedSave(parseFloat(result[0].y), parseFloat(result[0].x));
+            } else {
+                try {
+                    const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+                    if (cache[specs] || cache[cleanAddr]) {
+                        const hit = cache[specs] || cache[cleanAddr];
+                        proceedSave(hit.lat, hit.lng);
+                        return;
+                    }
+                } catch (e) {}
+                proceedSave(36.33481, 127.41979);
+            }
+        });
     } else {
-        console.log(`[${title}] 신규 분양 정보 등록 완료`);
+        try {
+            const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+            if (cache[specs] || cache[cleanAddr]) {
+                const hit = cache[specs] || cache[cleanAddr];
+                proceedSave(hit.lat, hit.lng);
+                return;
+            }
+        } catch (e) {}
+        proceedSave(36.33481, 127.41979);
     }
 }
 

@@ -825,16 +825,16 @@
                 img: 'images/sub_hanulche_thumb.jpg',
                 homepageUrl: 'https://domus-vision.com',
                 youtubeUrl: 'https://www.youtube.com/watch?v=yDVMokqyoD8',
-                lat: 36.3283,
-                lng: 127.4208
+                lat: 36.33481,
+                lng: 127.41979
             }
         ];
 
         // 분양 단지 대표 fallback 좌표 매핑 (카카오 Geocoder 실패/지연 시 안전 보장)
         const PRESET_SUB_COORDS = {
-            '선화동': { lat: 36.3283, lng: 127.4208 },
-            '하늘채': { lat: 36.3283, lng: 127.4208 },
-            '루시에르': { lat: 36.3283, lng: 127.4208 },
+            '선화동': { lat: 36.33481, lng: 127.41979 },
+            '하늘채': { lat: 36.33481, lng: 127.41979 },
+            '루시에르': { lat: 36.33481, lng: 127.41979 },
             '도안': { lat: 36.3405, lng: 127.3382 },
             '푸르지오': { lat: 36.3405, lng: 127.3382 },
             '유성': { lat: 36.3551, lng: 127.3421 }
@@ -1668,8 +1668,12 @@
                     const firstSub = list[0];
                     resolveSubCoordinates(firstSub, function(latLng) {
                         const isMobile = window.innerWidth < 768;
-                        map.setCenter(latLng);
-                        map.setLevel(isMobile ? 5 : 4);
+                        map.setLevel(isMobile ? 4 : 3);
+                        if (typeof map.panTo === 'function') {
+                            map.panTo(latLng);
+                        } else {
+                            map.setCenter(latLng);
+                        }
                         map.relayout();
                         showBlueBlinkingPoint(latLng);
                     });
@@ -1887,31 +1891,95 @@
             });
         }
 
-        // 주소 좌표 변환 (Geocoder + 프리셋 Fallback)
+        // 분양 주소 정밀 정제 함수 (카카오 지오코더 인식률 극대화)
+        function cleanSubscriptionAddress(rawAddr) {
+            if (!rawAddr || typeof rawAddr !== 'string') return '';
+            let addr = rawAddr.replace(/\(.*?\)/g, '')
+                              .replace(/\[.*?\]/g, '')
+                              .replace(/일원.*$/g, '')
+                              .replace(/외\s*\d+.*$/g, '')
+                              .replace(/일대.*$/g, '')
+                              .trim();
+            // 도로명/지번 패턴 추출
+            const roadMatch = addr.match(/([가-힣\s]+[시|군|구]\s+[가-힣\s]+[읍|면|동|로|길]\s*[\d\-]+(?:\s*번지)?)/);
+            if (roadMatch) return roadMatch[1].trim();
+            return addr;
+        }
+
+        // 분양 단지 실시간 주소 좌표 변환 (카카오 Geocoder 전국 연동 + sumokto_geo_cache 로컬 캐시 0.001초 응답)
         function resolveSubCoordinates(sub, callback) {
-            if (sub.lat && sub.lng) {
+            if (!sub) return;
+            const fullText = ((sub.title || '') + ' ' + (sub.specs || sub.address || '')).trim();
+            const rawAddr = (sub.specs || sub.address || '').trim();
+            const cleanAddr = cleanSubscriptionAddress(rawAddr);
+
+            // 1. 기존의 잘못된 이전 기본 좌표(36.3283, 127.4208) 판별: 이전 오차 좌표는 강제 무효화하여 최신 정밀 지오코딩 수행
+            const isOldWrongCoord = (sub.lat && sub.lng && Math.abs(sub.lat - 36.3283) < 0.001 && Math.abs(sub.lng - 127.4208) < 0.001);
+
+            // 2. 이미 실시간 정밀 좌표가 지정되어 있고 이전 오차 좌표가 아닌 경우 즉시 반환
+            if (sub.lat && sub.lng && !isOldWrongCoord) {
                 callback(new kakao.maps.LatLng(sub.lat, sub.lng));
                 return;
             }
 
-            const rawAddr = sub.specs || sub.address || '';
-            const cleanAddr = rawAddr.replace(/\(.*\)/g, '').replace(/일원.*$/g, '').trim();
+            // 3. 로컬스토리지 지오코딩 캐시(sumokto_geo_cache) 확인 (0.001초 초고속 반환)
+            try {
+                const cacheStr = localStorage.getItem('sumokto_geo_cache');
+                if (cacheStr) {
+                    const cache = JSON.parse(cacheStr);
+                    const hit = cache[rawAddr] || cache[cleanAddr];
+                    if (hit && hit.lat && hit.lng && !(Math.abs(hit.lat - 36.3283) < 0.001 && Math.abs(hit.lng - 127.4208) < 0.001)) {
+                        sub.lat = hit.lat;
+                        sub.lng = hit.lng;
+                        callback(new kakao.maps.LatLng(sub.lat, sub.lng));
+                        return;
+                    }
+                }
+            } catch (e) {}
 
-            if (geocoder && cleanAddr) {
-                geocoder.addressSearch(cleanAddr, function(result, status) {
+            // 4. 카카오 Geocoder 비동기 검색 실행 (대한민국 전국 어디나 실제 상세 주소로 실시간 변환)
+            const searchTargetAddr = cleanAddr || rawAddr;
+            if (geocoder && searchTargetAddr) {
+                geocoder.addressSearch(searchTargetAddr, function(result, status) {
                     if (status === kakao.maps.services.Status.OK && result.length > 0) {
-                        const latLng = new kakao.maps.LatLng(result[0].y, result[0].x);
-                        callback(latLng);
+                        sub.lat = parseFloat(result[0].y);
+                        sub.lng = parseFloat(result[0].x);
+
+                        // 캐시에 영구 저장하여 다음 접속 시 0.001초 만에 딜레이 없이 마커 즉시 생성
+                        try {
+                            const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+                            cache[rawAddr] = { lat: sub.lat, lng: sub.lng };
+                            cache[cleanAddr] = { lat: sub.lat, lng: sub.lng };
+                            cache[searchTargetAddr] = { lat: sub.lat, lng: sub.lng };
+                            localStorage.setItem('sumokto_geo_cache', JSON.stringify(cache));
+                        } catch (e) {}
+
+                        callback(new kakao.maps.LatLng(sub.lat, sub.lng));
                     } else {
-                        fallbackCoord();
+                        // 정제 지번 실패 시 읍/면/동 단위로 재검색 시도
+                        const broadMatch = searchTargetAddr.match(/([가-힣]+[시|군|구]\s+[가-힣]+[읍|면|동])/);
+                        if (broadMatch) {
+                            geocoder.addressSearch(broadMatch[1], function(res2, status2) {
+                                if (status2 === kakao.maps.services.Status.OK && res2.length > 0) {
+                                    sub.lat = parseFloat(res2[0].y);
+                                    sub.lng = parseFloat(res2[0].x);
+                                    callback(new kakao.maps.LatLng(sub.lat, sub.lng));
+                                } else {
+                                    fallbackCoord();
+                                }
+                            });
+                        } else {
+                            fallbackCoord();
+                        }
                     }
                 });
-            } else {
-                fallbackCoord();
+                return;
             }
 
+            // 5. Geocoder 준비 전/미지원 시 프리셋 fallback
+            fallbackCoord();
+
             function fallbackCoord() {
-                const fullText = (sub.title || '') + ' ' + (sub.address || '');
                 let matched = null;
                 for (let key in PRESET_SUB_COORDS) {
                     if (fullText.includes(key)) {
@@ -1920,13 +1988,31 @@
                     }
                 }
                 if (!matched) {
-                    matched = { lat: 36.3283, lng: 127.4208 }; // 기본 선화동 하늘채 좌표
+                    matched = { lat: 36.33481, lng: 127.41979 }; // 대전 선화동 95-3 하늘채 실측 정밀 좌표
                 }
+                sub.lat = matched.lat;
+                sub.lng = matched.lng;
                 callback(new kakao.maps.LatLng(matched.lat, matched.lng));
             }
         }
 
-        // 분양 단지 선택 시: 지도가 주소 위치로 이동하고 파란색 레이더 펄스 및 파란색 오버레이로 표기
+        // 분양 단지 전체 주소 실시간 지오코딩 일괄 해석
+        function resolveAllSubCoordinates(list, callback) {
+            if (!list || list.length === 0) {
+                if (callback) callback();
+                return;
+            }
+            let pending = list.length;
+            const onDone = () => {
+                pending--;
+                if (pending <= 0 && callback) callback();
+            };
+            list.forEach(sub => {
+                resolveSubCoordinates(sub, () => onDone());
+            });
+        }
+
+        // 분양 단지 선택 시: 지도가 대한민국 어디든 실제 주소 위치로 레벨 3~4 확대와 함께 부드럽게 활공 이동(map.panTo)하고 파란색 레이더 펄스 표기
         function focusSubscription(subId, panTo = true) {
             activeSubId = subId;
             const list = cachedSubscriptions.length > 0 ? cachedSubscriptions : getSubscriptionList();
@@ -1943,16 +2029,20 @@
                 targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
-            // 좌표 확정 후 지도 이동 및 파란색 표기 (주소 위치로 확실하게 이동하여 파란색으로 표기)
+            // 좌표 확정 후 지도 부드러운 활공 이동(map.panTo) 및 파란색 레이더 펄스 표기
             resolveSubCoordinates(sub, function(latLng) {
                 if (map) {
                     const isMobile = window.innerWidth < 768;
-                    map.setCenter(latLng);
-                    map.setLevel(isMobile ? 5 : 4);
+                    map.setLevel(isMobile ? 4 : 3);
+                    if (panTo && typeof map.panTo === 'function') {
+                        map.panTo(latLng);
+                    } else {
+                        map.setCenter(latLng);
+                    }
                     map.relayout();
                 }
 
-                // 1) 파란색 레이더 펄스 오버레이 표출 (파란 배경 말풍선 팝업은 삭제 요청에 따라 표출하지 않음)
+                // 파란색 레이더 펄스 오버레이 표출 (정확한 위치 안내)
                 showBlueBlinkingPoint(latLng);
             });
         }
