@@ -1,5 +1,5 @@
-// 도안수목토 재벌부동산 PWA Service Worker (v45 - 모바일 상단 메뉴 정리 및 지도 아래 플로팅 버튼 완벽 배치)
-const CACHE_NAME = 'sumokto-chebol-v45';
+// 도안수목토 재벌부동산 PWA Service Worker (v46 - 분양 정보 보기 모드 전환 및 지도 위치 이동 버그 완벽 수정)
+const CACHE_NAME = 'sumokto-chebol-v46';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
