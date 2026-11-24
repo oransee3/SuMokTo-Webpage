@@ -527,7 +527,7 @@ const PropertyManager = {
   KEY_DELETED: 'chebol_deleted_property_ids',
   KEY_MODIFIED: 'chebol_modified_properties',
   DATA_VERSION_KEY: 'chebol_properties_version',
-  CURRENT_VERSION: '20261125_v2',
+  CURRENT_VERSION: '20261125_v3',
   properties: [],
 
   getDeletedIds() {
@@ -2498,31 +2498,102 @@ const UI = {
     this.showToast(`'${targetPropertyTitle}' 문의 양식으로 이동합니다.`);
   },
 
-  // 고객 상담 등록 처리
-  handleCustomerFormSubmit() {
-    const name = document.getElementById('customerName').value.trim();
-    const phone = document.getElementById('customerPhone').value.trim();
-    const category = document.getElementById('customerCategory').value;
-    const targetArea = document.getElementById('customerTarget').value.trim();
-    const budget = document.getElementById('customerBudget').value.trim();
-    const message = document.getElementById('customerMessage').value.trim();
+  // 고객 상담 등록 처리 (카카오톡 실시간 알림 연동)
+  async handleCustomerFormSubmit() {
+    const nameInput = document.getElementById('customerName');
+    const phoneInput = document.getElementById('customerPhone');
+    const categoryInput = document.getElementById('customerCategory');
+    const targetAreaInput = document.getElementById('customerTarget');
+    const budgetInput = document.getElementById('customerBudget');
+    const messageInput = document.getElementById('customerMessage');
+    const privacyCheck = document.getElementById('privacy');
+    const submitBtn = document.getElementById('customerSubmitBtn');
 
-    const lead = CustomerManager.saveLead({
-      name, phone, category, targetArea, budget, message
-    });
+    const name = nameInput ? nameInput.value.trim() : '';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const category = categoryInput ? categoryInput.value : '';
+    const targetArea = targetAreaInput ? targetAreaInput.value.trim() : '';
+    const budget = budgetInput ? budgetInput.value.trim() : '';
+    const message = messageInput ? messageInput.value.trim() : '';
 
-    // 폼 초기화
-    document.getElementById('customerRegisterForm').reset();
-
-    const kakaoKey = CustomerManager.getKakaoKey();
-    let alertMsg = `고객 등록이 완료되었습니다! 전문 공인중개사가 빠른 시일 내에 연락드리겠습니다.`;
-    if (kakaoKey) {
-      alertMsg += ` (카카오 알림 연동 완료)`;
-    } else {
-      alertMsg += ` (차후 카카오 API 연동 지원)`;
+    if (!name || !phone) {
+      this.showToast('고객 성함과 연락처는 필수 입력 항목입니다.', 'error');
+      return;
     }
 
-    this.showToast(alertMsg);
+    if (privacyCheck && !privacyCheck.checked) {
+      this.showToast('개인정보 수집 및 상담 연락 이용 약관에 동의해 주세요.', 'error');
+      return;
+    }
+
+    // 1. 로컬 스토리지에 고객 상담 내역 안전 보존 (오프라인/에러 시에도 고객 유실 100% 방지)
+    try {
+      CustomerManager.saveLead({
+        name, phone, category, targetArea, budget, message
+      });
+    } catch (e) {
+      console.warn('CustomerManager lead save error:', e);
+    }
+
+    // 2. 제출 버튼 로딩 스피너 및 비활성화 상태 적용
+    const originalBtnText = submitBtn ? submitBtn.innerHTML : '고객 상담 등록하기';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <span class="inline-flex items-center gap-2">
+          <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          카카오톡 실시간 알림 전송 중...
+        </span>
+      `;
+    }
+
+    try {
+      // 3. Vercel Serverless Function (/api/send-kakao) 호출
+      const res = await fetch('/api/send-kakao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          phone,
+          type: category,
+          complex: targetArea,
+          budget,
+          details: message
+        })
+      });
+
+      const resData = await res.json().catch(() => ({}));
+
+      if (res.ok && resData.success) {
+        // 성공 시 완료 안내 및 폼 리셋
+        this.showToast('✅ 상담 신청이 완료되었습니다! 담당자 카카오톡으로 실시간 알림이 발송되었습니다.', 'success');
+        document.getElementById('customerRegisterForm')?.reset();
+      } else {
+        // 카카오 API 설정 미완료(NOT_CONFIGURED) 또는 기타 전송 실패 시
+        console.warn('Kakao notification fallback:', resData);
+        if (resData.code === 'NOT_CONFIGURED') {
+          this.showToast('고객 상담이 정상 접수되었습니다! (카카오 알림 토큰 설정 대기 중)', 'info');
+        } else {
+          this.showToast('고객 상담이 접수되었습니다. 유선 상담(042-546-4900)으로 문의 주시면 더욱 신속하게 상담 가능합니다.', 'info');
+        }
+        document.getElementById('customerRegisterForm')?.reset();
+      }
+    } catch (err) {
+      console.error('Send kakao fetch exception:', err);
+      this.showToast('상담 내용이 안전하게 접수되었습니다. 신속한 상담은 042-546-4900으로 문의해 주세요.', 'info');
+      document.getElementById('customerRegisterForm')?.reset();
+    } finally {
+      // 4. 버튼 상태 복구
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    }
   },
 
   // 관계자 모달: 계정 목록 렌더링
