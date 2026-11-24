@@ -810,35 +810,51 @@ function handleSubscriptionSubmit(e) {
         }
     };
 
-    // 1. 카카오 Geocoder를 통한 실시간 주소 변환
-    const cleanAddr = specs.replace(/\(.*?\)/g, '').replace(/일원.*$/g, '').trim();
-    if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.services && kakao.maps.services.Geocoder) {
-        const geocoder = new kakao.maps.services.Geocoder();
-        geocoder.addressSearch(cleanAddr, function(result, status) {
-            if (status === kakao.maps.services.Status.OK && result.length > 0) {
-                proceedSave(parseFloat(result[0].y), parseFloat(result[0].x));
-            } else {
-                try {
-                    const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
-                    if (cache[specs] || cache[cleanAddr]) {
-                        const hit = cache[specs] || cache[cleanAddr];
-                        proceedSave(hit.lat, hit.lng);
-                        return;
-                    }
-                } catch (e) {}
-                proceedSave(36.33481, 127.41979);
-            }
-        });
-    } else {
+    // 1. 주소 정제 및 카카오 Geocoder 실시간 비동기 변환 (대한민국 전국 어디나 자동 지원)
+    let cleanAddr = specs.replace(/\(.*?\)/g, '')
+                         .replace(/\[.*?\]/g, '')
+                         .replace(/일원.*$/g, '')
+                         .replace(/외\s*\d+.*$/g, '')
+                         .replace(/일대.*$/g, '')
+                         .trim();
+    const roadMatch = cleanAddr.match(/([가-힣\s]+[시|군|구]\s+[가-힣\s]+[읍|면|동|로|길]\s*[\d\-]+(?:\s*번지)?)/);
+    const searchTarget = roadMatch ? roadMatch[1].trim() : (cleanAddr || specs);
+
+    const fallbackSave = () => {
         try {
             const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
-            if (cache[specs] || cache[cleanAddr]) {
-                const hit = cache[specs] || cache[cleanAddr];
+            const hit = cache[specs] || cache[cleanAddr] || cache[searchTarget];
+            if (hit && hit.lat && hit.lng) {
                 proceedSave(hit.lat, hit.lng);
                 return;
             }
         } catch (e) {}
         proceedSave(36.33481, 127.41979);
+    };
+
+    if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.services && kakao.maps.services.Geocoder) {
+        const geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(searchTarget, function(result, status) {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                proceedSave(parseFloat(result[0].y), parseFloat(result[0].x));
+            } else {
+                // 2차: 읍/면/동 단위로 재검색
+                const broadMatch = searchTarget.match(/([가-힣]+[시|군|구]\s+[가-힣]+[읍|면|동])/);
+                if (broadMatch) {
+                    geocoder.addressSearch(broadMatch[1], function(res2, status2) {
+                        if (status2 === kakao.maps.services.Status.OK && res2.length > 0) {
+                            proceedSave(parseFloat(res2[0].y), parseFloat(res2[0].x));
+                        } else {
+                            fallbackSave();
+                        }
+                    });
+                } else {
+                    fallbackSave();
+                }
+            }
+        });
+    } else {
+        fallbackSave();
     }
 }
 

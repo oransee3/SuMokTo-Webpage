@@ -1954,6 +1954,20 @@
                             localStorage.setItem('sumokto_geo_cache', JSON.stringify(cache));
                         } catch (e) {}
 
+                        // 로컬스토리지의 커스텀 분양 정보 객체에도 실시간 정밀 좌표 반영 보존
+                        try {
+                            const rawSubs = localStorage.getItem('sumokto_custom_subscriptions');
+                            if (rawSubs) {
+                                const subList = JSON.parse(rawSubs);
+                                const target = subList.find(s => s.id === sub.id || s.title === sub.title);
+                                if (target && (!target.lat || isOldWrongCoord)) {
+                                    target.lat = sub.lat;
+                                    target.lng = sub.lng;
+                                    localStorage.setItem('sumokto_custom_subscriptions', JSON.stringify(subList));
+                                }
+                            }
+                        } catch (e) {}
+
                         callback(new kakao.maps.LatLng(sub.lat, sub.lng));
                     } else {
                         // 정제 지번 실패 시 읍/면/동 단위로 재검색 시도
