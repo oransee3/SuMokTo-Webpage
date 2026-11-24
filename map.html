@@ -1053,6 +1053,12 @@
                 deletedIds = JSON.parse(localStorage.getItem('chebol_deleted_property_ids') || '[]');
             } catch (e) {}
 
+            // 관계자 모드에서 수정한 매물 데이터(전화번호 등) 보관소
+            let modifiedMap = {};
+            try {
+                modifiedMap = JSON.parse(localStorage.getItem('chebol_modified_properties') || '{}');
+            } catch (e) {}
+
             // 1순위: 로컬스토리지에 저장된 최신 매물 데이터 (관계자 수정/삭제 즉시 0초 반영)
             try {
                 const localData = localStorage.getItem('chebol_properties_data');
@@ -1104,8 +1110,13 @@
                 loaded = BACKUP_PROPERTIES.filter(p => !deletedIds.includes(p.id));
             }
 
-            // 사용자가 실제로 등록한 매물만 정확히 반영 (삭제된 매물 배제 보장)
-            allProperties = loaded.filter(p => !deletedIds.includes(p.id));
+            // 사용자가 실제로 등록한 매물만 정확히 반영 (삭제된 매물 배제 & 사용자 최신 수정사항 우선 병합)
+            allProperties = loaded.filter(p => !deletedIds.includes(p.id)).map(p => {
+                if (modifiedMap[p.id]) {
+                    return { ...p, ...modifiedMap[p.id] };
+                }
+                return p;
+            });
 
             // 각 매물의 좌표 결정 (동별 정밀 건물 좌표 우선 매핑)
             resolveAllCoordinates(allProperties);
@@ -1113,7 +1124,7 @@
 
         // 탭 간 실시간 동기화: index.html(관계자 모드)에서 매물 삭제/수정 시 map.html도 즉시 갱신
         window.addEventListener('storage', function(e) {
-            if (e.key === 'chebol_properties_data' || e.key === 'chebol_properties_last_deleted' || e.key === 'chebol_deleted_property_ids') {
+            if (e.key === 'chebol_properties_data' || e.key === 'chebol_properties_last_deleted' || e.key === 'chebol_deleted_property_ids' || e.key === 'chebol_properties_last_updated' || e.key === 'chebol_modified_properties') {
                 console.log('실시간 매물 변경 감지: 지도 및 매물 목록 즉시 갱신');
                 loadAllProperties();
             }

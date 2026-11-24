@@ -525,8 +525,9 @@ const GitHubSyncManager = {
 const PropertyManager = {
   KEY_PROPERTIES: 'chebol_properties_data',
   KEY_DELETED: 'chebol_deleted_property_ids',
+  KEY_MODIFIED: 'chebol_modified_properties',
   DATA_VERSION_KEY: 'chebol_properties_version',
-  CURRENT_VERSION: '20261125_v1',
+  CURRENT_VERSION: '20261125_v2',
   properties: [],
 
   getDeletedIds() {
@@ -538,10 +539,20 @@ const PropertyManager = {
     }
   },
 
+  getModifiedMap() {
+    try {
+      const raw = localStorage.getItem(this.KEY_MODIFIED);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  },
+
   init() {
     const version = localStorage.getItem(this.DATA_VERSION_KEY);
     let stored = localStorage.getItem(this.KEY_PROPERTIES);
     const deletedIds = this.getDeletedIds();
+    const modifiedMap = this.getModifiedMap();
 
     if (version !== this.CURRENT_VERSION) {
       // 캐시 버전이 변경된 경우 최신 데이터 강제 동기화 플래그 처리
@@ -557,6 +568,14 @@ const PropertyManager = {
         if (deletedIds.length > 0) {
           this.properties = this.properties.filter(p => !deletedIds.includes(p.id));
         }
+        // 사용자가 로컬에서 수정한 매물 정보(전화번호 등) 최우선 병합 보존
+        this.properties = this.properties.map(p => {
+          if (modifiedMap[p.id]) {
+            return { ...p, ...modifiedMap[p.id] };
+          }
+          return p;
+        });
+
         // 구버전 캐시 호환: images, mapImageUrl 및 floorType 보정
         this.properties.forEach(p => {
           if (!p.images || !Array.isArray(p.images) || p.images.length === 0) {
@@ -593,6 +612,7 @@ const PropertyManager = {
   async fetchRemoteProperties() {
     try {
       const deletedIds = this.getDeletedIds();
+      const modifiedMap = this.getModifiedMap();
 
       // 1순위: GitHub Raw URL (GitHub 커밋 즉시 0.1초 만에 전 세계 실시간 반영)
       const rawUrl = `https://raw.githubusercontent.com/oransee3/SuMokTo-Webpage/main/data/properties.json?t=${Date.now()}`;
@@ -615,6 +635,14 @@ const PropertyManager = {
           if (deletedIds.length > 0) {
             items = items.filter(p => !deletedIds.includes(p.id));
           }
+
+          // 핵심: 사용자가 로컬에서 수정한 매물(전화번호 등)은 원격 데이터가 무조건 덮어쓰지 못하도록 사용자 수정값을 최우선 병합!
+          items = items.map(p => {
+            if (modifiedMap[p.id]) {
+              return { ...p, ...modifiedMap[p.id] };
+            }
+            return p;
+          });
 
           items.forEach(p => {
             if (!p.floorType) {
@@ -691,6 +719,15 @@ const PropertyManager = {
     if (idx !== -1) {
       this.properties[idx] = { ...this.properties[idx], ...updatedData };
       this.save();
+
+      // 사용자가 수정한 매물 데이터 영구 보관 (원격 fetch 및 새로고침 시 전화번호 등 수정값 100% 보존)
+      try {
+        const modifiedMap = this.getModifiedMap();
+        modifiedMap[id] = { ...(modifiedMap[id] || {}), ...updatedData, _updatedAt: Date.now() };
+        localStorage.setItem(this.KEY_MODIFIED, JSON.stringify(modifiedMap));
+        localStorage.setItem('chebol_properties_last_updated', JSON.stringify({ id, timestamp: Date.now() }));
+      } catch (e) {}
+
       return true;
     }
     return false;
@@ -704,6 +741,13 @@ const PropertyManager = {
 
       // 삭제된 매물 ID 영구 기록 (새로고침 및 원격 동기화 시 부활 방지)
       try {
+        // 수정 보관소에서도 삭제
+        const modifiedMap = this.getModifiedMap();
+        if (modifiedMap[id]) {
+          delete modifiedMap[id];
+          localStorage.setItem(this.KEY_MODIFIED, JSON.stringify(modifiedMap));
+        }
+
         const deletedIds = this.getDeletedIds();
         if (!deletedIds.includes(id)) {
           deletedIds.push(id);
@@ -2793,7 +2837,7 @@ window.addEventListener('load', () => {
 
 // 탭 간 실시간 매물 변경 감지 (삭제/수정/추가 동기화)
 window.addEventListener('storage', (e) => {
-  if (e.key === 'chebol_properties_data' || e.key === 'chebol_properties_last_deleted' || e.key === 'chebol_deleted_property_ids') {
+  if (e.key === 'chebol_properties_data' || e.key === 'chebol_properties_last_deleted' || e.key === 'chebol_deleted_property_ids' || e.key === 'chebol_properties_last_updated' || e.key === 'chebol_modified_properties') {
     PropertyManager.init();
     if (typeof UI !== 'undefined') {
       if (UI.renderProperties) UI.renderProperties();
