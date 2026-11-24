@@ -34,7 +34,7 @@ try {
     const savedCustomSubs = localStorage.getItem('sumokto_custom_subscriptions');
     if (savedCustomSubs !== null) {
         const parsed = JSON.parse(savedCustomSubs);
-        if (Array.isArray(parsed)) {
+        if (Array.isArray(parsed) && parsed.length > 0) {
             parsed.forEach(item => {
                 if (item.id === 'sub-preset-1' || item.img === 'images/view_2k.jpg' || !item.img) {
                     item.img = 'images/sub_hanulche_thumb.jpg';
@@ -49,6 +49,11 @@ try {
         }
     }
 } catch (e) {}
+
+// 로컬스토리지에 저장된 데이터가 없는 경우 기본 분양 프리셋 자동 탑재 (PC·모바일 빈 모달 방지)
+if (SUBSCRIPTION_DATA.length === 0) {
+    SUBSCRIPTION_DATA.push(...DEFAULT_SUBSCRIPTION_DATA);
+}
 
 // data/subscriptions.json 서버 데이터 비동기 동기화 (PC-모바일 실시간 값 공유)
 async function syncServerSubscriptions() {

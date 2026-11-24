@@ -2264,12 +2264,13 @@ const UI = {
     }
     const autoPlanImg = this.getFloorPlanImage(floorTypeVal, titleVal);
 
+    const locVal = document.getElementById('propLocation').value.trim();
     const propertyData = {
       type: document.getElementById('propType').value,
       subType: document.getElementById('propSubType').value,
       dealType: document.getElementById('propDealType').value,
       title: titleVal,
-      location: document.getElementById('propLocation').value.trim(),
+      location: locVal,
       price: document.getElementById('propPrice').value.trim(),
       priceNumber: Number(document.getElementById('propPriceNumber').value) || 0,
       floorType: floorTypeVal,
@@ -2284,30 +2285,73 @@ const UI = {
       mapImageUrl: autoPlanImg || document.getElementById('propMapImageUrl').value.trim() || ''
     };
 
-    if (editId) {
-      PropertyManager.update(editId, propertyData);
-      this.showToast('매물 정보가 수정되었습니다.');
-    } else {
-      PropertyManager.add(propertyData);
-      this.showToast('새 매물이 등록되었습니다.');
-    }
-
-    this.closeModal('propertyFormModal');
-    this.renderProperties();
-    this.renderFeaturedProperties();
-
-    // GitHub 및 Vercel 실시간 동기화
-    this.showToast('🚀 GitHub에 실시간 동기화 및 업로드 진행 중...', 'info');
-    GitHubSyncManager.sync(PropertyManager.getAll()).then(success => {
-      if (success) {
-        this.showToast('✅ GitHub 저장소에 실시간 반영 완료! (Vercel 자동 배포 중)', 'success');
-      } else {
-        const token = GitHubSyncManager.getToken();
-        if (!token) {
-          this.showToast('💡 [관계자 모드] 대시보드에서 GitHub 토큰을 등록하시면 실시간 자동 푸시가 연동됩니다.', 'info');
-        }
+    // 저장 및 실시간 GitHub 동기화 실행 함수
+    const finalizeSaveAndSync = (lat, lng) => {
+      if (lat && lng) {
+        propertyData.lat = lat;
+        propertyData.lng = lng;
       }
-    });
+
+      if (editId) {
+        PropertyManager.update(editId, propertyData);
+        this.showToast('매물 정보가 수정되었습니다.');
+      } else {
+        PropertyManager.add(propertyData);
+        this.showToast('새 매물이 등록되었습니다.');
+      }
+
+      this.closeModal('propertyFormModal');
+      this.renderProperties();
+      this.renderFeaturedProperties();
+
+      // GitHub 및 Vercel 실시간 동기화
+      this.showToast('🚀 GitHub에 실시간 동기화 및 업로드 진행 중...', 'info');
+      GitHubSyncManager.sync(PropertyManager.getAll()).then(success => {
+        if (success) {
+          this.showToast('✅ GitHub 저장소에 실시간 반영 완료! (Vercel 자동 배포 중)', 'success');
+        } else {
+          const token = GitHubSyncManager.getToken();
+          if (!token) {
+            this.showToast('💡 [관계자 모드] 대시보드에서 GitHub 토큰을 등록하시면 실시간 자동 푸시가 연동됩니다.', 'info');
+          }
+        }
+      });
+    };
+
+    // 대한민국 전역 주소 카카오 Geocoder 실시간 지오코딩 (위도/경도 자동 생성)
+    if (window.kakao && kakao.maps && kakao.maps.services && kakao.maps.services.Geocoder && locVal) {
+      const geocoder = new kakao.maps.services.Geocoder();
+      let cleanAddr = locVal.replace(/\(.*?\)/g, '').trim();
+      const roadMatch = cleanAddr.match(/([가-힣\s]+[시|군|구]\s+[가-힣\s]+[읍|면|동|로|길]\s*[\d\-]+(?:\s*번지)?)/);
+      const searchTargetAddr = roadMatch ? roadMatch[1] : cleanAddr;
+
+      geocoder.addressSearch(searchTargetAddr, (result, status) => {
+        if (status === kakao.maps.services.Status.OK && result.length > 0) {
+          const lat = parseFloat(result[0].y);
+          const lng = parseFloat(result[0].x);
+          try {
+            const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+            cache[locVal] = { lat, lng };
+            cache[searchTargetAddr] = { lat, lng };
+            localStorage.setItem('sumokto_geo_cache', JSON.stringify(cache));
+          } catch (e) {}
+          finalizeSaveAndSync(lat, lng);
+        } else {
+          // 정제 실패 시 원본 검색
+          geocoder.addressSearch(cleanAddr, (res2, status2) => {
+            if (status2 === kakao.maps.services.Status.OK && res2.length > 0) {
+              const lat2 = parseFloat(res2[0].y);
+              const lng2 = parseFloat(res2[0].x);
+              finalizeSaveAndSync(lat2, lng2);
+            } else {
+              finalizeSaveAndSync(null, null);
+            }
+          });
+        }
+      });
+    } else {
+      finalizeSaveAndSync(null, null);
+    }
   },
 
   // 매물 삭제

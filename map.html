@@ -1109,52 +1109,139 @@
             resolveAllCoordinates(allProperties);
         }
 
-        // 단지명 및 실제 동/호수 기반 정밀 건물 중심 좌표 매핑
-        function resolveAllCoordinates(list) {
-            list.forEach((p, idx) => {
-                const fullText = (p.title || '') + ' ' + (p.location || '');
-                const dongMatch = (p.title || '').match(/(\d+)동/);
-                const dongStr = dongMatch ? dongMatch[1] : '';
+        // 대한민국 전역 매물 카카오 Geocoder 실시간 좌표 변환 및 캐시 연동
+        function resolvePropertyCoordinates(p, callback) {
+            const fullText = ((p.title || '') + ' ' + (p.location || '')).trim();
+            const addr = (p.location || '').trim();
 
-                // 1. 단지 구분 파악
-                let complexKey = '';
-                if (fullText.includes('아이파크')) {
-                    complexKey = '아이파크';
-                } else if (fullText.includes('수목토')) {
-                    complexKey = '수목토';
+            // 1. 단지 구분 및 동별 정밀 좌표 매핑 (도안수목토, 도안아이파크 동별 건물 실측 좌표 우선 보장)
+            let complexKey = '';
+            if (fullText.includes('아이파크')) {
+                complexKey = '아이파크';
+            } else if (fullText.includes('수목토')) {
+                complexKey = '수목토';
+            }
+
+            const dongMatch = (p.title || '').match(/(\d+)동/);
+            const dongStr = dongMatch ? dongMatch[1] : '';
+
+            if (complexKey && dongStr) {
+                const dongCoordKey = `${complexKey}_${dongStr}`;
+                if (DONG_PRESET_COORDS[dongCoordKey]) {
+                    p.lat = DONG_PRESET_COORDS[dongCoordKey].lat;
+                    p.lng = DONG_PRESET_COORDS[dongCoordKey].lng;
+                    if (callback) callback(p);
+                    return;
                 }
+            }
 
-                // 2. 동별 정밀 좌표 매핑 (카카오맵 타일 실측 오차 0m)
-                if (complexKey && dongStr) {
-                    const dongCoordKey = `${complexKey}_${dongStr}`;
-                    if (DONG_PRESET_COORDS[dongCoordKey]) {
-                        p.lat = DONG_PRESET_COORDS[dongCoordKey].lat;
-                        p.lng = DONG_PRESET_COORDS[dongCoordKey].lng;
+            // 2. 이미 유효한 정밀 좌표가 지정되어 있는 경우 (도안동 강제 기본값 36.3204, 127.3442가 아니거나 도안 관련 매물인 경우)
+            const isDefaultDoan = (p.lat && p.lng && Math.abs(p.lat - 36.3204) < 0.0001 && Math.abs(p.lng - 127.3442) < 0.0001);
+            if (p.lat && p.lng && (!isDefaultDoan || fullText.includes('도안') || fullText.includes('서구'))) {
+                if (callback) callback(p);
+                return;
+            }
+
+            // 3. 로컬 지오코딩 캐시 확인 (0.001초 빠른 응답)
+            try {
+                const cacheStr = localStorage.getItem('sumokto_geo_cache');
+                if (cacheStr) {
+                    const cache = JSON.parse(cacheStr);
+                    if (cache[addr] && cache[addr].lat && cache[addr].lng) {
+                        p.lat = cache[addr].lat;
+                        p.lng = cache[addr].lng;
+                        if (callback) callback(p);
                         return;
                     }
                 }
+            } catch (e) {}
 
-                // 3. 기존에 이미 유효한 정밀 좌표가 지정되어 있는 경우 유지
-                if (p.lat && p.lng) return;
+            // 4. 주소 정제 (호수, 층 등 상세 텍스트 분리)
+            let cleanAddr = addr.replace(/\(.*?\)/g, '').trim();
+            const roadMatch = cleanAddr.match(/([가-힣\s]+[시|군|구]\s+[가-힣\s]+[읍|면|동|로|길]\s*[\d\-]+(?:\s*번지)?)/);
+            const searchTargetAddr = roadMatch ? roadMatch[1] : cleanAddr;
 
-                // 4. 단지별 기본 중심 좌표 매핑
-                let matched = null;
-                for (let key in PRESET_COORDS) {
-                    if (fullText.includes(key)) {
-                        matched = PRESET_COORDS[key];
-                        break;
+            // 5. 카카오 Geocoder 비동기 검색 실행 (대한민국 전국 어디나 실제 좌표로 변환)
+            if (geocoder && (searchTargetAddr || cleanAddr)) {
+                const targetQuery = searchTargetAddr || cleanAddr;
+                geocoder.addressSearch(targetQuery, function(result, status) {
+                    if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                        p.lat = parseFloat(result[0].y);
+                        p.lng = parseFloat(result[0].x);
+
+                        // 캐시에 영구 저장하여 다음 로드 시 초고속 반영
+                        try {
+                            const cache = JSON.parse(localStorage.getItem('sumokto_geo_cache') || '{}');
+                            cache[addr] = { lat: p.lat, lng: p.lng };
+                            cache[targetQuery] = { lat: p.lat, lng: p.lng };
+                            localStorage.setItem('sumokto_geo_cache', JSON.stringify(cache));
+                        } catch (e) {}
+
+                        if (callback) callback(p);
+                    } else {
+                        // 정제 주소 실패 시 읍/면/동 단위로 재검색 시도
+                        const broadMatch = cleanAddr.match(/([가-힣]+[시|군|구]\s+[가-힣]+[읍|면|동])/);
+                        if (broadMatch) {
+                            geocoder.addressSearch(broadMatch[1], function(res2, status2) {
+                                if (status2 === kakao.maps.services.Status.OK && res2.length > 0) {
+                                    p.lat = parseFloat(res2[0].y);
+                                    p.lng = parseFloat(res2[0].x);
+                                } else {
+                                    fallbackPresetCoords(p, fullText);
+                                }
+                                if (callback) callback(p);
+                            });
+                        } else {
+                            fallbackPresetCoords(p, fullText);
+                            if (callback) callback(p);
+                        }
                     }
-                }
+                });
+                return;
+            }
 
-                if (!matched) {
-                    matched = { lat: 36.3204, lng: 127.3442 };
-                }
+            // 6. Geocoder 준비 전/미지원 시 프리셋 fallback
+            fallbackPresetCoords(p, fullText);
+            if (callback) callback(p);
+        }
 
-                p.lat = matched.lat;
-                p.lng = matched.lng;
+        function fallbackPresetCoords(p, fullText) {
+            let matched = null;
+            for (let key in PRESET_COORDS) {
+                if (fullText.includes(key)) {
+                    matched = PRESET_COORDS[key];
+                    break;
+                }
+            }
+            if (!matched) {
+                matched = { lat: 36.3204, lng: 127.3442 };
+            }
+            p.lat = matched.lat;
+            p.lng = matched.lng;
+        }
+
+        // 단지명 및 실제 동/호수, 카카오 Geocoder 기반 정밀 건물 중심 좌표 매핑
+        function resolveAllCoordinates(list) {
+            if (!list || list.length === 0) {
+                applyFilters();
+                return;
+            }
+
+            let pendingCount = list.length;
+            const onCoordinateResolved = () => {
+                pendingCount--;
+                if (pendingCount <= 0) {
+                    applyFilters();
+                }
+            };
+
+            list.forEach((p) => {
+                resolvePropertyCoordinates(p, () => {
+                    onCoordinateResolved();
+                });
             });
 
-            // 필터 적용 및 마커 생성
+            // 캐시 또는 동기 좌표 매핑된 매물로 즉시 1차 렌더링
             applyFilters();
         }
 
@@ -1328,17 +1415,22 @@
             if (!map) return;
             if (currentViewMode === 'SUBSCRIPTION') return; // 분양 정보 보기 모드일 때는 매물 목록 덮어쓰기 방지
             const bounds = map.getBounds();
+            const query = (document.getElementById('mapSearchInput')?.value || '').trim();
 
             let matched = filteredProperties.filter(p => {
                 const latlng = new kakao.maps.LatLng(p.lat, p.lng);
                 return bounds.contain(latlng);
             });
 
-            // 도안동 중심 영역인데 지도 렌더링 타이밍으로 0개가 감지된 경우 필터된 전체 매물 자동 보존
-            if (matched.length === 0 && filteredProperties.length > 0) {
-                const center = map.getCenter();
-                if (center && center.getLat() >= 36.30 && center.getLat() <= 36.35 && center.getLng() >= 127.32 && center.getLng() <= 127.38) {
-                    matched = [...filteredProperties];
+            // 검색어가 입력되어 있거나, 현재 지도 화면에 매물이 없으나 전체 필터된 매물이 있는 경우:
+            // 계룡시, 세종시 등 타 지역 매물이 목록에서 증발하지 않도록 filteredProperties 전체를 유지
+            if (query || matched.length === 0) {
+                matched = [...filteredProperties];
+            } else if (activePropertyId) {
+                // 사용자가 상세창이나 포커스로 선택한 매물은 화면 밖이라도 목록 상단에 유지
+                const activeP = filteredProperties.find(p => p.id === activePropertyId);
+                if (activeP && !matched.some(p => p.id === activePropertyId)) {
+                    matched.unshift(activeP);
                 }
             }
 
@@ -1455,12 +1547,17 @@
                 targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
-            // 당근부동산 스타일: 상세 패널 열기 및 지도 위치에 깜빡이는 포인트 작동
+            // 대한민국 전국 어디든 해당 매물의 실제 좌표로 지도 확대 레벨(3) 및 부드러운 활공 이동
+            if (p.lat && p.lng) {
+                const targetPos = new kakao.maps.LatLng(p.lat, p.lng);
+                map.setLevel(3);
+                map.panTo(targetPos);
+                showBlinkingPoint(p.lat, p.lng);
+            }
+
+            // 당근부동산 스타일: 상세 패널 열기
             if (openDetail) {
                 openDetailPanel(p);
-            } else {
-                showBlinkingPoint(p.lat, p.lng);
-                map.panTo(new kakao.maps.LatLng(p.lat, p.lng));
             }
         }
 
@@ -2086,10 +2183,13 @@
             currentDetailImgIdx = 0;
             updateDetailGallery();
 
-            // 지도 부드러운 이동 및 깜빡이는 레이더 포인트 가동
-            const targetPos = new kakao.maps.LatLng(p.lat, p.lng);
-            map.panTo(targetPos);
-            showBlinkingPoint(p.lat, p.lng);
+            // 대한민국 전국 어디든 해당 매물의 실제 좌표로 지도 확대 레벨(3) 및 부드러운 활공 이동
+            if (p.lat && p.lng) {
+                const targetPos = new kakao.maps.LatLng(p.lat, p.lng);
+                map.setLevel(3);
+                map.panTo(targetPos);
+                showBlinkingPoint(p.lat, p.lng);
+            }
         }
 
         // 상세 정보 패널 닫기 (PC: 플로팅 창 닫기 / 모바일: 바텀시트 목록 복귀 / 깜빡이는 레이더 포인트 제거)
